@@ -1,0 +1,125 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Login Page</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--Please enter your email and password:-->
+<!--<form action="/login", method="post">-->
+<!--    <span style="color: red" th:if="${error != null}">Invalid credentials</span><br>-->
+<!--    Email address:-->
+<!--    <input type="email" name="username" placeholder="Enter your email"><br>-->
+<!--    Password:-->
+<!--    <input type="password" name="password" placeholder="Enter your password"><br><br>-->
+<!--    <button type="submit">Log In</button>-->
+<!--    Don't have an account? <a href="/users/add">Create an Account</a>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+</head>
+
+<body>
+
+<th:block th:insert="fragments/fragment::header"></th:block>
+<!-- /header -->
+
+<main class="large_bg_black pattern">
+
+    <div class="container margin_60_40">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="">
+                    <div class="head">
+                        <div class="title">
+                            <h3>Sign In</h3>
+                        </div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+                        <form action="/login" method="post">
+                            <!--                            <div class="sign-in-wrapper">-->
+                            <!--                                <a href="#0" class="social_bt facebook">Login with Facebook</a>-->
+                            <!--                                <a href="#0" class="social_bt google">Login with Google</a>-->
+                            <!--                                <div class="divider"><span>Or</span></div>-->
+                            <div class="form-group">
+                                <span style="color: red" th:if="${error != null}">Invalid credentials</span><br>
+                                <label><i class="icon_mail_alt"></i> Email</label>
+                                <input type="email" class="form-control" name="username" id="email" >
+
+                            </div>
+                            <div class="form-group">
+                                <label><i class="icon_lock_alt"></i> Password</label>
+                                <input type="password" class="form-control" name="password" id="password" value="">
+
+                            </div>
+                            <div class="clearfix add_bottom_15">
+                                <div class="checkboxes float-start">
+                                    <label class="container_check">Remember me
+                                        <input type="checkbox">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="float-end"><a id="forgot" href="/users/add">Forgot Password?</a></div>
+                            </div>
+                            <div class="text-center">
+                                <input type="submit" value="Log In" class="btn_1 full-width mb_5">
+                                Don’t have an account? <a href="/users/add">Sign up</a>
+                            </div>
+                            <div id="forgot_pw">
+                                <div class="form-group">
+                                    <label>Please confirm login email below</label>
+                                    <input type="email" class="form-control" name="email_forgot" id="email_forgot">
+                                    <i class="icon_mail_alt"></i>
+                                </div>
+                                <p>You will receive an email containing a link allowing you to reset your password to a new preferred one.</p>
+                                <div class="text-center"><input type="submit" value="Reset Password" class="btn_1"></div>
+                            </div>
+                    </div>
+                    </form>
+                    <!--form -->
+                </div>
+            </div>
+            <!-- /box_booking -->
+        </div>
+        <!-- /col -->
+
+    </div>
+    <!-- /row -->
+    </div>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+
+<!-- COLOR SWITCHER  -->
+
+</body>
+</html>

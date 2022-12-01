@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>Edit Product</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <form th:action="@{'/products/edit/' + ${product.id}}" method="post" enctype="multipart/form-data">
+        <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Edit listing</li>
+            </ol>
+            <div class="box_general padding_bottom">
+                <div class="header_box version_2">
+                    <h2><i class="fa fa-file"></i>Basic info</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Restaurant</label>
+                            <div class="styled-select">
+                                <select name="restaurantId">
+                                    <option th:if="${currentUser.role.name == 'RESTAURANT_OWNER' && currentUser.id==restaurant.user.id}"
+                                            th:each="restaurant:${restaurants}"
+                                            th:value="${restaurant.id}" th:text="${restaurant.name}" ></option>
+                                    <option th:if="${currentUser.role.name == 'MANAGER'}"
+                                            th:each="restaurant:${restaurants}" th:value="${restaurant.id}"
+                                            th:text="${restaurant.name}"></option>
+                                    <option selected
+                                            th:value="${product.restaurantOverview.id}" th:text="${product.restaurantOverview.name}" ></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row-->
+            </div>
+            <div class="box_general padding_bottom">
+                <div class="header_box version_2">
+                    <h2><i class="fa fa-list"></i>Edit product</h2>
+                </div>
+                <div class="wrapper_indent">
+                    <div class="form-group">
+                        <label>Menu Category</label>
+                        <div class="styled-select">
+                            <select name="productCategoryId">
+                                <option th:each="category:${categories}" th:value="${category.id}"
+                                        th:text="${category.name}"></option>
+                                <option selected th:value="${product.productCategoryOverview.id}" th:text="${product.productCategoryOverview.name}" ></option>
+                            </select><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="strip_menu_items">
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <input type="file" name="productImage" multiple><br th:if="${errorMessageFile != null}"
+                                                                                class="dropzone">
+                        </div>
+                        <div class="col-xl-9">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" name="name" th:value="${product.name}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Price</label>
+                                        <input type="number" name="price" th:value="${product.price}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" name="description" th:value="${product.description}" class="form-control">
+                            </div>
+                        </div><!-- End row -->
+                    </div><!-- End strip_menu_items -->
+                </div>
+                <!-- /box_general-->
+            </div>
+            <!-- /.container-fluid-->
+        </div>
+        <!-- /.container-wrapper-->
+        <p><input type="submit" value="Update" class="btn_1 medium"></p>
+    </form>
+</div>
+
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+
+</html>

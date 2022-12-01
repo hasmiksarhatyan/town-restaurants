@@ -1,0 +1,333 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Customer page</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<th:block th:if="${currentUser == null}">-->
+<!--    <a href="/users/add">Register</a><br>-->
+<!--</th:block>-->
+
+<!--<th:block th:if="${currentUser != null}">-->
+<!--    <a href="/logout"> Sign Out</a>-->
+<!--</th:block>-->
+
+<!--<a href="/restaurants">See All Restaurants</a>-->
+<!--<a href="/restaurantsCategory">See all Types of Restaurant</a>-->
+<!--<a href="/restaurants/add">Add a New Restaurant</a>-->
+
+<!--<li th:if="${currentUser != null && currentUser.role.name == 'RESTAURANT_OWNER'}"><a href="/restaurants/myRestaurants">See My Restaurant</a></li>-->
+
+<!--<table>-->
+
+<!--    <tr>-->
+<!--        <th>First Name</th>-->
+<!--        <th>Last Name</th>-->
+<!--        <th>Email</th>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td th:text="${user.firstName}"></td>-->
+<!--        <td th:text="${user.lastName}"></td>-->
+<!--        <td th:text="${user.email}"></td>-->
+<!--    </tr>-->
+
+<!--</table>-->
+<!--<span style="color: red" th:if="${errorMessage!=null}" th:text="${errorMessage}"></span><br>-->
+
+<!--<h5>Change First Name or/and Last Name:</h5>-->
+<!--<form th:action="@{'/users/edit/' + ${user.id}}" method="post">-->
+<!--    <label>-->
+<!--        <input type="text" name="firstName" placeholder="Please input first name">-->
+<!--        <input type="text" name="lastName" placeholder="Please input last name">-->
+<!--    </label><br>-->
+<!--    <input type="submit" value="Change">-->
+<!--</form>-->
+<!--<br>-->
+
+<!--<h5>Change Password:</h5>-->
+
+<!--<form action="/users/changePassword" method="post">-->
+<!--    <label>-->
+<!--        <input type="text" name="oldPassword" placeholder="Please input valid password"><br>-->
+<!--        <input type="text" name="newPassword1" placeholder="Please input new password"><br>-->
+<!--        <input type="text" name="newPassword2" placeholder="Please input new password again">-->
+<!--    </label><br>-->
+<!--    <input type="submit" value="Change">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - Admin dashboard</title>
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="//img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="//img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="//img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="//img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="//img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- Bootstrap core CSS-->
+    <link href="/admin_section/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Main styles -->
+    <link href="/admin_section/css/admin.css" rel="stylesheet">
+    <!-- Icon fonts-->
+    <link href="/admin_section/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Plugin styles -->
+    <link href="/admin_section/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!-- Your custom styles -->
+    <link href="/admin_section/css/custom.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
+    <a class="navbar-brand" href="index.html"><img src="/img/logo.svg" alt="" width="142" height="36"></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+            <li th:if="${currentUser == null}" class="nav-item" data-toggle="tooltip" data-placement="right"
+                title="Register">
+                <a class="nav-link" href="/users/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Register</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser != null}" class="nav-item" data-toggle="tooltip" data-placement="right"
+                title="See All Users">
+                <a class="nav-link" href="/logout">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Sign Out</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                <a class="nav-link" href="/">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span class="nav-link-text">Home</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                <a class="nav-link" href="/restaurants/myR">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">See My Restaurants</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                <a class="nav-link" href="/restaurants">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">See All Restaurants</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Restaurant">
+                <a class="nav-link" href="/restaurants/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Add a New Restaurant</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+                <a class="nav-link" href="//bookings.html">
+                    <i class="fa fa-fw fa-calendar-check-o"></i>
+                    <span class="nav-link-text">Bookings</span>
+                </a>
+            </li>
+
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Orders Page">
+                <a class="nav-link" href="orders.html">
+                    <i class="fa fa-fw fa-shopping-basket"></i>
+                    <span class="nav-link-text">My Orders</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Edit Order">
+                <a class="nav-link" href="orders.html">
+                    <i class="fa fa-fw fa-pencil"></i>
+                    <span class="nav-link-text">Edit Order</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+</nav>
+
+
+
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+
+
+        <!-- /cards -->
+        <h2></h2>
+        <div class="box_general padding_bottom">
+            <div class="header_box version_2">
+                <h2><i class="fa fa-bar-chart"></i>Personal Information</h2>
+                <div>
+<!--                    <table>-->
+<!--                        <tr>-->
+<!--                            <h6 th:text="${user.firstName}"></h6>-->
+<!--                            <h6 th:text="${user.lastName}"></h6>-->
+<!--                            <h6 th:text="${user.email}"></h6>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+                    <span style="color: red" th:if="${errorMessageName!=null}" th:text="${errorMessageName}"></span><br>
+                </div>
+            </div>
+            <div>
+
+                <div id="message-register"></div>
+                <form th:action="@{'/users/edit/' + ${userId}}" method="post">
+                    <!-- /row -->
+                    <h6>Change First Name or/and Last Name:</h6>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="First Name"
+                                       name="firstName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Last Name"
+                                       name="lastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="submit" class="btn_1" value="Change"></div>
+                </form>
+            </div>
+            <span style="color: red" th:if="${errorMessagePassword!=null}" th:text="${errorMessagePassword}"></span><br>
+            <form th:action="@{'/users/changePassword/' + ${userId}}" method="post">
+                <!-- /row -->
+                <h6>Change Password:</h6>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Please input valid password"
+                                   name="oldPassword">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Please input new password"
+                                   name="newPassword1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Please input new password again"
+                                   name="newPassword2">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <input type="submit" class="btn_1" value="Change"></div>
+            </form>
+
+
+        </div>
+
+
+    </div>
+</div>
+<!-- /.container-fluid-->
+</div>
+<!-- /.container-wrapper-->
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © FOOGRA 2021</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+
+
+<!-- /.container-wrapper-->
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © FOOGRA 2021</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="#0">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/admin_section/vendor/jquery/jquery.min.js"></script>
+<script src="/admin_section/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/admin_section/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Page level plugin JavaScript-->
+<script src="/admin_section/vendor/chart.js/Chart.js"></script>
+<script src="/admin_section/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/admin_section/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="/admin_section/vendor/jquery.magnific-popup.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="/admin_section/js/admin.js"></script>
+<!-- Custom scripts for this page-->
+<script src="/admin_section/js/admin-charts.js"></script>
+</body>
+
+</html>

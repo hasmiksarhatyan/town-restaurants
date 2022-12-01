@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+</head>
+<body>
+<th:block th:insert="fragments/fragment::header"></th:block>
+<main>
+    <div class="hero_single version_2">
+        <div class="opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.6)">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-9 col-lg-10 col-md-8">
+                        <p>Sorry, you don't have access to this page</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<div id="toTop"></div>
+<div class="layer"></div>
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+<th:block th:insert="fragments/fragment::colorSwitcher"></th:block>
+</body>
+</html>
+
+

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
+
+<th:block th:fragment="headerImport">
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="//img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="//img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="//img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="//img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="//img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- Bootstrap core CSS-->
+    <link href="/admin_section/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Main styles -->
+    <link href="/admin_section/css/admin.css" rel="stylesheet">
+    <!-- Icon fonts-->
+    <link href="/admin_section/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Plugin styles -->
+    <link href="/admin_section/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!-- Your custom styles -->
+    <link href="/admin_section/css/custom.css" rel="stylesheet">
+</th:block>
+
+<th:block th:fragment="navigation">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
+        <a class="navbar-brand" href="/"><img src="/img/logo.svg" alt="" width="142" height="36"></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                    <a class="nav-link" href="/">
+                        <i class="fa fa-home"></i>
+                        <span class="nav-link-text">Home</span>
+                    </a>
+                </li>
+
+                <!--                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">-->
+                <!--                    <a class="nav-link" href="/manager">-->
+                <!--                        <i class="fa fa-fw fa-user"></i>-->
+                <!--                        <span class="nav-link-text">My Profile</span>-->
+                <!--                    </a>-->
+                <!--                </li>-->
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                    <a class="nav-link" href="/baskets">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="nav-link-text">Basket</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'CUSTOMER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                    <a class="nav-link" href="/baskets">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="nav-link-text">My Basket</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                    <a class="nav-link" href="/baskets">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="nav-link-text">My Basket</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Users">
+                    <a class="nav-link" href="/users">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See All Users</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                    <a class="nav-link" href="/restaurants/my">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See My Restaurants</span>
+                    </a>
+                </li>
+
+                <li  class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                    <a class="nav-link" href="/restaurants">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See All Restaurants</span>
+                    </a>
+                </li>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Restaurant">
+                    <a class="nav-link" href="/restaurants/add">
+                        <i class="fa fa-fw fa-plus-circle"></i>
+                        <span class="nav-link-text">Add a New Restaurant</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'||currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Types of Restaurant">
+                    <a class="nav-link" href="/restaurantsCategory">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See all Types of Restaurant</span>
+                    </a>
+                </li>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+                    <a class="nav-link" href="/restaurantsCategory/add">
+                        <i class="fa fa-fw fa-plus-circle"></i>
+                        <span class="nav-link-text">Add a New Type of Restaurant</span>
+                    </a>
+                </li>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Events">
+                    <a class="nav-link" href="/events/manager">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See All Events</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Event">
+                    <a class="nav-link" href="/events/add">
+                        <i class="fa fa-fw fa-plus-circle"></i>
+                        <span class="nav-link-text">Add a New Event</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'|| currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Types of Product">
+                    <a class="nav-link" href="/productCategories">
+                        <i class="fa fa-fw fa-list-ul"></i>
+                        <span class="nav-link-text">See All Types of Product</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Product ">
+                    <a class="nav-link" href="/productCategories/add">
+                        <i class="fa fa-fw fa-plus-circle"></i>
+                        <span class="nav-link-text">Add a New Type of Product</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'|| currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Listings">
+                    <a class="nav-link " href="/products/my">
+                        <i class="fa fa-fw fa-list"></i>
+                        <span class="nav-link-text">My listings</span>
+                    </a>
+                </li>
+
+
+                <li th:if="${currentUser.role.name == 'MANAGER'|| currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Add listing + Menu List">
+                    <a class="nav-link" href="/products/add">
+                        <i class="fa fa-fw fa-plus-circle"></i>
+                        <span class="nav-link-text">Add listing + Menu List</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+                    <a class="nav-link" href="//bookings.html">
+                        <i class="fa fa-fw fa-calendar-check-o"></i>
+                        <span class="nav-link-text">Bookings</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Orders Page">
+                    <a class="nav-link"  href="/orders">
+                        <i class="fa fa-fw fa-shopping-basket"></i>
+                        <span class="nav-link-text">Orders Page</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Edit Order">
+                    <a class="nav-link" href="orders.html">
+                        <i class="fa fa-fw fa-pencil"></i>
+                        <span class="nav-link-text">Edit Order</span>
+                    </a>
+                </li>
+
+            </ul>
+            <ul class="navbar-nav sidenav-toggler">
+                <li class="nav-item">
+                    <a class="nav-link text-center" id="sidenavToggler">
+                        <i class="fa fa-fw fa-angle-left"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tooltip" href="/users/home">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="nav-link-text" th:text="${currentUser.firstName}"></span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-fw fa-sign-out"></i>Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- /Navigation-->
+</th:block>
+<th:block th:fragment="footer">
+    <footer class="sticky-footer">
+        <div class="container">
+            <div class="text-center">
+            </div>
+        </div>
+    </footer>
+</th:block>
+<th:block th:fragment="scroll">
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</th:block>
+<th:block th:fragment="logoutModal">
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="scripts">
+    <!-- Bootstrap core JavaScript-->
+    <script src="/admin_section/vendor/jquery/jquery.min.js"></script>
+    <script src="/admin_section/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="/admin_section/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="/admin_section/vendor/chart.js/Chart.js"></script>
+    <script src="/admin_section/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="/admin_section/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="/admin_section/vendor/jquery.magnific-popup.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="/admin_section/js/admin.js"></script>
+    <!-- Custom scripts for this page-->
+    <script src="/admin_section/js/admin-charts.js"></script>
+</th:block>

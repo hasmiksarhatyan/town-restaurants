@@ -1,0 +1,85 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Add a New Type of Restaurant</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h3>Add a New Type of Restaurant</h3>-->
+
+<!--<form action="/restaurantsCategory/add" method="post">-->
+<!--    <input type="text" name="name" placeholder="please input category name"><br>-->
+<!--    <input type="submit" value="Add Restaurant Category">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - Restaurant Type</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+
+        </ol>
+        <!-- /cards -->
+
+        <div class="box_general padding_bottom">
+            <div class="header_box version_2">
+                <h2><i class="fa fa-bar-chart"></i>Add a New Type of Restaurant</h2>
+            </div>
+            <div>
+
+                <div id="message-register"></div>
+
+                <form action="/restaurantsCategory/add" method="post">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="New Type"
+                                       name="name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="submit" class="btn_1" value="Add"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+
+</html>

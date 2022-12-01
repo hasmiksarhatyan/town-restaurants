@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - Admin dashboard</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Tables</li>
+        </ol>
+        <div class="box_general">
+            <div class="header_box">
+                <h2 class="d-inline-block">Events list</h2>
+                <div class="filter">
+                    <div class="styled-select short">
+                        <select name="orderby">
+                            <option value="Any status">Any status</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="list_general">
+                <ul th:each="event:${events.content}">
+                    <li>
+                        <figure> <img th:if="${event.pictures != null && !event.pictures.isEmpty()}"
+                                      th:src="@{/manager/events/getImages(fileName=${event.pictures.get(0)})}"></figure>
+                        <h4 th:text="${event.name}">
+<!--                            <i class="pending">Pending</i>-->
+                        </h4>
+                        <ul class="booking_list">
+                            <li><strong>Restaurant</strong> <strong th:text="${event.restaurantOverview.name}"></strong></li>
+                            <li><strong>Event date</strong> <strong th:text="${event.eventDateTime}"></strong></li>
+                            <li><strong>Event price</strong> <strong th:text="${event.price}"></strong></li>
+                            <li><strong th:text="${event.description}"></strong></li>
+                        </ul>
+                        <ul class="buttons">
+                            <li><a th:href="@{'/events/manager/edit/'+${event.id}}" class="btn_1 gray delete" data-toggle="modal" data-target="#edit_booking"><i class="fa fa-fw fa-pencil"></i> Edit</a></li>
+                            <li><a th:href="@{'/events/manager/delete/'+${event.id}}" class="btn_1 gray delete"><i class="fa fa-fw fa-times-circle-o"></i> Cancel</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <table>
+                <th th:if="${events.totalPages > 0}" class="pagination"
+                    th:each="pageNumber : ${pageNumbers}">
+                    <a th:href="@{/events/manager(size=${events.size}, page=${pageNumber})}"
+                       th:text="${pageNumber}"
+                       th:class="${pageNumber==events.number + 1} ? active"></a>
+                </th>
+            </table>
+        </div>
+        <!-- /box_general-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /container-wrapper-->
+
+
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Restaurant Category Page</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<table>-->
+
+<!--    <tr>-->
+<!--        <th>Name</th>-->
+<!--    </tr>-->
+
+<!--    <tr th:each="category:${categories.content}">-->
+<!--        <td th:text="${category.name}"></td>-->
+<!--        <td><a th:if="${currentUser != null && currentUser.role.name == 'MANAGER'}" th:href="@{'/restaurantsCategory/delete/'+ ${category.id}}">Delete the Type of the Restaurant></a></td>-->
+<!--        <br th:if="errorMessageId !=null">-->
+<!--        <span style="color: red" th:if="errorMessageId !=null" th:text="${errorMessageId}"></span>-->
+<!--    <a href="/restaurantsCategory/add">Add a New Type of Restaurant</a>-->
+
+<!--</table>-->
+
+<!--<div th:if="${categories.totalPages>0}" class="pagination"-->
+<!--     th:each="pageNumber:${pageNumbers}">-->
+<!--    <a th:href="@{/restaurantsCategory(size=${categories.size}, page=${pageNumber})}"-->
+<!--       th:text="${pageNumber}"-->
+<!--       th:class="${pageNumber==categories.number+1}? active"></a>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - Admin dashboard</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+
+        </ol>
+
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-table"></i>Restaurant Type
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <br th:if="errorMessageId !=null">
+                        <span style="color: red" th:if="errorMessageId !=null" th:text="${errorMessageId}"></span>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                        <tr th:each="category:${categories.content}">
+                            <td th:text="${category.name}"></td>
+                            <td>
+                                <a th:href="@{'/restaurantsCategory/delete/'+ ${category.id}}"><strong>Delete</strong></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${categories.totalPages>0}" class="pagination"
+                         th:each="pageNumber:${pageNumbers}">
+                        <a th:href="@{/restaurantsCategory(size=${categories.size}, page=${pageNumber})}"
+                           th:text="${pageNumber}"
+                           th:class="${pageNumber==categories.number+1}?active"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- /tables-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+
+    <!-- SPECIFIC CSS -->
+    <link href="/css/blog.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<!--<th:block th:insert="fragments/fragment::header"></th:block>-->
+
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /header -->
+
+<main>
+    <div class="page_header element_to_stick">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-8 col-lg-7 col-md-7 d-none d-md-block">
+                    <div class="breadcrumbs blog">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a th:href="@{'/products'}">Products</a></li>
+                            <li><a th:href="@{'/restaurants'}">Restaurants</a></li>
+                            <li>Page active</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+    </div>
+    <!-- /page_header -->
+
+    <div class="container margin_30_40">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-6" th:each="event:${events.content}">
+                        <article class="blog">
+                            <figure>
+                                <a th:href="'/events/'+${event.id}"><img th:if="${event.pictures != null && !event.pictures.isEmpty()}"
+                                                                         th:src="@{/events/getImages(fileName=${event.getPictures().get(0)})}"
+                                                                         alt="" src=""></a>
+                                <div class="preview"><span>Read more</span></div>
+                            </figure>
+                            <div class="post_info">
+                                <span th:text="${event.restaurantOverview.name}+' - '+${event.getEventDateTime()}"></span>
+                                <h2><a th:href="'/events/'+${event.id}" th:text="${event.name}"></a></h2>
+                                <p th:text="${event.description}"></p>
+                            </div>
+                        </article>
+                        <!-- /article -->
+                    </div>
+                    <!-- /col -->
+                    <div class="col-md-6">
+                        <article class="blog">
+                            <figure>
+                                <a href="//blog-post.html"><img src="/img/blog-3.jpg" alt="">
+                                    <div class="preview"><span>Read more</span></div>
+                                </a>
+                            </figure>
+                            <div class="post_info">
+                                <small>Category - 20 Nov. 2017</small>
+                                <h2><a href="//blog-post.html">Iusto nominavi petentium in</a></h2>
+                                <p>Quodsi sanctus pro eu, ne audire scripserit quo. Vel an enim offendit salutandi, in
+                                    eos quod omnes epicurei, ex veri qualisque scriptorem mei.</p>
+                            </div>
+                        </article>
+                        <!-- /article -->
+                    </div>
+                    <!-- /col -->
+                    <div class="col-md-6">
+                        <article class="blog">
+                            <figure>
+                                <a href="//blog-post.html"><img src="/img/blog-4.jpg" alt="">
+                                    <div class="preview"><span>Read more</span></div>
+                                </a>
+                            </figure>
+                            <div class="post_info">
+                                <small>Category - 20 Nov. 2017</small>
+                                <h2><a href="//blog-post.html">Assueverit concludaturque quo</a></h2>
+                                <p>Quodsi sanctus pro eu, ne audire scripserit quo. Vel an enim offendit salutandi, in
+                                    eos quod omnes epicurei, ex veri qualisque scriptorem mei.</p>
+                            </div>
+                        </article>
+                        <!-- /article -->
+                    </div>
+                    <!-- /col -->
+                    <div class="col-md-6">
+                        <article class="blog">
+                            <figure>
+                                <a href="//blog-post.html"><img src="/img/blog-5.jpg" alt="">
+                                    <div class="preview"><span>Read more</span></div>
+                                </a>
+                            </figure>
+                            <div class="post_info">
+                                <small>Category - 20 Nov. 2017</small>
+                                <h2><a href="//blog-post.html">Nec nihil menandri appellantur</a></h2>
+                                <p>Quodsi sanctus pro eu, ne audire scripserit quo. Vel an enim offendit salutandi, in
+                                    eos quod omnes epicurei, ex veri qualisque scriptorem mei.</p>
+                            </div>
+                        </article>
+                        <!-- /article -->
+                    </div>
+                    <!-- /col -->
+                </div>
+                <!-- /row -->
+                <table class="pagination_fg">
+                    <th th:if="${events.totalPages>0}"
+                        th:each="pageNumber:${pageNumbers}">
+                        <a class="active" th:href="@{/events(size=${events.size}, page=${pageNumber})}"
+                           th:text="${pageNumber}"
+                           th:class="${pageNumber==events.number+1}? active"></a>
+                    </th>
+                </table>
+
+            </div>
+            <!-- /col -->
+
+            <aside class="col-lg-3">
+                <div class="widget">
+                    <div class="widget-title first">
+                        <h4>Latest Post</h4>
+                    </div>
+                    <ul class="comments-list">
+                        <li>
+                            <div class="alignleft">
+                                <a href="#0"><img src="/img/blog-5.jpg" alt=""></a>
+                            </div>
+                            <small>Category - 11.08.2016</small>
+                            <h><a href="#" title="">Verear qualisque ex minimum...</a></h>
+                        </li>
+                        <li>
+                            <div class="alignleft">
+                                <a href="#0"><img src="/img/blog-6.jpg" alt=""></a>
+                            </div>
+                            <small> Category - 11.08.2016</small>
+                            <h5><a href="#" title="">Verear qualisque ex minimum...</a></h5>
+                        </li>
+                        <li>
+                            <div class="alignleft">
+                                <a href="#0"><img src="/img/blog-4.jpg" alt="5"></a>
+                            </div>
+                            <small>Category - 11.08.2016</small>
+                            <h5><a href="#0" title="">Verear qualisque ex minimum...</a></h5>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /widget -->
+                <div class="widget">
+                    <div class="widget-title">
+                        <h4>Restaurants</h4>
+                    </div>
+                    <ul class="cats" >
+                        <li th:each="restaurant:${restaurants}">
+                            <a th:href="@{'/restaurants/'+${restaurant.id}+'/events'}"
+                               th:text="${restaurant.name}+
+                       (' ('+ ${eventsByRestaurant.get(restaurant.id).size()})+' events)'"></a></li>
+                    </ul>
+                </div>
+                <!-- /widget -->
+                <div class="widget">
+                    <div class="widget-title">
+                        <h4>Popular Tags</h4>
+                    </div>
+                    <div class="tags">
+                        <a href="#">Food</a>
+                        <a href="#">Bars</a>
+                        <a href="#">Cooktails</a>
+                        <a href="#">Shops</a>
+                        <a href="#">Best Offers</a>
+                        <a href="#">Transports</a>
+                        <a href="#">Restaurants</a>
+                    </div>
+                </div>
+                <!-- /widget -->
+            </aside>
+            <!-- /aside -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+
+<!-- COLOR SWITCHER  -->
+
+</body>
+</html>

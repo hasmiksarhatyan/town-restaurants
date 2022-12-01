@@ -1,0 +1,311 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Add Event</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h3>Add Event</h3>-->
+
+<!--<form action="/manager/events/add" method="post" enctype="multipart/form-data">-->
+<!--  <input type="text" name="name" placeholder="please input event name"><br>-->
+<!--  <input type="text" name="description" placeholder="please input description"><br>-->
+<!--  <input type="number" name="price" placeholder="please input price"><br>-->
+<!--  <input type="date" name="eventDateTime" ><br>-->
+<!--  <h3> restaurant </h3>-->
+<!--  <select name="restaurant">-->
+<!--    <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}" th:text="${restaurant.name}"></option>-->
+<!--  </select><br>-->
+<!--  <input type="file" name="eventImage" multiple><br th:if="${errorMessageFile != null}"><br>-->
+<!--  <span style="color: red" th:if="${errorMessageFile != null}" th:text="${errorMessageFile}"></span><br th:if="${errorMessageFile != null}">-->
+
+<!--  <input type="submit" value="Add Event">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Ansonika">
+  <title>FOOGRA - Admin dashboard</title>
+  <!-- Favicons-->
+  <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" type="image/x-icon" href="/img/apple-touch-icon-57x57-precomposed.png">
+  <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="/img/apple-touch-icon-72x72-precomposed.png">
+  <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="/img/apple-touch-icon-114x114-precomposed.png">
+  <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="/img/apple-touch-icon-144x144-precomposed.png">
+  <!-- Bootstrap core CSS-->
+  <link href="/admin_section/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Main styles -->
+  <link href="/admin_section/css/admin.css" rel="stylesheet">
+  <!-- Icon fonts-->
+  <link href="/admin_section/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Plugin styles -->
+  <link href="/admin_section/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="/admin_section/vendor/dropzone.css" rel="stylesheet">
+  <link href="/admin_section/css/date_picker.css" rel="stylesheet">
+  <!-- Your custom styles -->
+  <link href="/admin_section/css/custom.css" rel="stylesheet">
+  <!-- WYSIWYG Editor -->
+  <link rel="stylesheet" href="/admin_section/js/editor/summernote-bs4.css">
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
+  <a class="navbar-brand" href="index.html"><img src="/img/logo.svg" alt="" width="142" height="36"></a>
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+          data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+
+      <li th:if="${currentUser != null}" class="nav-item" data-toggle="tooltip" data-placement="right"
+          title="See All Users">
+        <a class="nav-link" href="/logout">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">Sign Out</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+        <a class="nav-link" href="/">
+          <i class="fa fa-fw fa-user"></i>
+          <span class="nav-link-text">Home</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Users">
+        <a class="nav-link" href="/users">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">See All Users</span>
+        </a>
+      </li>
+
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+        <a class="nav-link" href="/restaurants">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">See All Restaurants</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Restaurant">
+        <a class="nav-link" href="/restaurants/add">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">Add a New Restaurant</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Types of Restaurant">
+        <a class="nav-link" href="/restaurantsCategory">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">See all Types of Restaurant</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+        <a class="nav-link" href="/restaurantsCategory/add">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">Add a New Type of Restaurant</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+        <a class="nav-link" href="/manager/events">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">See All Events</span>
+        </a>
+      </li>
+
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+        <a class="nav-link" href="/manager/events/add">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">Add a New Event</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+        <a class="nav-link" href="//bookings.html">
+          <i class="fa fa-fw fa-calendar-check-o"></i>
+          <span class="nav-link-text">Bookings</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add listing + Menu List">
+        <a class="nav-link" href="//add-listing-with-menu-list.html">
+          <i class="fa fa-fw fa-plus-circle"></i>
+          <span class="nav-link-text">Add listing + Menu List</span>
+        </a>
+      </li>
+
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Orders Page">
+        <a class="nav-link" href="orders.html">
+          <i class="fa fa-fw fa-shopping-basket"></i>
+          <span class="nav-link-text">Orders Page</span>
+        </a>
+      </li>
+      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Edit Order">
+        <a class="nav-link" href="orders.html">
+          <i class="fa fa-fw fa-pencil"></i>
+          <span class="nav-link-text">Edit Order</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+<!-- /Navigation-->
+<form action="/manager/events/add" method="post" enctype="multipart/form-data">
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <!-- Breadcrumbs-->
+    <div class="box_general padding_bottom">
+      <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Basic info</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Event name</label>
+            <input type="text"  name="name" class="form-control" >
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Restaurant</label>
+            <div class="styled-select">
+              <select name="restaurant">
+                <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}" th:text="${restaurant.name}"></option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /row-->
+
+      <!-- /row-->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Description</label>
+            <div class="editor"><input hidden type="text" name="description"></div>
+          </div>
+        </div>
+      </div>
+      <!-- /row-->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>DateTime</label>
+            <input type="datetime-local" name="eventDateTime"  class="form-control">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Price</label>
+            <input type="number" name="price" class="form-control">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Photos</label>
+              <input type="file" name="eventImage" multiple class="dropzone">
+          </div>
+        </div>
+      </div>
+      <!-- /row-->
+    </div>
+    <!-- /box_general-->
+
+    <p><input type="submit" class="btn_1 medium" value="Save"></p>
+  </div>
+  <!-- /.container-fluid-->
+</div>
+</form>
+<!-- /.container-wrapper-->
+<footer class="sticky-footer">
+  <div class="container">
+    <div class="text-center">
+      <small>Copyright © FOOGRA 2021</small>
+    </div>
+  </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fa fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-primary" href="#0">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/admin_section/vendor/jquery/jquery.min.js"></script>
+<script src="/admin_section/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/admin_section/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Page level plugin JavaScript-->
+<script src="/admin_section/vendor/chart.js/Chart.min.js"></script>
+<script src="/admin_section/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/admin_section/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="/admin_section/vendor/jquery.magnific-popup.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="/admin_section/js/admin.js"></script>
+<!-- Custom scripts for this page-->
+<script src="/admin_section/vendor/dropzone.min.js"></script>
+<script src="/admin_section/vendor/bootstrap-datepicker.js"></script>
+<script>
+  $('input.date-pick').datepicker();
+</script>
+<!-- WYSIWYG Editor -->
+<script src="/admin_section/js/editor/summernote-bs4.min.js"></script>
+<script>
+  $('.editor').summernote({
+    fontSizes: ['10', '14'],
+    toolbar: [
+      // [groupName, [list of button]]
+      ['style', ['bold', 'italic', 'underline', 'clear']],
+      ['font', ['strikethrough']],
+      ['fontsize', ['fontsize']],
+      ['para', ['ul', 'ol', 'paragraph']]
+    ],
+    placeholder: 'Write here ....',
+    tabsize: 2,
+    height: 200
+  });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Add Restaurant</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<a href="/restaurantsCategory/add">Add a New Type of Restaurant</a><br>-->
+
+<!--<h3>Add Restaurant</h3>-->
+
+<!--<span th:if="${errorMessageEmptyRestaurant != null}" th:text="${errorMessageEmptyRestaurant}"></span>-->
+
+<!--<form action="/restaurants/add" method="post" enctype="multipart/form-data">-->
+<!--    <input type="text" name="name" placeholder="please input first name"><br>-->
+<!--    <input type="text" name="address" placeholder="please input last address"><br>-->
+<!--    <input type="email" name="email" placeholder="please input email"><br>-->
+<!--    <span style="color: red" th:if="${errorMessageEmail != null}" th:text="${errorMessageEmail}"></span><br th:if="${errorMessageEmail != null}">-->
+<!--    <input type="text" name="phone" placeholder="please input last phone"><br>-->
+<!--    <input type="number" name="deliveryPrice" placeholder="please input last delivery price"><br>-->
+<!--    <h3>Please select the category</h3>-->
+<!--    <select name="restaurantCategoryId">-->
+<!--        <option th:each="category:${categories}" th:value="${category.id}" th:text="${category.name}"></option>-->
+<!--    </select><br>-->
+<!--    <input type="file" name="restaurantImage" multiple><br th:if="${errorMessageFile != null}">-->
+<!--    <span style="color: red" th:if="${errorMessageFile != null}" th:text="${errorMessageFile}"></span><br-->
+<!--        th:if="${errorMessageFile != null}">-->
+
+<!--    <input type="submit" value="Add Restaurant">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <!-- Favicons-->
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+</head>
+
+<body>
+<th:block th:insert="fragments/fragment::header"></th:block>
+
+<main>
+    <div class="hero_single inner_pages background-image" data-background="url(img/hero_submit.jpg)">
+        <div class="opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.6)">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-9 col-lg-10 col-md-8">
+                        <h1>Attract New Customers</h1>
+                        <p>More bookings from diners around the corner</p>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+        </div>
+    </div>
+    <div class="bg_gray">
+        <div class="container margin_60_40">
+            <div class="main_title center">
+                <span><em></em></span>
+                <h2>Why Submit to Foogra</h2>
+                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
+            </div>
+
+            <div class="row justify-content-center align-items-center add_bottom_15">
+                <div class="col-lg-5">
+                    <div class="box_about">
+                        <h3>Boost your Bookings</h3>
+                        <p class="lead">Est falli invenire interpretaris id, magna libris sensibus mel id.</p>
+                        <p>Per eu nostrud feugiat. Et quo molestiae persecuti neglegentur. At zril definitionem mei, vel
+                            ei choro volumus. An tota nulla soluta has, ei nec essent audiam, te nisl dignissim vel. Ex
+                            velit audire perfecto pro, ei mei doming vivendo legendos. Cu sit magna zril, an odio
+                            delectus constituto vis. Vis ludus omnesque ne, est veri quaeque ad.</p>
+                        <img src="/img/arrow_about.png" alt="" class="arrow_1">
+                    </div>
+                </div>
+                <div class="col-lg-5 pl-lg-5 text-center d-none d-lg-block">
+                    <img src="/img/about_1.svg" alt="" class="img-fluid" width="250" height="250">
+                </div>
+            </div>
+            <!-- /row -->
+            <div class="row justify-content-center align-items-center add_bottom_15">
+                <div class="col-lg-5 pr-lg-5 text-center d-none d-lg-block">
+                    <img src="/img/about_2.svg" alt="" class="img-fluid" width="250" height="250">
+                </div>
+                <div class="col-lg-5">
+                    <div class="box_about">
+                        <h3>Manage Easly</h3>
+                        <p class="lead">Est falli invenire interpretaris id, magna libris sensibus mel id.</p>
+                        <p>Per eu nostrud feugiat. Et quo molestiae persecuti neglegentur. At zril definitionem mei, vel
+                            ei choro volumus. An tota nulla soluta has, ei nec essent audiam, te nisl dignissim vel. Ex
+                            velit audire perfecto pro, ei mei doming vivendo legendos. Cu sit magna zril, an odio
+                            delectus constituto vis. Vis ludus omnesque ne, est veri quaeque ad.</p>
+                        <img src="/img/arrow_about.png" alt="" class="arrow_2">
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-5">
+                    <div class="box_about">
+                        <h3>Reach New Customers</h3>
+                        <p class="lead">Est falli invenire interpretaris id, magna libris sensibus mel id.</p>
+                        <p>Per eu nostrud feugiat. Et quo molestiae persecuti neglegentur. At zril definitionem mei, vel
+                            ei choro volumus. An tota nulla soluta has, ei nec essent audiam, te nisl dignissim vel. Ex
+                            velit audire perfecto pro, ei mei doming vivendo legendos. Cu sit magna zril, an odio
+                            delectus constituto vis. Vis ludus omnesque ne, est veri quaeque ad.</p>
+                    </div>
+
+                </div>
+                <div class="col-lg-5 pl-lg-5 text-center d-none d-lg-block">
+                    <img src="/img/about_3.svg" alt="" class="img-fluid" width="250" height="250">
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /bg_gray -->
+
+    <div class="bg_gray pattern" id="submit">
+        <div class="container margin_60_40">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="text-center add_bottom_15">
+                        <h4>Please fill the form below</h4>
+                    </div>
+                    <div id="message-register"></div>
+
+
+                    <!--<a href="/restaurantsCategory/add">Add a New Type of Restaurant</a><br>-->
+
+                    <form action="/restaurants/add" method="post" enctype="multipart/form-data">
+                        <span th:if="${errorMessageEmptyRestaurant != null}"
+                              th:text="${errorMessageEmptyRestaurant}"></span>
+                        <!-- /row -->
+                        <h6>Restaurant data</h6>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Restaurant Name"
+                                           name="name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Address"
+                                           name="address">
+                                </div>
+                            </div>
+                        </div>
+
+                        <span style="color: red" th:if="${errorMessageEmail != null}"
+                              th:text="${errorMessageEmail}"></span><br th:if="${errorMessageEmail != null}">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Email"
+                                           name="email">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Phone Number"
+                                           name="phone">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Delivery Price"
+                                           name="deliveryPrice">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /row -->
+
+                        <!-- /row -->
+                        <div class="row add_bottom_15">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select class="form-control" name="restaurantCategoryId">
+                                        <option th:each="category:${categories}" th:value="${category.id}"
+                                                th:text="${category.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="file" name="restaurantImage" multiple>
+                                    <br th:if="${errorMessageFile != null}">
+                                    <span style="color: red" th:if="${errorMessageFile != null}"
+                                          th:text="${errorMessageFile}"></span><br
+                                        th:if="${errorMessageFile != null}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- /row -->
+                        <div class="form-group text-center">
+                            <input type="submit" class="btn_1" value="Submit"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /bg_gray -->
+
+</main>
+<!-- /main -->
+
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<script src="/js/common_scripts.min.js"></script>
+<script src="/js/common_func.js"></script>
+<script src="/assets/validate.js"></script>
+
+</body>
+</html>

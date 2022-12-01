@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Event</title>
+</head>
+<body>
+
+<h3>Edit Event</h3>
+
+<form th:action="@{'/manager/events/edit/' + ${event.id}}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" th:value="${event.id}">
+    <input type="text" name="name" th:value="${event.name}"><br>
+    <input type="text" name="description" th:value="${event.description}"><br>
+    <input type="number" name="price" th:value="${event.price}"><br>
+    <input type="datetime-local" name="eventDateTime" th:value="${event.eventDateTime}" ><br>
+    <h3> restaurant </h3>
+    <select  name="restaurant">
+        <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}" th:text="${restaurant.name}" ></option>
+        <option selected th:value="${event.restaurantOverview.id}" th:text="${event.restaurantOverview.name}" ></option>
+    </select><br>
+  <input type="file" name="eventImage" multiple><br th:if="${errorMessageFile != null}"><br>
+  <span style="color: red" th:if="${errorMessageFile != null}" th:text="${errorMessageFile}"></span><br th:if="${errorMessageFile != null}">
+
+    <input type="submit" value="Edit Event">
+</form>
+
+</body>
+</html>

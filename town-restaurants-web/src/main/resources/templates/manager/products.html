@@ -1,0 +1,150 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Products</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h3> Products </h3>-->
+<!--<a href="/manager/products/add">Add New Product</a>-->
+<!--<table>-->
+
+<!--    <tr>-->
+<!--        <th>Product Pictures</th>-->
+<!--        <th>Name</th>-->
+<!--        <th>Description</th>-->
+<!--        <th>Price</th>-->
+<!--        <th>Product Category</th>-->
+<!--        <th>Restaurant</th>-->
+
+<!--    </tr>-->
+
+<!--    <tr th:each="product:${products.content}">-->
+<!--        <td th:if="${product.pictures != null && !product.pictures.isEmpty()}"-->
+<!--            th:each="picture:${product.pictures}">-->
+<!--            <img th:src="@{/manager/products/getImages(fileName=${picture})}">-->
+<!--        <img th:if="${product.pictures == null || product.pictures.isEmpty()}" src=""></td>-->
+<!--        <td th:text="${product.name}"></td>-->
+<!--        <td th:text="${product.description}"></td>-->
+<!--        <td th:text="${product.price}"></td>-->
+<!--        <td th:if="${product.productCategoryOverview!= null}" th:text="${product.productCategoryOverview.name}"></td>-->
+<!--        <td th:if="${product.restaurantOverview!= null}"th:text="${product.restaurantOverview.name}"></td>-->
+<!--        <td><a th:href="@{'/manager/products/edit/'+${product.id}}">Edit</a></td>-->
+<!--        <td><a th:href="@{'/manager/products/delete/'+${product.id}}">Delete</a></td>-->
+
+<!--    </tr>-->
+<!--</table>-->
+<!--<table>-->
+<!--    <th th:if="${products.totalPages > 0}" class="pagination"-->
+<!--        th:each="pageNumber : ${pageNumbers}">-->
+<!--        <a th:href="@{/manager/products(size=${products.size}, page=${pageNumber})}"-->
+<!--           th:text="${pageNumber}"-->
+<!--           th:class="${pageNumber==products.number + 1} ? active"></a>-->
+<!--    </th>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>Products</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Listings</li>
+        </ol>
+        <div class="box_general">
+            <div class="header_box">
+                <h2 class="d-inline-block">Listings</h2>
+                <div class="filter">
+                    <div class="styled-select short">
+                        <select name="orderby">
+                            <option value="Any time">Any time</option>
+                            <option value="Latest">Latest</option>
+                            <option value="Oldest">Oldest</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="list_general" th:each="category:${categories}">
+                <h3 th:text="${category.name}" ></h3>
+                    <article class="list_general">
+                        <ul th:each="product:${products}" th:if="${category.id==product.productCategoryOverview.id}">
+                            <li>
+                                <figure>
+                                    <img th:if="${product.pictures != null && !product.pictures.isEmpty()}"
+                                         th:src="@{/products/getImages(fileName=${product.getPictures().get(0)})}"
+                                         alt="">
+                                    <img th:if="${product.pictures == null || product.pictures.isEmpty()}"
+                                         src="//img/item_1.jpg" alt="">
+                                </figure>
+                                <small  th:if="${currentUser.role.name == 'MANAGER'}" class="info_content"
+                                        th:text="'restaurant - '+${product.restaurantOverview.name}">
+                                </small>
+                                <h4 class="main_title" th:text="${product.name}"></h4>
+                                <comment style="padding-left: 90%" th:if="${currentUser.role.name == 'MANAGER'}" class="info_content">
+                                    <i class="fa fa-fw fa-user"></i>
+                                    <small th:text="${product.userOverview.firstName}"></small>
+                                </comment>
+                                <p th:text="${product.description}"></p>
+                                <comment class="text-info" th:text="'price '+${product.price}" ></comment>
+                                <p><a th:href="@{'/products/edit/'+${product.id}}" class="btn_1 gray"><i class="fa fa-fw fa-eye"></i> Edit</a></p>
+                                <div style="padding-left: 90%" class="buttons">
+                                    <a th:href="@{'/products/delete/'+${product.id}}"
+                                       class="btn_1 gray delete wishlist_close">
+                                        <i class="fa fa-fw fa-times-circle-o"></i> Delete </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </article>
+
+                </div>
+            </div>
+        </div>
+        <!-- /box_general-->
+        <div style="padding-left: 50px" class="pagination pagination-sm add_bottom_30">
+            <table  class="page-item">
+                <th href="#">&laquo;</th>
+                <th th:if="${categories.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" class="page-link">
+                    <a class="active" th:href="@{/products/my(size=${categories.size}, page=${pageNumber})}"
+                       th:text="${pageNumber}"
+                       th:class="${pageNumber==categories.number + 1} ? active"></a>
+                </th>
+                <th href="#">&raquo;</th>
+            </table>
+        </div>
+        <!-- /pagination-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

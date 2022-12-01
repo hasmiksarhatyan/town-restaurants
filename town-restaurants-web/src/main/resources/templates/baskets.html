@@ -1,0 +1,326 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Show All Baskets</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<table>-->
+
+<!--    <tr>-->
+<!--        <th>Quantity</th>-->
+<!--        <th>Product</th>-->
+<!--        &lt;!&ndash;        <th>User Name</th>&ndash;&gt;-->
+<!--    </tr>-->
+
+
+<!--    <tr th:each="basket: ${baskets}">-->
+<!--        <td th:text="${basket.quantity}"></td>-->
+<!--        <td th:text="${basket.product.name}"></td>-->
+<!--        &lt;!&ndash;        <td th:text="${basket.userOverview}"></td>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <td><a th:href="@{/baskets/add(id=${basket.id})}">Delete the basket</a></td>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;        <td><a th:href="@{/baskets/delete(id=${basket.id})}">Delete the basket</a></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <br th:if="errorMessageId !=null">&ndash;&gt;-->
+<!--&lt;!&ndash;        <span style="color: red" th:if="errorMessageId !=null" th:text="errorMessageId"></span>&ndash;&gt;-->
+<!--    </tr>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - Admin dashboard</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="//img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="//img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="//img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="//img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="//img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- Bootstrap core CSS-->
+    <link href="/admin_section/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Main styles -->
+    <link href="/admin_section/css/admin.css" rel="stylesheet">
+    <!-- Icon fonts-->
+    <link href="/admin_section/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Plugin styles -->
+    <link href="/admin_section/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!-- Your custom styles -->
+    <link href="/admin_section/css/custom.css" rel="stylesheet">
+
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
+    <a class="navbar-brand" href="/"><img src="/img/logo.svg" alt="" width="142" height="36"></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+            <li th:if="${currentUser != null}" class="nav-item" data-toggle="tooltip" data-placement="right"
+                title="See All Users">
+                <a class="nav-link" href="/logout">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Sign Out</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                <a class="nav-link" href="/">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span class="nav-link-text">Home</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                <a class="nav-link" href="/manager">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span class="nav-link-text">My Profile</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Users">
+                <a class="nav-link" href="/users">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">See All Users</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                <a class="nav-link" href="/restaurants">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">See All Restaurants</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+                <a class="nav-link" href="/restaurantsCategory/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Add a New Type of Restaurant</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Types of Restaurant">
+                <a class="nav-link" href="/restaurantsCategory">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">See all Types of Restaurant</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip"
+                data-placement="right" title="See all Events">
+                <a class="nav-link" href="/events/manager">
+                    <i class="fa fa-fw fa-list-ul"></i>
+                    <span class="nav-link-text">See All Events</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip"
+                data-placement="right" title="Add a New Event">
+                <a class="nav-link" href="/events/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Add a New Event</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'||currentUser.role.name == 'RESTAURANT_OWNER'}"
+                class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Types of Product">
+                <a class="nav-link" href="/productCategories">
+                    <i class="fa fa-fw fa-list-ul"></i>
+                    <span class="nav-link-text">See All Types of Product</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip"
+                data-placement="right" title="Add a New Type of Product ">
+                <a class="nav-link" href="/productCategories/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Add a New Type of Product</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'||currentUser.role.name == 'RESTAURANT_OWNER'}"
+                class="nav-item" data-toggle="tooltip" data-placement="right" title="My listings">
+                <a class="nav-link " href="/products/my">
+                    <i class="fa fa-fw fa-list"></i>
+                    <span class="nav-link-text">My listings</span>
+                </a>
+            </li>
+
+            <li th:if="${currentUser.role.name == 'MANAGER'||currentUser.role.name == 'RESTAURANT_OWNER'}"
+                class="nav-item" data-toggle="tooltip" data-placement="right" title="Add listing + Menu List">
+                <a class="nav-link" href="/products/add">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    <span class="nav-link-text">Add listing + Menu List</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+                <a class="nav-link" href="//bookings.html">
+                    <i class="fa fa-fw fa-calendar-check-o"></i>
+                    <span class="nav-link-text">Bookings</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Orders Page">
+                <a class="nav-link" href="orders.html">
+                    <i class="fa fa-fw fa-shopping-basket"></i>
+                    <span class="nav-link-text">Orders Page</span>
+                </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Edit Order">
+                <a class="nav-link" href="orders.html">
+                    <i class="fa fa-fw fa-pencil"></i>
+                    <span class="nav-link-text">Edit Order</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+
+        </ol>
+
+        <!-- Example DataTables Card-->
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-table"></i>Basket
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Quantity</th>
+                            <th>Product</th>
+                            <th>User Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <div th:each="basket: ${baskets.content}" th:with="totalPrice=0">
+                        <tr >
+                            <td th:text="${basket.quantity}"></td>
+                            <td th:text="${basket.product.name}"></td>
+                            <td th:text="${basket.user.firstName}"></td>
+
+                            <td><a th:href="@{'/baskets/delete/'+ ${basket.product.id}}"
+                            th:with="totalPrice=${totalPrice + basket.product.price}">Delete the item</a></td>
+                        </tr>
+
+                        <form action="/payments/add" method="post">
+
+                            <select name="paymentOption">
+                                <option value="CASH">CASH</option>
+                                <option value="CREDIT_CARD">CREDIT CARD</option>
+                            </select><br>
+
+                            <input type="hidden" name="amount" , th:value="${totalPrice}"><br>
+                            <input type="date" name="cardExpiresAt" placeholder="Expiration Date">
+                            <br>
+                            <input type="text" name="cardHolder" placeholder="Card Holder">
+                            <br>
+                            <input type="text" name="cvv" placeholder="CVV">
+                            <br>
+                            <input type="text" name="cardNumber" placeholder="Card Number">
+
+                            <input type="submit" value="Order">
+                        </form>
+                </div>
+
+                <!--                            <td><a th:href="@{'/payments/add'}">Order</a></td>-->
+                <!--                            <td><a th:href="@{'/orders/add/'}">Order</a></td>-->
+
+
+                <!--                            <td><a th:href="@{'/users/delete/'+ ${user.id}}"><strong>Delete</strong></a>-->
+                <!--                            <br th:if="errorMessageId !=null">-->
+                <!--                            <span style="color: red" th:if="errorMessageId !=null" th:text="errorMessageId"></span>-->
+
+                </tbody>
+                </table>
+                <div th:if="${baskets.totalPages>0}" class="pagination"
+                     th:each="pageNumber:${pageNumbers}">
+                    <a th:href="@{/baskets(size=${baskets.size}, page=${pageNumber})}"
+                       th:text="${pageNumber +1}"
+                       th:class="${pageNumber==baskets.number}? active"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /tables-->
+</div>
+<!-- /container-fluid-->
+</div>
+<!-- /container-wrapper-->
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © FOOGRA 2021</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="#0">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/admin_section/vendor/jquery/jquery.min.js"></script>
+<script src="/admin_section/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/admin_section/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Page level plugin JavaScript-->
+<script src="/admin_section/vendor/chart.js/Chart.js"></script>
+<script src="/admin_section/vendor/datatables/jquery.dataTables.js"></script>
+<script src="/admin_section/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="/admin_section/vendor/jquery.magnific-popup.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="/admin_section/js/admin.js"></script>
+<!-- Custom scripts for this page-->
+<script src="/admin_section/js/admin-charts.js"></script>
+</body>
+</html>

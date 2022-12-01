@@ -1,0 +1,119 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Add User</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h3>Add User</h3>-->
+
+<!--<form action="/users/add" method="post">-->
+<!--    <input type="text" name="firstName" placeholder="please input first name"><br>-->
+<!--    <input type="text" name="lastName" placeholder="please input last name"><br>-->
+<!--    <input type="text" name="email" placeholder="please input email"><br>-->
+<!--    <span style="color: red" th:if="${errorMessageEmail != null}" th:text="${errorMessageEmail}"></span><br>-->
+<!--    <input type="password" name="password" placeholder="please input password"><br>-->
+<!--    <input type="submit" value="Add">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+
+</head>
+<body>
+
+<th:block th:insert="fragments/fragment::header"></th:block>
+<!-- /header -->
+
+<main class="bg_gray pattern">
+
+    <div class="container margin_60_40">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="sign_up">
+                    <div class="head">
+                        <div class="title">
+                            <h3>Sign Up</h3>
+                        </div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+
+
+                        <h6>Personal details</h6>
+                        <form action="/users/add" method="post">
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="firstName" placeholder="First Name">
+                                <i class="icon_pencil"></i>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="lastName" placeholder="Last Name">
+                                <i class="icon_pencil"></i>
+                            </div>
+                            <span style="color: red" th:if="${errorMessageEmail != null}"
+                                  th:text="${errorMessageEmail}"></span><br>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="email" placeholder="Email Address">
+                                <i class="icon_mail"></i>
+                            </div>
+
+                            <div class="form-group add_bottom_15">
+                                <input class="form-control" type="password" name="password" placeholder="Password">
+                                <i class="icon_lock"></i>
+                            </div>
+                            <input type="submit" value="Sign up Now">
+
+                            <div class="form-group">
+                                <label>You will receive an email containing a link allowing you to confirm your
+                                    registration.</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /box_booking -->
+            </div>
+            <!-- /col -->
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!--form -->
+</div>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+
+<!-- COLOR SWITCHER  -->
+<th:block th:insert="fragments/fragment::colorSwitcher"></th:block>
+
+</body>
+</html>

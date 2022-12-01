@@ -1,0 +1,669 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<a th:if="${currentUser == null}" href="/login">Login</a>-->
+<!--<a th:if="${currentUser != null}" href="/logout">Logout</a>-->
+<!--<a th:if="${currentUser == null}" href="/register">Register</a> <br>-->
+<!--<a href="/">Home</a>-->
+
+<!--<a th:text="${restaurant.name}"></a>-->
+<!--<a th:text="${restaurant.restaurantCategory.name}"></a>-->
+<!--<a th:text="${restaurant.deliveryPrice}"></a>-->
+<!--<a th:text="${restaurant.address}"></a>-->
+<!--<a th:text="${restaurant.email}"></a>-->
+<!--<a th:text="${restaurant.phone}"></a>-->
+
+<!--&lt;!&ndash;<a th:if="${currentuser !=null && currentUser.role.name == 'USER'}" th:href="@{/order/new(bookId=${book.id})}">Order</a></td>&ndash;&gt;-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="/img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="/img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="/img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- GOOGLE WEB FONT -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap"
+          as="fetch" crossorigin="anonymous">
+    <script type="text/javascript">
+        !function (e, n, t) {
+            "use strict";
+            var o = "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap",
+                r = "__3perf_googleFonts_c2536";
+
+            function c(e) {
+                (n.head || n.body).appendChild(e)
+            }
+
+            function a() {
+                var e = n.createElement("link");
+                e.href = o, e.rel = "stylesheet", c(e)
+            }
+
+            function f(e) {
+                if (!n.getElementById(r)) {
+                    var t = n.createElement("style");
+                    t.id = r, c(t)
+                }
+                n.getElementById(r).innerHTML = e
+            }
+
+            e.FontFace && e.FontFace.prototype.hasOwnProperty("display") ? (t[r] && f(t[r]), fetch(o).then(function (e) {
+                return e.text()
+            }).then(function (e) {
+                return e.replace(/@font-face {/g, "@font-face{font-display:swap;")
+            }).then(function (e) {
+                return t[r] = e
+            }).then(f).catch(a)) : a()
+        }(window, document, localStorage);
+    </script>
+
+    <!-- BASE CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- SPECIFIC CSS -->
+    <link href="/css/detail-page.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<th:block th:insert="fragments/fragment::header"></th:block>
+<!-- /header -->
+
+<main>
+
+    <div class="container margin_detail">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="detail_page_head clearfix">
+                    <div class="breadcrumbs">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>Page active</li>
+                        </ul>
+                    </div>
+                    <div class="title">
+
+                        <h4><a th:text="${restaurant.name}"></a></h4><br>
+                        <h6>Restaurant type:</h6>
+                        <h7><a th:text="${restaurant.restaurantCategory.name}"></a></h7>
+                        <br>
+                        <h6>Address:</h6>
+                        <h7><a th:text="${restaurant.address}"></a></h7>
+                        <br>
+                        <h6>Phone number:</h6>
+                        <h7><a target="blank" a th:text="${restaurant.phone}"></a></h7>
+                        <br>
+                        <h6>Email:</h6>
+                        <h7><a th:text="${restaurant.email}"></a></h7>
+                        <br>
+                        <h6>Delivery price:</h6>
+                        <h7><a th:text="${restaurant.deliveryPrice}"></a></h7>
+                        <br>
+
+                       <a href="https://www.google.com/maps/dir//Assistance+%E2%80%93+H%C3%B4pitaux+De+Paris,+3+Avenue+Victoria,+75004+Paris,+Francia/@48.8606548,2.3348734,14z/data=!4m15!1m6!3m5!1s0x47e66e1de36f4147:0xb6615b4092e0351f!2sAssistance+Publique+-+H%C3%B4pitaux+de+Paris+(AP-HP)+-+Si%C3%A8ge!8m2!3d48.8568376!4d2.3504305!4m7!1m0!1m5!1m1!1s0x47e67031f8c20147:0xa6a9af76b1e2d899!2m2!1d2.3504327!2d48.8568361"
+                            target="blank">Get directions</a>
+
+                        <a th:if="${currentUser != null && currentUser.role.name == 'MANAGER'}"
+                           th:href="@{'/restaurants/delete/'+ ${restaurant.id}}">Delete the restaurant</a>
+                        <br th:if="${errorMessageId!=null}">
+                        <span style="color: red" th:if="${errorMessageId!=null}" th:text="${errorMessageId}"></span><br>
+
+                        <a th:if="${currentUser != null && currentUser.role.name == 'MANAGER'}"
+                           th:href="@{'/restaurants/edit/' + ${restaurant.id}}">Edit the restaurant</a><br>
+
+                    </div>
+                </div>
+                <!-- /detail_page_head -->
+
+<!--                <div class="owl-carousel owl-theme carousel_1 magnific-gallery">-->
+<!--                    <div class="item">-->
+<!--                        <a href="/img/location_1.jpg" title="Photo title" data-effect="mfp-zoom-in"><img-->
+<!--                                src="/img/detail_1.jpg" alt=""></a>-->
+<!--                    </div>-->
+<!--                    <div class="item">-->
+<!--                        <a href="/img/location_1.jpg" title="Photo title" data-effect="mfp-zoom-in"><img-->
+<!--                                src="/img/lazy-placeholder-detail.png" data-src="img/detail_2.jpg" class="owl-lazy"-->
+<!--                                alt=""></a>-->
+<!--                    </div>-->
+<!--                    <div class="item">-->
+<!--                        <a href="/img/location_1.jpg" title="Photo title" data-effect="mfp-zoom-in"><img-->
+<!--                                src="/img/lazy-placeholder-detail.png" data-src="img/detail_3.jpg" class="owl-lazy"-->
+<!--                                alt=""></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <!-- /carousel -->
+
+                <div class="tabs_detail">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a id="tab-A" href="//detail-restaurant-2.html#pane-A" class="nav-link active"
+                               data-bs-toggle="tab" role="tab">Information</a>
+                        </li>
+
+                    </ul>
+
+                    <div class="tab-content" role="tablist">
+                        <div id="pane-A" class="card tab-pane fade show active" role="tabpanel" aria-labelledby="tab-A">
+                            <div class="card-header" role="tab" id="heading-A">
+                                <h5>
+                                    <a class="collapsed" data-bs-toggle="collapse"
+                                       href="//detail-restaurant-2.html#collapse-A" aria-expanded="true"
+                                       aria-controls="collapse-A">
+                                        Information
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse-A" class="collapse" role="tabpanel" aria-labelledby="heading-A">
+                                <div class="card-body info_content">
+                                    <h2>Menu</h2>
+                                    <h3>Starters</h3>
+                                    <div class="menu_item">
+                                        <em>֏ 990</em>
+                                        <h4>Imported Salmon Steak</h4>
+                                        <p>Base de arroz, aguacate, salmón noruego, semillas de sésamo, edamame, wakame
+                                            y soja light</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 790</em>
+                                        <h4>Poke bol</h4>
+                                        <p>Queso de cabra light, dátiles, jamón serrano y rúcula</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 890</em>
+                                        <h4>Ensalada cesar</h4>
+                                        <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y salsa
+                                            césar 0%</p>
+                                    </div>
+                                    <hr>
+                                    <h3>Main Course</h3>
+                                    <div class="menu_item">
+                                        <em>֏ 1590</em>
+                                        <h4>Oriental</h4>
+                                        <p>Cama de tabule con taquitos de pollo a la mostaza light</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 1190</em>
+                                        <h4>Vegan Burguer</h4>
+                                        <p>Medio pollo asado acompañado de arroz o patatas al toque masala</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 1090</em>
+                                        <h4>Indio Fit</h4>
+                                        <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y salsa
+                                            césar 0%</p>
+                                    </div>
+                                    <div class="content_more">
+                                        <div class="menu_item">
+                                            <em>֏ 1590</em>
+                                            <h4>Oriental</h4>
+                                            <p>Cama de tabule con taquitos de pollo a la mostaza light</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1190</em>
+                                            <h4>Vegan Burguer</h4>
+                                            <p>Medio pollo asado acompañado de arroz o patatas al toque masala</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1090</em>
+                                            <h4>Indio Fit</h4>
+                                            <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y
+                                                salsa césar 0%</p>
+                                        </div>
+                                    </div>
+                                    <!-- /content_more -->
+                                    <a href="//detail-restaurant-2.html#0" class="show_hide" data-content="toggle-text">Read
+                                        More</a>
+                                    <hr>
+                                    <h3>Dessert</h3>
+                                    <div class="menu_item">
+                                        <em>֏ 1590</em>
+                                        <h4>Oriental</h4>
+                                        <p>Cama de tabule con taquitos de pollo a la mostaza light</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 1190</em>
+                                        <h4>Vegan Burguer</h4>
+                                        <p>Medio pollo asado acompañado de arroz o patatas al toque masala</p>
+                                    </div>
+                                    <div class="menu_item">
+                                        <em>֏ 1090</em>
+                                        <h4>Indio Fit</h4>
+                                        <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y salsa
+                                            césar 0%</p>
+                                    </div>
+                                    <div class="content_more">
+                                        <div class="menu_item">
+                                            <em>֏ 1590</em>
+                                            <h4>Oriental</h4>
+                                            <p>Cama de tabule con taquitos de pollo a la mostaza light</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1190</em>
+                                            <h4>Vegan Burguer</h4>
+                                            <p>Medio pollo asado acompañado de arroz o patatas al toque masala</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1090</em>
+                                            <h4>Indio Fit</h4>
+                                            <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y
+                                                salsa césar 0%</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="special_offers add_bottom_45">
+                                        <h2>Special Offers</h2>
+                                        <div class="menu_item">
+                                            <em>֏ 1090</em>
+                                            <h4>Indio Fit</h4>
+                                            <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y
+                                                salsa césar 0%</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1590</em>
+                                            <h4>Oriental</h4>
+                                            <p>Cama de tabule con taquitos de pollo a la mostaza light</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 1190</em>
+                                            <h4>Vegan Burguer</h4>
+                                            <p>Medio pollo asado acompañado de arroz o patatas al toque masala</p>
+                                        </div>
+                                        <div class="menu_item">
+                                            <em>֏ 2000</em>
+                                            <h4>Indio Fit</h4>
+                                            <p>lechuga, tomate, espinacas, pollo asado, picatostes, queso proteínico y
+                                                salsa césar 0%</p>
+                                        </div>
+                                    </div>
+                                    <!-- /special_offers -->
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tab -->
+
+                        <div id="pane-B" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-B">
+                            <div class="card-header" role="tab" id="heading-B">
+                                <h5>
+                                    <a class="collapsed" data-bs-toggle="collapse"
+                                       href="//detail-restaurant-2.html#collapse-B" aria-expanded="false"
+                                       aria-controls="collapse-B">
+                                        Reviews
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse-B" class="collapse" role="tabpanel" aria-labelledby="heading-B">
+                                <div class="card-body reviews">
+                                    <div class="row add_bottom_45 d-flex align-items-center">
+                                        <div class="col-md-3">
+                                            <div id="review_summary">
+                                                <strong>8.5</strong>
+                                                <em>Superb</em>
+                                                <small>Based on 4 reviews</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9 reviews_sum_details">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6>Food Quality</h6>
+                                                    <div class="row">
+                                                        <div class="col-xl-10 col-lg-9 col-9">
+                                                            <div class="progress">
+                                                                <div class="progress-bar" role="progressbar"
+                                                                     style="width: 90%" aria-valuenow="90"
+                                                                     aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-2 col-lg-3 col-3"><strong>9.0</strong></div>
+                                                    </div>
+                                                    <!-- /row -->
+                                                    <h6>Service</h6>
+                                                    <div class="row">
+                                                        <div class="col-xl-10 col-lg-9 col-9">
+                                                            <div class="progress">
+                                                                <div class="progress-bar" role="progressbar"
+                                                                     style="width: 95%" aria-valuenow="95"
+                                                                     aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-2 col-lg-3 col-3"><strong>9.5</strong></div>
+                                                    </div>
+                                                    <!-- /row -->
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6>Location</h6>
+                                                    <div class="row">
+                                                        <div class="col-xl-10 col-lg-9 col-9">
+                                                            <div class="progress">
+                                                                <div class="progress-bar" role="progressbar"
+                                                                     style="width: 60%" aria-valuenow="60"
+                                                                     aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-2 col-lg-3 col-3"><strong>6.0</strong></div>
+                                                    </div>
+                                                    <!-- /row -->
+                                                    <h6>Price</h6>
+                                                    <div class="row">
+                                                        <div class="col-xl-10 col-lg-9 col-9">
+                                                            <div class="progress">
+                                                                <div class="progress-bar" role="progressbar"
+                                                                     style="width: 60%" aria-valuenow="60"
+                                                                     aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-2 col-lg-3 col-3"><strong>6.0</strong></div>
+                                                    </div>
+                                                    <!-- /row -->
+                                                </div>
+                                            </div>
+                                            <!-- /row -->
+                                        </div>
+                                    </div>
+
+                                    <div id="reviews">
+                                        <div class="review_card">
+                                            <div class="row">
+                                                <div class="col-md-2 user_info">
+                                                    <figure><img src="/img/avatar4.jpg" alt=""></figure>
+                                                    <h5>Lukas</h5>
+                                                </div>
+                                                <div class="col-md-10 review_content">
+                                                    <div class="clearfix add_bottom_15">
+                                                        <span class="rating">8.5<small>/10</small> <strong>Rating average</strong></span>
+                                                        <em>Published 54 minutes ago</em>
+                                                    </div>
+                                                    <h4>"Great Location!!"</h4>
+                                                    <p>Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod
+                                                        scaevola sea. Et nec tantas accusamus salutatus, sit commodo
+                                                        veritus te, erat legere fabulas has ut. Rebum laudem cum ea, ius
+                                                        essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                                        suscipiantur his et.</p>
+                                                    <ul>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_like"></i><span>Useful</span></a></li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_dislike"></i><span>Not useful</span></a>
+                                                        </li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="arrow_back"></i> <span>Reply</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /row -->
+                                        </div>
+                                        <!-- /review_card -->
+                                        <div class="review_card">
+                                            <div class="row">
+                                                <div class="col-md-2 user_info">
+                                                    <figure><img src="img/avatar6.jpg" alt=""></figure>
+                                                    <h5>Lukas</h5>
+                                                </div>
+                                                <div class="col-md-10 review_content">
+                                                    <div class="clearfix add_bottom_15">
+                                                        <span class="rating">8.5<small>/10</small> <strong>Rating average</strong></span>
+                                                        <em>Published 10 Oct. 2019</em>
+                                                    </div>
+                                                    <h4>"Awesome Experience"</h4>
+                                                    <p>Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod
+                                                        scaevola sea. Et nec tantas accusamus salutatus, sit commodo
+                                                        veritus te, erat legere fabulas has ut. Rebum laudem cum ea, ius
+                                                        essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                                        suscipiantur his et.</p>
+                                                    <ul>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_like"></i><span>Useful</span></a></li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_dislike"></i><span>Not useful</span></a>
+                                                        </li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="arrow_back"></i> <span>Reply</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /row -->
+                                        </div>
+                                        <!-- /review_card -->
+                                        <div class="review_card">
+                                            <div class="row">
+                                                <div class="col-md-2 user_info">
+                                                    <figure><img src="/img/avatar1.jpg" alt=""></figure>
+                                                    <h5>Marika</h5>
+                                                </div>
+                                                <div class="col-md-10 review_content">
+                                                    <div class="clearfix add_bottom_15">
+                                                        <span class="rating">9.0<small>/10</small> <strong>Rating average</strong></span>
+                                                        <em>Published 11 Oct. 2019</em>
+                                                    </div>
+                                                    <h4>"Really great dinner!!"</h4>
+                                                    <p>Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod
+                                                        scaevola sea. Et nec tantas accusamus salutatus, sit commodo
+                                                        veritus te, erat legere fabulas has ut. Rebum laudem cum ea, ius
+                                                        essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                                        suscipiantur his et.</p>
+                                                    <ul>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_like"></i><span>Useful</span></a></li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="icon_dislike"></i><span>Not useful</span></a>
+                                                        </li>
+                                                        <li><a href="//detail-restaurant-2.html#0"><i
+                                                                class="arrow_back"></i> <span>Reply</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /row -->
+                                            <div class="row reply">
+                                                <div class="col-md-2 user_info">
+                                                    <figure><img src="/img/avatar.jpg" alt=""></figure>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <div class="review_content">
+                                                        <strong>Reply from Foogra</strong>
+                                                        <em>Published 3 minutes ago</em>
+                                                        <p><br>Hi Monika,<br><br>Eos tollit ancillae ea, lorem consulatu
+                                                            qui ne, eu eros eirmod scaevola sea. Et nec tantas accusamus
+                                                            salutatus, sit commodo veritus te, erat legere fabulas has
+                                                            ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer
+                                                            petentium cu his. Tollit molestie suscipiantur his
+                                                            et.<br><br>Thanks</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /reply -->
+                                        </div>
+                                        <!-- /review_card -->
+                                    </div>
+                                    <!-- /reviews -->
+                                    <div class="text-end"><a href="//leave-review.html" class="btn_1">Leave a review</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /tab-content -->
+                </div>
+                <!-- /tabs_detail -->
+            </div>
+            <!-- /col -->
+
+            <div class="col-lg-4" id="sidebar_fixed">
+                <div class="box_booking">
+                    <div class="head">
+                        <h3>Book your table</h3>
+                        <div class="offer"></div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+                        <input type="text" id="datepicker_field">
+                        <div id="DatePicker"></div>
+                        <div class="dropdown time">
+                            <a href="//detail-restaurant-2.html#" data-bs-toggle="dropdown">Hour <span
+                                    id="selected_time"></span></a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-menu-content">
+                                    <h4>Lunch</h4>
+                                    <div class="radio_select add_bottom_15">
+                                        <ul>
+                                            <li>
+                                                <input type="radio" id="time_1" name="time" value="12.00am">
+                                                <label for="time_1">12.00<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_2" name="time" value="08.30pm">
+                                                <label for="time_2">12.30<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_3" name="time" value="09.00pm">
+                                                <label for="time_3">1.00<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_4" name="time" value="09.30pm">
+                                                <label for="time_4">1.30<em>-40%</em></label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- /time_select -->
+                                    <h4>Dinner</h4>
+                                    <div class="radio_select">
+                                        <ul>
+                                            <li>
+                                                <input type="radio" id="time_5" name="time" value="08.00pm">
+                                                <label for="time_1">20.00<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_6" name="time" value="08.30pm">
+                                                <label for="time_2">20.30<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_7" name="time" value="09.00pm">
+                                                <label for="time_3">21.00<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="time_8" name="time" value="09.30pm">
+                                                <label for="time_4">21.30<em>-40%</em></label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- /time_select -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /dropdown -->
+                        <div class="dropdown people">
+                            <a href="//detail-restaurant-2.html#" data-bs-toggle="dropdown">People <span
+                                    id="selected_people"></span></a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-menu-content">
+                                    <h4>How many people?</h4>
+                                    <div class="radio_select">
+                                        <ul>
+                                            <li>
+                                                <input type="radio" id="people_1" name="people" value="1">
+                                                <label for="people_1">1<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="people_2" name="people" value="2">
+                                                <label for="people_2">2<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="people_3" name="people" value="3">
+                                                <label for="people_3">3<em>-40%</em></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="people_4" name="people" value="4">
+                                                <label for="people_4">4<em>-40%</em></label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- /people_select -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /dropdown -->
+                        <a href="//detail-restaurant-2.html#0" class="btn_1 full-width mb_5">Reserve Now</a>
+                        <a href="//wishlist.html" class="btn_1 full-width outline wishlist"><i class="icon_heart"></i>
+                            Add to wishlist</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<script src="/js/common_scripts.min.js"></script>
+<script src="/js/common_func.js"></script>
+<script src="/assets/validate.js"></script>
+
+<!-- SPECIFIC SCRIPTS -->
+<script src="/js/sticky_sidebar.min.js"></script>
+<script src="/js/specific_detail.js"></script>
+<script src="/js/datepicker.min.js"></script>
+<script src="/js/datepicker_func_1.js"></script>
+
+<!-- COLOR SWITCHER  -->
+<script src="/js/switcher.js"></script>
+<div id="style-switcher">
+    <h6>Color Switcher <a href="//detail-restaurant-2.html#"><i class="icon_cog"></i></a></h6>
+    <div>
+        <ul class="colors" id="color1">
+            <li><a href="//detail-restaurant-2.html#" class="default" title="Default"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="aqua" title="Aqua"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="orange" title="Orange"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="beige" title="Beige"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="gray" title="Gray"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="green-2" title="Green"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="purple" title="Purple"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="red" title="Red"></a></li>
+            <li><a href="//detail-restaurant-2.html#" class="violet" title="Violet"></a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
