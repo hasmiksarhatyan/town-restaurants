@@ -6,6 +6,7 @@ import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverv
 import am.itspace.townrestaurantscommon.entity.ProductCategory;
 import am.itspace.townrestaurantscommon.mapper.ProductCategoryMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
+import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.ProductCategoryService;
@@ -29,7 +30,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public ProductCategoryOverview save(CreateProductCategoryDto createProductCategoryDto) {
         if (productCategoryRepository.existsByName(createProductCategoryDto.getName())) {
             log.info("Category with that name already exists {}", createProductCategoryDto.getName());
-            throw new EntityNotFoundException(Error.CATEGORY_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException(Error.PRODUCT_CATEGORY_ALREADY_EXISTS);
         }
         log.info("The category was successfully stored in the database {}", createProductCategoryDto.getName());
         return productCategoryMapper.mapToOverview(productCategoryRepository.save(productCategoryMapper.mapToEntity(createProductCategoryDto)));
@@ -37,20 +38,25 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public List<ProductCategoryOverview> getAll() {
+        List<ProductCategory> categories = productCategoryRepository.findAll();
+        if (categories.isEmpty()) {
+            log.info("Category not found");
+            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
+        }
         log.info("Category successfully detected");
-        return productCategoryMapper.mapToOverviewList(productCategoryRepository.findAll());
+        return productCategoryMapper.mapToOverviewList(categories);
     }
 
     @Override
     public ProductCategoryOverview getById(int id) {
-        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.PRODUCT_NOT_FOUND));
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND));
         log.info("Category successfully found {}", productCategory.getName());
         return productCategoryMapper.mapToOverview(productCategory);
     }
 
     @Override
     public ProductCategoryOverview update(int id, EditProductCategoryDto editProductCategoryDto) {
-        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.PRODUCT_NOT_FOUND));
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND));
         log.info("Category with that id not found");
         if (editProductCategoryDto.getName() != null) {
             productCategory.setName(editProductCategoryDto.getName());
@@ -65,9 +71,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         if (productCategoryRepository.existsById(id)) {
             productCategoryRepository.deleteById(id);
             log.info("The category has been successfully deleted");
+        } else {
+            log.info("Category not found");
+            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
         }
-        log.info("Category not found");
-        throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
     }
 }
 

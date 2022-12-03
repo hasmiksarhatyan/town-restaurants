@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailServiceImpl userDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,22 +36,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.POST, "/categories").hasAuthority(Role.ADMIN.name())
                 .antMatchers(HttpMethod.PUT, "/").hasAuthority(Role.MANAGER.name())
                 .antMatchers(HttpMethod.DELETE, "//{id}").hasAuthority(Role.MANAGER.name())
-                .antMatchers(HttpMethod.POST, "/products").hasAuthority(Role.CUSTOMER.name())
-                .antMatchers(HttpMethod.PUT, "/products").hasAuthority(Role.CUSTOMER.name())
-                .antMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority(Role.CUSTOMER.name())
+//                .antMatchers(HttpMethod.POST, "/products").hasAuthority(Role.CUSTOMER.name())
+//                .antMatchers(HttpMethod.PUT, "/products").hasAuthority(Role.CUSTOMER.name())
+//                .antMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority(Role.CUSTOMER.name())
                 .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(passwordEncoder);
     }
 }

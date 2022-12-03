@@ -21,7 +21,7 @@ public class CreateEventDto {
 
     private double price;
 
-    @NotBlank(message = "Date is mandatory")
+//    @NotBlank(message = "Date is mandatory")
     private String eventDateTime;
 
     private Integer restaurantId;

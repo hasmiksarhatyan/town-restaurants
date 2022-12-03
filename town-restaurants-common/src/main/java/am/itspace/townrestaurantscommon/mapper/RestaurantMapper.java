@@ -32,7 +32,7 @@ public class RestaurantMapper {
                 .address(restaurant.getAddress())
                 .deliveryPrice(restaurant.getDeliveryPrice())
                 .pictures(restaurant.getPictures())
-                .RestaurantCategoryOverview(restaurantCategoryMapper.mapToOverview(restaurant.getRestaurantCategory()))
+                .restaurantCategoryOverview(restaurantCategoryMapper.mapToOverview(restaurant.getRestaurantCategory()))
                 .user(restaurant.getUser())
                 .build();
     }

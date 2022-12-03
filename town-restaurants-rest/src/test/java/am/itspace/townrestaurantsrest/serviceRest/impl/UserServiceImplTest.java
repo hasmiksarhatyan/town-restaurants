@@ -1,21 +1,16 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.user.UserAuthDto;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthResponseDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
-import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.UserMapper2;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
-import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.exception.RegisterException;
 import am.itspace.townrestaurantsrest.utilRest.JwtTokenUtil;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,16 +28,12 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private JwtTokenUtil tokenUtil;
-
     @Mock
     private UserMapper2 userMapper;
-
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -53,13 +44,11 @@ class UserServiceImplTest {
         var authDto = getAuthDto();
         var user = getUser();
         var expected = getAuthResponseDto();
-
         //when
         doReturn(Optional.of(user)).when(userRepository).findByEmail(anyString());
         doReturn(true).when(passwordEncoder).matches(anyString(), anyString());
         doReturn(expected.getToken()).when(tokenUtil).generateToken(anyString(), any(User.class));
         UserAuthResponseDto actual = userService.authentication(authDto);
-
         //then
         assertNotNull(actual);
         assertEquals(expected.getToken(), actual.getToken());
@@ -69,10 +58,8 @@ class UserServiceImplTest {
     void shouldThrowExceptionAsUserNotFoundWhileAuthentication() {
         //given
         var authDto = getAuthDto();
-
         //when
         doThrow(AuthenticationException.class).when(userRepository).findByEmail(anyString());
-
         //then
         assertThrows(AuthenticationException.class, () -> userService.authentication(authDto));
     }
@@ -82,131 +69,116 @@ class UserServiceImplTest {
         //given
         var authDto = getAuthDto();
         var user = getUser();
-
         //when
         doReturn(Optional.of(user)).when(userRepository).findByEmail(anyString());
         doReturn(false).when(passwordEncoder).matches(anyString(), anyString());
         UserAuthResponseDto actual = userService.authentication(authDto);
-
         //then
         assertNull(actual);
     }
 
     //save
-
     @Test
-    void shouldSaveCreateUserDto() {
+    void shouldSaveUser() {
         //given
         var createUserDto = getCreateUserDto();
-        var userOverview = getUserOverview();
+        var expected = getUserOverview();
         var user = getUser();
         //when
-
-        doReturn(false).when(userRepository.existsByEmail(anyString()));
-        doReturn(user).when(userMapper.mapToEntity(createUserDto));
-//        user.setRole(Role.CUSTOMER);
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        doReturn(true).when(userRepository.save(user));
-//        doReturn(userOverview).when(userMapper.mapToResponseDto(user));
+        doReturn(false).when(userRepository).existsByEmail(anyString());
+        doReturn(user).when(userMapper).mapToEntity(createUserDto);
+        doReturn(expected).when(userMapper).mapToResponseDto(user);
+        doReturn(user).when(userRepository).save(any(User.class));
         UserOverview actual = userService.save(createUserDto);
         //then
-
         assertNotNull(actual);
-//        assertEquals(actual,userOverview);
+        assertEquals(expected, actual);
     }
 
     @Test
-    void saveUser() {
-        //given
-        var user = getUser();
-        //when
-        userRepository.save(user);
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userArgumentCaptor.capture());
-        User value = userArgumentCaptor.getValue();
-        //then
-        assertEquals(user, value);
-    }
-
-    @Test
-    void shouldRegisterExceptionAsUserEmailIsFound() {
+    void shouldThrowExceptionAsEmailAlreadyExists() {
         //given
         var createUserDto = getCreateUserDto();
-
         //when
-        doThrow(RegisterException.class).when(userRepository).existsByEmail(anyString());
-
+        doReturn(true).when(userRepository).existsByEmail(anyString());
         //then
         assertThrows(RegisterException.class, () -> userService.save(createUserDto));
     }
 
-    @Test
-    void addUserFailTesSaveNull() {
-        //given
-        var user = getUser();
-        //then
-        userRepository.save(null);
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userArgumentCaptor.capture());
-        User value = userArgumentCaptor.getValue();
-        assertNotEquals(user, value);
-    }
-
-    @Test
-    void role() {
-        //given
-        var user = getUser();
-        //then
-        assertTrue(CoreMatchers.is(user.getRole()).matches(Role.CUSTOMER));
-    }
-
-
     //getAll
     @Test
-    void shouldEntityNotFoundExceptionAsUserNotFound() {
+    void shouldGetAllUsers() {
+        //given
+        var users = List.of(getUser(), getUser(), getUser());
+        var expected = List.of(getUserOverview(), getUserOverview(), getUserOverview());
         //when
-        doThrow(EntityNotFoundException.class).when(userRepository).findAll();
+        doReturn(users).when(userRepository).findAll();
+        doReturn(expected).when(userMapper).mapToResponseDtoList(users);
+        List<UserOverview> actual = userService.getAll();
+        //then
+        assertNotNull(actual);
+        assertEquals(expected.size(), actual.size());
+    }
 
+    @Test
+    void shouldThrowExceptionAsUserListIsEmpty() {
+        //given
+        List<User> empty = List.of();
+        //when
+        doReturn(empty).when(userRepository).findAll();
         //then
         assertThrows(EntityNotFoundException.class, () -> userService.getAll());
     }
 
-    //    @Override
-//    public UserOverview getById(int id) {
-//        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
-//        log.info("User successfully found {}", user.getFirstName());
-//        return userMapper.mapToResponseDto(user);
-//    }
-    //getById
+    @Test
+    void shouldEntityNotFoundExceptionAsUserNotFound() {
+        //when
+        doThrow(EntityNotFoundException.class).when(userRepository).findAll();
+        //then
+        assertThrows(EntityNotFoundException.class, () -> userService.getAll());
+    }
 
+    //getById
     @Test
     void shouldGetById() {
-
         //given
         var user = getUser();
         var expected = getUserOverview();
-
         //when
         doReturn(Optional.of(user)).when(userRepository).findById(anyInt());
-        doReturn(user).when(userMapper.mapToResponseDto(user));
+        doReturn(expected).when(userMapper).mapToResponseDto(user);
         UserOverview actual = userService.getById(user.getId());
-
         //then
         assertNotNull(actual);
         assertEquals(expected.getId(), actual.getId());
     }
 
+    //update
+    @Test
+    void shouldUpdateUser() {
+        //given
+        var user = getUser();
+        var expected = getUserOverview();
+        var editUser = getEditUserDto();
+        //when
+        doReturn(Optional.of(user)).when(userRepository).findById(anyInt());
+        doReturn(expected).when(userMapper).mapToResponseDto(user);
+        doReturn(user).when(userRepository).save(any(User.class));
+        UserOverview actual = userService.update(user.getId(), editUser);
+        //then
+        verify(userRepository, times(1)).save(user);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
 
     //delete
     @Test
     void deleteUserSuccess() {
         //given
         int userId = 1;
-
         //when
         when(userRepository.existsById(userId)).thenReturn(true);
         userService.delete(userId);
-
         //then
         verify(userRepository).deleteById(userId);
     }
@@ -215,10 +187,8 @@ class UserServiceImplTest {
     void shouldThrowExceptionAsUserNotFound() {
         //given
         int userId = 1;
-
         //when
         when(userRepository.existsById(userId)).thenReturn(false);
-
         //then
         assertThrows(EntityNotFoundException.class, () -> userService.delete(userId));
     }
