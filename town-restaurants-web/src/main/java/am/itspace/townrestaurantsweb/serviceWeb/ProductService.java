@@ -20,7 +20,7 @@ public interface ProductService {
 
     List<ProductOverview> findAllById(int id);
 
-    void addProduct(CreateProductDto dto, MultipartFile[] files, CurrentUser currentUser) throws IOException;
+    void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException;
 
     void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException;
 

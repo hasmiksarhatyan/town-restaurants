@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Entity
@@ -24,7 +25,16 @@ public class Reserve {
     @CreationTimestamp
     private LocalDateTime reservedAt;
 
-    private LocalDate reservedFor;
+    private LocalDate reservedDate;
+
+    private LocalTime reservedTime;
+
+    private int peopleCount;
+
+    private String phoneNumber;
+
+    @Enumerated(value = EnumType.STRING)
+    private ReserveStatus status;
 
     @ManyToOne
     private Restaurant restaurant;
@@ -32,5 +42,4 @@ public class Reserve {
     @ManyToOne
     private User user;
 
-    private int hostCount;
 }
