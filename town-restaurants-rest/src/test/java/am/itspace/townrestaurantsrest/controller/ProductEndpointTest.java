@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
 import am.itspace.townrestaurantscommon.entity.Product;
+import am.itspace.townrestaurantscommon.entity.ProductCategory;
 import am.itspace.townrestaurantscommon.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -69,6 +70,7 @@ class ProductEndpointTest {
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "Fries");
+        objectNode.put("price", "1000.0");
         mvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))

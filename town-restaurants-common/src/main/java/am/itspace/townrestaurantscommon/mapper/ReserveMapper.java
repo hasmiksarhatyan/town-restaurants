@@ -6,7 +6,6 @@ import am.itspace.townrestaurantscommon.entity.Reserve;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -16,6 +15,7 @@ public interface ReserveMapper {
 
     @Mapping(source = "dto.restaurantId", target = "restaurant.id")
     Reserve mapToEntity(CreateReserveDto dto);
+
     @Mapping(source = "reserve.restaurant", target = "restaurantOverview")
     @Mapping(source = "reserve.user", target = "userOverview")
     ReserveOverview mapToOverview(Reserve reserve);

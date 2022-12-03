@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
 
+import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -51,6 +52,12 @@ public class RestaurantEndpoint implements RestaurantApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         restaurantService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/events/{id}")
+    public ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id) {
+        return ResponseEntity.ok(restaurantService.getByEventId(id));
     }
 }
 

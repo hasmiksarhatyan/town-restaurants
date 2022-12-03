@@ -16,5 +16,4 @@ public class EditReserveDto {
     private int peopleCount;
     private String status;
     private String phoneNumber;
-
 }

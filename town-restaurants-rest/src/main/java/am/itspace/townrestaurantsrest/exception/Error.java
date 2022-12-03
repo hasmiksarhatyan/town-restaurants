@@ -34,13 +34,13 @@ public enum Error {
 
     USER_REGISTRATION_FAILED(4006, HttpStatus.BAD_REQUEST, "Email already exists"),
 
-    BASKET_NOT_FOUND(4047, HttpStatus.NOT_FOUND, "Basket not found"),
+    RESERVE_NOT_FOUND(4047, HttpStatus.NOT_FOUND, "Reserve not found"),
 
-    BASKET_ALREADY_EXISTS(4007, HttpStatus.BAD_REQUEST, "Basket already exists"),
+    RESERVE_ALREADY_EXISTS(4007, HttpStatus.BAD_REQUEST, "Reserve already exists"),
 
-    RESERVE_NOT_FOUND(4048, HttpStatus.NOT_FOUND, "Reserve not found"),
+    BASKET_NOT_FOUND(4048, HttpStatus.NOT_FOUND, "Basket not found"),
 
-    RESERVE_ALREADY_EXISTS(4008, HttpStatus.BAD_REQUEST, "Reserve already exists");
+    BASKET_ALREADY_EXISTS(4008, HttpStatus.BAD_REQUEST, "Basket already exists");
 
     private final Integer code;
     private final HttpStatus httpStatus;

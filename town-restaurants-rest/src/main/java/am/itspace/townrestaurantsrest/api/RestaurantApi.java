@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
+import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -125,4 +126,9 @@ public interface RestaurantApi {
             })
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable("id") int id);
+
+
+
+    @GetMapping("/event/{id}")
+    public ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id);
 }

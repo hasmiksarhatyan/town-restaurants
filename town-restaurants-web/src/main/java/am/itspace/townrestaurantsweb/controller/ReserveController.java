@@ -25,7 +25,6 @@ public class ReserveController {
     public String reservations(@RequestParam(value = "page", defaultValue = "1") int page,
                                @RequestParam(value = "size", defaultValue = "6") int size,
                                ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
-
         if (currentUser.getUser().getRole() == Role.MANAGER) {
             Page<ReserveOverview> reserveOverviews = reserveService.getAll(PageRequest.of(page - 1, size));
             modelMap.addAttribute("reservations", reserveOverviews);
@@ -51,12 +50,9 @@ public class ReserveController {
         return "redirect:/reservations";
     }
 
-
     @GetMapping("/delete/{id}")
     public String deleteReserve(@PathVariable("id") int id) {
-
         reserveService.delete(id);
         return "redirect:/reservations";
-
     }
 }

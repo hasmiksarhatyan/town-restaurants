@@ -23,7 +23,6 @@ public interface EventService {
 
     byte[] getEventImage(String fileName) throws IOException;
 
-
     void deleteEvent(int id);
 
     EventOverview findById(int id);
