@@ -6,6 +6,7 @@ import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper2;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
+import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantService;
@@ -29,7 +30,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantOverview save(CreateRestaurantDto createRestaurantDto) {
         if (restaurantRepository.existsByName(createRestaurantDto.getName())) {
             log.info("Restaurant with that name already exists {}", createRestaurantDto.getName());
-            throw new EntityNotFoundException(Error.RESTAURANT_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException(Error.RESTAURANT_ALREADY_EXISTS);
         }
         log.info("The Restaurant was successfully stored in the database {}", createRestaurantDto.getName());
         return restaurantMapper.mapToResponseDto(restaurantRepository.save(restaurantMapper.mapToEntity(createRestaurantDto)));
@@ -37,8 +38,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<RestaurantOverview> getAll() {
-        log.info("Restaurant successfully detected");
-        return restaurantMapper.mapToResponseDtoList(restaurantRepository.findAll());
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        if (restaurants.isEmpty()) {
+            log.info("Restaurant not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        } else {
+            log.info("Restaurant successfully detected");
+            return restaurantMapper.mapToResponseDtoList(restaurants);
+        }
     }
 
     @Override
@@ -65,8 +72,9 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (restaurantRepository.existsById(id)) {
             restaurantRepository.deleteById(id);
             log.info("The Restaurant has been successfully deleted");
+        } else {
+            log.info("Restaurant not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
-        log.info("Restaurant not found");
-        throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
     }
 }

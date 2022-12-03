@@ -20,7 +20,7 @@ public class RestaurantOverview {
     private String address;
     private String email;
     private String phone;
-    private RestaurantCategoryOverview RestaurantCategoryOverview;
+    private RestaurantCategoryOverview restaurantCategoryOverview;
     private Double deliveryPrice;
     private List<String> pictures;
     private User user;

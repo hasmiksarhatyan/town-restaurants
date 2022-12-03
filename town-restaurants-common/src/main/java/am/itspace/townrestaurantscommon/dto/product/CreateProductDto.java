@@ -19,7 +19,7 @@ public class CreateProductDto {
 
     private String description;
 
-    @NotBlank(message = "Price is mandatory")
+//    @NotBlank(message = "Price is mandatory")
     private Double price;
 
     private Integer productCategoryId;

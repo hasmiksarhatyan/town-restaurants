@@ -42,25 +42,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAuthResponseDto authentication(UserAuthDto userAuthDto) {
-        User user = userRepository.findByEmail(userAuthDto.getEmail()).orElseThrow(() -> new AuthenticationException(Error.USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userAuthDto.getEmail()).orElseThrow(() -> new AuthenticationException(Error.UNAUTHORIZED));
         log.info("User with that email not found");
         if (passwordEncoder.matches(userAuthDto.getPassword(), user.getPassword())) {
             log.info("User with username {} get auth token", user.getEmail());
             return UserAuthResponseDto.builder()
                     .token(jwtTokenUtil.generateToken(user.getEmail(), user))
                     .build();
+        } else {
+            throw new AuthenticationException(Error.UNAUTHORIZED);
         }
-        return null;
     }
 
     @Override
     public List<UserOverview> getAll() {
-        List<User> all = userRepository.findAll();
-        if (all.isEmpty()) {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            log.info("User not found");
             throw new EntityNotFoundException(Error.USER_NOT_FOUND);
         } else {
             log.info("User successfully detected");
-            return userMapper.mapToResponseDtoList(all);
+            return userMapper.mapToResponseDtoList(users);
         }
     }
 
