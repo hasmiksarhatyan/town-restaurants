@@ -16,23 +16,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    //    @Mapping(source = "dto.restaurantId", target = "restaurant.id")
-//    @Mapping(source = "dto.productCategoryId", target = "productCategory.id")
-//    @Mapping(target = "user")
-    Product mapToEntity(CreateProductDto dto, User user);
+    @Mapping(source = "dto.restaurantId", target = "restaurant.id")
+    @Mapping(source = "dto.productCategoryId", target = "productCategory.id")
+    Product mapToEntity(CreateProductDto dto);
 
-    //    @Mapping(source = "product.restaurant", target = "restaurantOverview")
-//    @Mapping(source = "product.productCategory", target = "productCategoryOverview")
-//    @Mapping(source = "product.user", target = "userOverview")
-    @Named(value = "useMe")
-    ProductOverview mapToOverview(Product product);
+    @Mapping(source = "product.restaurant", target = "restaurantOverview")
+    @Mapping(source = "product.productCategory", target = "productCategoryOverview")
+    @Mapping(source = "product.user", target = "userOverview")
+    ProductOverview mapToResponseDto(Product product);
 
-    @IterableMapping(qualifiedByName = "useMe")
     List<ProductOverview> mapToOverviewList(List<Product> products);
 
-    //    @Mapping(source = "dto.restaurantId", target = "restaurant.id")
-//    @Mapping(source = "dto.productCategoryId", target = "productCategory.id")
-    Product mapToEntity(CreateProductDto createProductDto);
-
-    ProductOverview mapToResponseDto(Product product);
 }

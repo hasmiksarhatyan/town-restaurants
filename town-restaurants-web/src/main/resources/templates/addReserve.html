@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+    <!-- SPECIFIC CSS -->
+    <link href="/css/booking-sign_up.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<th:block th:insert="fragments/fragment::header"></th:block>
+<!-- /header -->
+
+<main class="bg_gray pattern">
+
+    <div class="container margin_60_40 margin_mobile">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="box_booking_2">
+                    <div class="head">
+                        <div class="title">
+                            <h3 th:text="${restaurant.name}"></h3>
+                            <h6 th:text="${restaurant.address}"></h6>
+                        </div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+<!--                        <h6>Booking summary</h6>-->
+                        <!--                        <ul>-->
+                        <!--                            <li>Date<span>23/11/2019</span></li>-->
+                        <!--                            <li>Hour<span>08.30pm</span></li>-->
+                        <!--                            <li>People<span>3 Adults</span></li>-->
+                        <!--                        </ul>-->
+                        <!--                        <hr>-->
+                        <h6>Personal details</h6>
+                        <form th:action="@{'/restaurants/' + ${restaurant.id}+'/reserve'}" method="post">
+                            <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
+                            <div class="form-group">
+                                <input type="text" name="peopleCount" class="form-control" placeholder="People">
+                                <i class="icon_pencil"></i>
+                            </div>
+                            <div class="form-group">
+                                <input type="date" name="reservedDate" class="form-control" placeholder="Date">
+                            </div>
+                            <div class="form-group">
+                                <input type="time" name="reservedTime" class="form-control" placeholder="Time">
+                            </div>
+                            <div class="form-group add_bottom_15">
+                                <input type="text" name="phoneNumber" class="form-control" placeholder="Phone">
+                                <i class="icon_phone"></i>
+                            </div>
+                            <input type="submit" value="Reserve Now" class="btn_1 full-width mb_5">
+                        </form>
+                        <div class="text-center"><small>No money charged on this steps</small></div>
+                    </div>
+                </div>
+                <!-- /box_booking -->
+            </div>
+            <!-- /col -->
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+
+
+</body>
+</html>

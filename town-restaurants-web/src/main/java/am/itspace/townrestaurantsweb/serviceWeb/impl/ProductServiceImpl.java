@@ -10,7 +10,6 @@ import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +30,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
-
+    private final FileUtil fileUtil;
     @Override
     public Page<ProductOverview> sortProduct(Pageable pageable, String sort, Integer id) {
         Page<Product> products;
         if (id != null) {
             products = productRepository.findProductsByProductCategory_Id(id, pageable);
-            return products.map(productMapper::mapToOverview);
+            return products.map(productMapper::mapToResponseDto);
         }
         switch (sort) {
             case "price_asc":
@@ -49,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
             default:
                 products = productRepository.findAll(pageable);
         }
-        return products.map(productMapper::mapToOverview);
+        return products.map(productMapper::mapToResponseDto);
     }
 
     @Override
@@ -67,10 +66,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void addProduct(CreateProductDto dto, MultipartFile[] files, CurrentUser currentUser) throws IOException {
+    public void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException {
         if (StringUtils.hasText(dto.getName()) && dto.getPrice() >= 0) {
-            dto.setPictures(FileUtil.uploadImages(files));
-            productRepository.save(productMapper.mapToEntity(dto, currentUser.getUser()));
+            Product product = productMapper.mapToEntity(dto);
+            product.setPictures(fileUtil.uploadImages(files));
+            product.setUser(user);
+            productRepository.save(product);
         }
     }
 
@@ -101,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
             }
             List<String> pictures = dto.getPictures();
             if (pictures != null) {
-                product.setPictures(FileUtil.uploadImages(files));
+                product.setPictures(fileUtil.uploadImages(files));
             }
             productRepository.save(product);
         }
@@ -125,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductOverview findById(int id) {
-        return productMapper.mapToOverview(productRepository.getReferenceById(id));
+        return productMapper.mapToResponseDto(productRepository.getReferenceById(id));
     }
 
     @Override

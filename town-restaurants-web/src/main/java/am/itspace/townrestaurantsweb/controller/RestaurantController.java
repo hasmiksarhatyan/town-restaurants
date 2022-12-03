@@ -3,6 +3,7 @@ package am.itspace.townrestaurantsweb.controller;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
+import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -36,6 +37,7 @@ public class RestaurantController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
     private final EventService eventService;
+    private final ReserveService reserveService;
     private static String ERROR;
 
 
@@ -188,6 +190,20 @@ public class RestaurantController {
         modelMap.addAttribute("categories", productCategoryService.findAll());
         modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(eventsPageByRestaurant));
         return "restaurantEvents";
+    }
+
+    @GetMapping("/{id}/reserve")
+    public String restaurantRezerve(@PathVariable("id") int id, ModelMap modelMap) {
+        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
+        return "addReserve";
+    }
+
+    @PostMapping("/{id}/reserve")
+    public String addReserve(@PathVariable("id") int id, @ModelAttribute CreateReserveDto dto, @AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
+        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
+
+        reserveService.addReserve(dto, currentUser.getUser());
+        return "redirect:/reservations";
     }
 
 }

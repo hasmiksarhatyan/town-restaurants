@@ -17,7 +17,7 @@ public class FileUtil {
     @Value("${project.images.folder}")
     private static String folderPath;
 
-    public static List<String> uploadImages(MultipartFile[] files) throws IOException {
+    public List<String> uploadImages(MultipartFile[] files) throws IOException {
         List<String> pictures = new ArrayList<>();
         for (MultipartFile file : files) {
             if (!file.isEmpty() && file.getSize() > 0) {

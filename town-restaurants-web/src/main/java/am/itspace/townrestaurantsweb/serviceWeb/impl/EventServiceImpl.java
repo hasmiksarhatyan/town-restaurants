@@ -31,6 +31,7 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final RestaurantRepository restaurantRepository;
+    private final FileUtil fileUtil;
 
     public Page<EventOverview> findAll(Pageable pageable) {
         return eventRepository.findAll(pageable).map(eventMapper::mapToOverview);
@@ -55,7 +56,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void save(CreateEventDto dto, MultipartFile[] files) throws IOException {
-        dto.setPictures(FileUtil.uploadImages(files));
+        dto.setPictures(fileUtil.uploadImages(files));
         eventRepository.save(eventMapper.mapToEntity(dto));
     }
 
@@ -97,7 +98,7 @@ public class EventServiceImpl implements EventService {
 
         List<String> pictures = dto.getPictures();
         if (pictures != event.getPictures()) {
-            event.setPictures(FileUtil.uploadImages(files));
+            event.setPictures(fileUtil.uploadImages(files));
         }
         eventRepository.save(event);
     }

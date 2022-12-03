@@ -2,18 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org/" lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
-  <meta name="author" content="Ansonika">
-  <title>Foogra - Products</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Products</title>
 
-  <th:block th:insert="fragments/fragment::headerImport"></th:block>
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
 
-  <!-- SPECIFIC CSS -->
-  <link href="/css/listing.css" rel="stylesheet">
-  <!-- SPECIFIC CSS -->
-  <link href="/css/detail-page.css" rel="stylesheet">
+    <!-- SPECIFIC CSS -->
+    <link href="/css/listing.css" rel="stylesheet">
+    <!-- SPECIFIC CSS -->
+    <link href="/css/detail-page.css" rel="stylesheet">
 
 </head>
 
@@ -23,127 +23,125 @@
 <!-- /header -->
 
 <main>
-  <div class="page_header element_to_stick">
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-8 col-lg-7 col-md-7 d-none d-md-block">
-          <div class="breadcrumbs blog">
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a th:href="@{'/products'}">Products</a></li>
-              <li><a th:href="@{'/restaurants'}">Restaurants</a></li>
-              <li>Page active</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- /row -->
-    </div>
-  </div>
-  <!-- /page_header -->
-
-  <div class="container margin_30_40">
-    <div class="row">
-      <aside class="col-lg-3" id="sidebar_fixed">
-        <div class="clearfix">
-          <div class="sort_select">
-            <select name="sort" id="sort" onchange="location=this.value">
-              <option value="">Sort by price</option>
-              <option value="/products/?sort=price_asc">Sort by Price: low to high</option>
-              <option value="/products/?sort=price_desc">Sort by Price: high to low</option>
-            </select>
-          </div>
-          <a href="#0" class="open_filters btn_filters"><i
-                  class="icon_adjust-vert"></i><span>Filters</span></a>
-        </div>
-        <div class="filter_col">
-          <div class="inner_bt"><a href="#" class="open_filters"><i class="icon_close"></i></a></div>
-          <div class="filter_type">
-            <h4><a class="opened">Categories</a></h4>
-            <div class="collapse show" id="filter_1" th:each="category:${categories}">
-              <ul>
-                <li>
-                  <a th:href="@{/products/(id=${category.id})}">
-                    <span th:text="${category.name}"></span>
-                  </a>
-                </li>
-              </ul>
+    <div class="page_header element_to_stick">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-8 col-lg-7 col-md-7 d-none d-md-block">
+                    <div class="breadcrumbs blog">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a th:href="@{'/products'}">Products</a></li>
+                            <li><a th:href="@{'/restaurants'}">Restaurants</a></li>
+                            <li>Page active</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <!-- /filter_type -->
-          </div>
-
-          <span style="color: #0a6f18" th:if="${message!=null}" th:text="${message}"></span></li>
-          <span style="color: #e52c08" th:if="${messageError!=null}" th:text="${messageError}"></span></li>
-          <!-- /filter_type -->
-          <!--          <div class="filter_type">-->
-          <!--            <h4><a href="#filter_4" data-bs-toggle="collapse" class="closed">Price</a></h4>-->
-          <!--            <div class="collapse" id="filter_4">-->
-          <!--              <ul>-->
-          <!--                <li>-->
-          <!--                  <label class="container_check">$0 — $50<small>11</small>-->
-          <!--                    <input type="checkbox">-->
-          <!--                    <span class="checkmark"></span>-->
-          <!--                  </label>-->
-          <!--                </li>-->
-          <!--              </ul>-->
-          <!--            </div>-->
-          <!--          </div>-->
-          <!--          &lt;!&ndash; /filter_type &ndash;&gt;-->
-          <!--          <div class="buttons">-->
-          <!--            <a href="#0" class="btn_1 full-width">Filter</a>-->
-          <!--          </div>-->
+            <!-- /row -->
         </div>
-      </aside>
+    </div>
+    <!-- /page_header -->
 
-      <div class="col-lg-9">
+    <div class="container margin_30_40">
         <div class="row">
-          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" th:each="product:${products}">
-            <div class="strip">
-              <figure>
-                <span class=""></span>
-                <img th:if="${product.pictures != null && !product.pictures.isEmpty()}"
-                     th:src="@{/products/getImages(fileName=${product.getPictures().get(0)})}"
-                     class="img-fluid lazy" alt="">
-                <a href="" class="strip_info">
-                  <small th:text="${product.productCategoryOverview.name}"></small>
-                  <div class="item_title">
-                    <h3 th:text="${product.name}"></h3>
-                  </div>
-                </a>
-              </figure>
-              <ul>
-                <li><span th:text="${product.price}"></span></li>
-                <br>
+            <aside class="col-lg-3" id="sidebar_fixed">
+                <div class="clearfix">
+                    <div class="sort_select">
+                        <select name="sort" id="sort" onchange="location=this.value">
+                            <option value="">Sort by price</option>
+                            <option value="/products/?sort=price_asc">Sort by Price: low to high</option>
+                            <option value="/products/?sort=price_desc">Sort by Price: high to low</option>
+                        </select>
+                    </div>
+                    <a href="#0" class="open_filters btn_filters"><i
+                            class="icon_adjust-vert"></i><span>Filters</span></a>
+                </div>
+                <div class="filter_col">
+                    <div class="inner_bt"><a href="#" class="open_filters"><i class="icon_close"></i></a></div>
+                    <div class="filter_type">
+                        <h4><a class="opened">Categories</a></h4>
+                        <div class="collapse show" id="filter_1" th:each="category:${categories}">
+                            <ul>
+                                <li>
+                                    <a th:href="@{/products/(id=${category.id})}">
+                                        <span th:text="${category.name}"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /filter_type -->
+                    </div>
 
-                <li>
-                  <td><a th:href="@{'/baskets/add/'+ ${product.id}}"><i class="icon_heart"></i>Add To
-                    Basket<br>
+                    <span style="color: #0a6f18" th:if="${message!=null}" th:text="${message}"></span></li>
+                    <span style="color: #e52c08" th:if="${messageError!=null}" th:text="${messageError}"></span></li>
+                    <!-- /filter_type -->
+                    <!--          <div class="filter_type">-->
+                    <!--            <h4><a href="#filter_4" data-bs-toggle="collapse" class="closed">Price</a></h4>-->
+                    <!--            <div class="collapse" id="filter_4">-->
+                    <!--              <ul>-->
+                    <!--                <li>-->
+                    <!--                  <label class="container_check">$0 — $50<small>11</small>-->
+                    <!--                    <input type="checkbox">-->
+                    <!--                    <span class="checkmark"></span>-->
+                    <!--                  </label>-->
+                    <!--                </li>-->
+                    <!--              </ul>-->
+                    <!--            </div>-->
+                    <!--          </div>-->
+                    <!--          &lt;!&ndash; /filter_type &ndash;&gt;-->
+                    <!--          <div class="buttons">-->
+                    <!--            <a href="#0" class="btn_1 full-width">Filter</a>-->
+                    <!--          </div>-->
+                </div>
+            </aside>
 
-                    <span style="color: darkgreen">Please, register first to add item to the basket</span>
-                </li>
-              </ul>
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" th:each="product:${products}">
+                        <div class="strip">
+                            <figure>
+                                <span class=""></span>
+                                <img th:if="${product.pictures != null && !product.pictures.isEmpty()}"
+                                     th:src="@{/products/getImages(fileName=${product.getPictures().get(0)})}"
+                                     class="img-fluid lazy" alt="">
+                                <a href="" class="strip_info">
+                                    <small th:text="${product.productCategoryOverview.name}"></small>
+                                    <div class="item_title">
+                                        <h3 th:text="${product.name}"></h3>
+                                    </div>
+                                </a>
+                            </figure>
+                            <ul>
+                                <li><span th:text="${product.price}"></span></li>
+                                <br>
 
-              <ul></ul>
+                                <li>
+                                    <a th:href="@{'/baskets/add/'+ ${product.id}}"><i class="icon_heart"></i>Add To Basket</a>
+                                    <br><span style="color: darkgreen">Please, register first to add item to the basket</span>
+                                </li>
+                            </ul>
+
+                            <ul></ul>
+                        </div>
+                    </div>
+                    <!-- /strip grid -->
+                </div>
+                <!-- /row -->
+                <table class="pagination_fg">
+                    <th href="#"></th>
+                    <th th:if="${products.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" class="page-item">
+                        <a class="active" th:href="@{/products/(size=${products.size}, page=${pageNumber})}"
+                           th:text="${pageNumber}"
+                           th:class="${pageNumber==products.number + 1} ? active">
+                        </a>
+                    </th>
+                    <th href="#"></th>
+                </table>
             </div>
-          </div>
-          <!-- /strip grid -->
+            <!-- /col -->
         </div>
-        <!-- /row -->
-        <table class="pagination_fg">
-          <th href="#"></th>
-          <th th:if="${products.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" class="page-item">
-            <a class="active" th:href="@{/products/(size=${products.size}, page=${pageNumber})}"
-               th:text="${pageNumber}"
-               th:class="${pageNumber==products.number + 1} ? active">
-            </a>
-          </th>
-          <th href="#"></th>
-        </table>
-      </div>
-      <!-- /col -->
     </div>
-  </div>
-  <!-- /container -->
+    <!-- /container -->
 
 </main>
 <!-- /main -->

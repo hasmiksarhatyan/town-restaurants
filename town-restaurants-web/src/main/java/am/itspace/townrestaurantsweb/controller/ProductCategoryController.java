@@ -10,7 +10,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,7 +42,11 @@ public class ProductCategoryController {
     }
 
     @PostMapping("/add")
-    public String addProductCategory(@ModelAttribute CreateProductCategoryDto dto) {
+    public String addProductCategory(@ModelAttribute @Valid CreateProductCategoryDto dto, BindingResult result, ModelMap modelMap) {
+        if (result.hasErrors()) {
+            modelMap.addAttribute("message", Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+            return "/manager/addProductCategory";
+        }
         productCategoryService.addProductCategory(dto);
         return "redirect:/productCategories";
     }
