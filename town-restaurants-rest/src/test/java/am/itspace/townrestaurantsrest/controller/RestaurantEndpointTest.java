@@ -1,10 +1,10 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.entity.Event;
+import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
-import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
+import am.itspace.townrestaurantscommon.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterEach;
@@ -39,23 +39,35 @@ class RestaurantEndpointTest {
     private MockMvc mvc;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EventRepository eventRepository;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    Restaurant restaurant;
 
     RestaurantCategory restaurantCategory;
 
-    Restaurant restaurant;
+    Event event;
+
+    Product product;
 
     @BeforeEach
     void setUp() {
         userRepository.save(getUser());
         restaurantCategory = restaurantCategoryRepository.save(getRestaurantCategory());
         restaurant = restaurantRepository.save(getRestaurant());
+        event = eventRepository.save(getEvent());
+        product = productRepository.save(product);
     }
 
     @AfterEach
@@ -67,7 +79,7 @@ class RestaurantEndpointTest {
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "Aperitivo");
-        objectNode.put("restaurantCategoryId", restaurantCategory.getId());
+        objectNode.put("restaurantCategoryId", getRestaurantCategory().getId());
         mvc.perform(post("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
@@ -88,6 +100,22 @@ class RestaurantEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", hasToString(restaurant.getName())));
+    }
+
+    @Test
+    void findEventsByRestaurantId() throws Exception {
+        mvc.perform(get("/restaurants/events/{id}", restaurant.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void findProductsByRestaurantId() throws Exception {
+        mvc.perform(get("/restaurants/products/{id}", restaurant.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test

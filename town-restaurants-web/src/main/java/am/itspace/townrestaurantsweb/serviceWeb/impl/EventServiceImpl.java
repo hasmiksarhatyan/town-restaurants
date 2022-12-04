@@ -28,14 +28,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    private final FileUtil fileUtil;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final RestaurantRepository restaurantRepository;
-    private final FileUtil fileUtil;
 
     public Page<EventOverview> findAll(Pageable pageable) {
         return eventRepository.findAll(pageable).map(eventMapper::mapToOverview);
-
     }
 
     public Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable) {
@@ -80,22 +79,18 @@ public class EventServiceImpl implements EventService {
         if (StringUtils.hasText(description)) {
             event.setDescription(description);
         }
-
         double price = dto.getPrice();
         if (price >= 0) {
             event.setPrice(price);
         }
-
         String eventDateTime = dto.getEventDateTime();
         if (eventDateTime != null) {
             event.setEventDateTime(LocalDateTime.parse(eventDateTime));
         }
-
         Integer restaurantId = dto.getRestaurantId();
         if (restaurantId != null) {
             event.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
         }
-
         List<String> pictures = dto.getPictures();
         if (pictures != event.getPictures()) {
             event.setPictures(fileUtil.uploadImages(files));

@@ -31,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final FileUtil fileUtil;
+
     @Override
     public Page<ProductOverview> sortProduct(Pageable pageable, String sort, Integer id) {
         Page<Product> products;
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
                 product.setName(name);
             }
             String description = dto.getDescription();
-            if (StringUtils.hasText(name)) {
+            if (StringUtils.hasText(description)) {
                 product.setDescription(description);
             }
             Double price = dto.getPrice();

@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface RestaurantService {
 
+    void delete(int id);
+
     List<RestaurantOverview> getAll();
 
     RestaurantOverview getById(int id) throws EntityNotFoundException;
@@ -17,9 +19,5 @@ public interface RestaurantService {
     RestaurantOverview save(CreateRestaurantDto createCategoryDto);
 
     RestaurantOverview update(int id, EditRestaurantDto editCategoryDto);
-
-    void delete(int id);
-
-    List<EventOverview> getByEventId(int id);
 }
 

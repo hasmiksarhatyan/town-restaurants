@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.mapToEntity(dto);
         userRepository.save(user);
         log.info("User {} has successfully registered", user.getEmail());
-
         VerificationToken token = tokenService.createToken(user);
         mailService.sendEmail(dto.getEmail(), "Welcome", "Hi, " + dto.getFirstName() + dto.getLastName() + "\n" +
                 "please, verify your account by clicking on this link <a href=\"http://localhost:8080/users/verify?token=" + token.getPlainToken() + "\">Active</a>");
@@ -112,7 +111,6 @@ public class UserServiceImpl implements UserService {
         User user = optional.get();
         String firstName = dto.getFirstName();
         String lastName = dto.getLastName();
-
         if (StringUtils.hasText(firstName)) {
             user.setFirstName(firstName);
         }

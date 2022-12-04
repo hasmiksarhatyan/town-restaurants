@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +38,15 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Override
     public ReserveOverview save(CreateReserveDto createReserveDto) {
-        if (!reserveRepository.existsByPhoneNumberAndReservedTimeAndReservedDate(createReserveDto.getPhoneNumber(), createReserveDto.getReservedTime(), createReserveDto.getReservedDate())) {
+        if (reserveRepository.existsByPhoneNumberAndReservedTimeAndReservedDate(createReserveDto.getPhoneNumber(), createReserveDto.getReservedTime(), createReserveDto.getReservedDate())) {
             log.info("Reserve already exists {}", createReserveDto.getPhoneNumber());
             throw new EntityAlreadyExistsException(Error.RESERVE_ALREADY_EXISTS);
+        } else {
+            log.info("The reserve was successfully stored in the database {}", createReserveDto.getPhoneNumber());
+            Reserve reserve = reserveMapper.mapToEntity(createReserveDto);
+            reserve.setStatus(ReserveStatus.PENDING);
+            return reserveMapper.mapToOverview(reserveRepository.save(reserve));
         }
-        log.info("The reserve was successfully stored in the database {}", createReserveDto.getPhoneNumber());
-        Reserve reserve = reserveMapper.mapToEntity(createReserveDto);
-        reserve.setStatus(ReserveStatus.PENDING);
-        return reserveMapper.mapToOverview(reserveRepository.save(reserve));
     }
 
     @Override
@@ -53,18 +56,23 @@ public class ReserveServiceImpl implements ReserveService {
             log.info("Reserve not found");
             throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
         } else {
-            if (getUserDetails().getRole() == Role.MANAGER) {
-                log.info("Reserve successfully detected");
-                return reserveMapper.mapToOverviewList(reserves);
-            } else if (getUserDetails().getRole() == Role.RESTAURANT_OWNER) {
-                reserveForOwner();
-            } else if (getUserDetails().getRole() == Role.CUSTOMER) {
-                List<Reserve> byUser = reserveRepository.findByUser(getUserDetails());
-                if (byUser.isEmpty()) {
-                    log.info("Reserve not found");
-                    throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+            if (getUserDetails() != null) {
+                if (getUserDetails().getRole() == Role.MANAGER) {
+                    log.info("Reserve successfully detected");
+                    return reserveMapper.mapToOverviewList(reserves);
+                } else if (getUserDetails().getRole() == Role.RESTAURANT_OWNER) {
+                    reserveForOwner();
+                } else if (getUserDetails().getRole() == Role.CUSTOMER) {
+                    List<Reserve> reserveByUser = reserveRepository.findByUser(getUserDetails());
+                    if (reserveByUser.isEmpty()) {
+                        log.info("Reserve not found");
+                        throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+                    }
+                    return reserveMapper.mapToOverviewList(reserveByUser);
                 }
-                return reserveMapper.mapToOverviewList(byUser);
+            }else {
+                log.info("Reserve not found");
+                throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
             }
         }
         return null;
@@ -74,11 +82,27 @@ public class ReserveServiceImpl implements ReserveService {
     public ReserveOverview update(int id, EditReserveDto editReserveDto) {
         Reserve reserve = reserveRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.RESERVE_NOT_FOUND));
         log.info("Reserve with that id not found");
-        if (editReserveDto.getPhoneNumber() != null) {
-            reserve.setPhoneNumber(editReserveDto.getPhoneNumber());
-            reserve.setPeopleCount(editReserveDto.getPeopleCount());
-            reserveRepository.save(reserve);
+        String reservedDate = editReserveDto.getReservedDate();
+        if (reservedDate != null) {
+            reserve.setReservedDate(LocalDate.parse(reservedDate));
         }
+        String reservedTime = editReserveDto.getReservedTime();
+        if (reservedDate != null) {
+            reserve.setReservedTime(LocalTime.parse(reservedTime));
+        }
+        int peopleCount = editReserveDto.getPeopleCount();
+        if (peopleCount >= 0) {
+            reserve.setPeopleCount(peopleCount);
+        }
+        String phoneNumber = editReserveDto.getPhoneNumber();
+        if (phoneNumber != null) {
+            reserve.setPhoneNumber(phoneNumber);
+        }
+        String status = editReserveDto.getStatus();
+        if (status != null) {
+            reserve.setStatus(ReserveStatus.valueOf(status));
+        }
+        reserveRepository.save(reserve);
         log.info("The reserve was successfully stored in the database {}", reserve.getPhoneNumber());
         return reserveMapper.mapToOverview(reserve);
     }

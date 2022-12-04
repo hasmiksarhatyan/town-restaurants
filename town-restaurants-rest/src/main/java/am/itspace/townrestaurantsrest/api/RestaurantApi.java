@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.api;
 
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -86,6 +87,52 @@ public interface RestaurantApi {
     ResponseEntity<RestaurantOverview> getById(@PathVariable("id") int id);
 
     @Operation(
+            summary = "Get events by restaurantId",
+            description = "Possible error codes: 4044")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched events from DB",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = EventOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4044",
+                            description = "Event not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE))
+            })
+    @GetMapping("/event/{id}")
+    ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id);
+
+    @Operation(
+            summary = "Get products by restaurantId",
+            description = "Possible error codes: 4043")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched products from DB",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ProductOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4043",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE))
+            })
+    @GetMapping("/products/{id}")
+    ResponseEntity<List<ProductOverview>> findProductsByRestaurantId(@PathVariable("id") int id);
+
+    @Operation(
             summary = "Update restaurant",
             description = "Possible error codes: 4041")
     @ApiResponses(
@@ -126,9 +173,4 @@ public interface RestaurantApi {
             })
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable("id") int id);
-
-
-
-    @GetMapping("/event/{id}")
-    public ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id);
 }

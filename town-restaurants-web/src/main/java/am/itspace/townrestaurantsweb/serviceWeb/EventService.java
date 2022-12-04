@@ -13,19 +13,19 @@ import java.util.Map;
 
 public interface EventService {
 
+    void deleteEvent(int id);
+
+    EventOverview findById(int id);
+
     Page<EventOverview> findAll(Pageable pageable);
+
+    byte[] getEventImage(String fileName) throws IOException;
+
+    Map<Integer, List<EventOverview>> sortEventsByRestaurant();
 
     Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable);
 
     void save(CreateEventDto eventDto, MultipartFile[] files) throws IOException;
 
     void editEvent(EditEventDto dto, int id, MultipartFile[] files) throws IOException;
-
-    byte[] getEventImage(String fileName) throws IOException;
-
-    void deleteEvent(int id);
-
-    EventOverview findById(int id);
-
-    Map<Integer, List<EventOverview>> sortEventsByRestaurant();
 }

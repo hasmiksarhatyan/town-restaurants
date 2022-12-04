@@ -26,7 +26,7 @@ public class CreateUserDto {
     private String email;
 
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 5, max = 8, message = "Password must be at least 5 characters")
+    @Size(min = 5, max = 30, message = "Password must be at least 5 characters")
     private String password;
 
     private String verifyToken;

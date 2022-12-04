@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface ProductCategoryService {
 
-    Page<ProductCategoryOverview> findAll(Pageable pageable);
+    void deleteProductCategory(int id);
 
     List<ProductCategoryOverview> findAll();
+
+    ProductCategoryOverview findById(int id);
+
+    Page<ProductCategoryOverview> findAll(Pageable pageable);
 
     void addProductCategory(CreateProductCategoryDto dto);
 
     void editProductCategory(EditProductCategoryDto dto, int id);
-
-    void deleteProductCategory(int id);
-
-    ProductCategoryOverview findById(int id);
 }
