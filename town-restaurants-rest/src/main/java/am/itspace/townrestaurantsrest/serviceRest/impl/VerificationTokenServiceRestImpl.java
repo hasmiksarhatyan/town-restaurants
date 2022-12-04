@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class VerificationTokenServiceRestImpl implements VerificationTokenServiceRest {

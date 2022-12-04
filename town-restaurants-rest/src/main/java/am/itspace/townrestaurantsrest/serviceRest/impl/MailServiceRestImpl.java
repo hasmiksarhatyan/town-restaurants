@@ -25,5 +25,6 @@ public class MailServiceRestImpl implements MailServiceRest {
         messageHelper.setSubject(subject);
         messageHelper.setText(text);
         javaMailSender.send(mimeMessage);
+
     }
 }
