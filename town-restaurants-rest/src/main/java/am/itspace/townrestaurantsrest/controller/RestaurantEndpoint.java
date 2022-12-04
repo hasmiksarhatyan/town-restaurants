@@ -2,10 +2,13 @@ package am.itspace.townrestaurantsrest.controller;
 
 
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantsrest.api.RestaurantApi;
+import am.itspace.townrestaurantsrest.serviceRest.EventService;
+import am.itspace.townrestaurantsrest.serviceRest.ProductService;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,8 @@ import java.util.List;
 @RequestMapping("/restaurants")
 public class RestaurantEndpoint implements RestaurantApi {
 
+    private final EventService eventService;
+    private final ProductService productService;
     private final RestaurantService restaurantService;
 
     @Override
@@ -41,6 +46,18 @@ public class RestaurantEndpoint implements RestaurantApi {
     }
 
     @Override
+    @GetMapping("/events/{id}")
+    public ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id) {
+        return ResponseEntity.ok(eventService.findEventsByRestaurantId(id));
+    }
+
+    @Override
+    @GetMapping("/products/{id}")
+    public ResponseEntity<List<ProductOverview>> findProductsByRestaurantId(@PathVariable("id") int id) {
+        return ResponseEntity.ok(productService.findProductsByRestaurant(id));
+    }
+
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantOverview> update(@Valid @PathVariable("id") int id,
                                                      @RequestBody EditRestaurantDto editRestaurantDto) {
@@ -52,12 +69,6 @@ public class RestaurantEndpoint implements RestaurantApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         restaurantService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    @Override
-    @GetMapping("/events/{id}")
-    public ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id) {
-        return ResponseEntity.ok(restaurantService.getByEventId(id));
     }
 }
 

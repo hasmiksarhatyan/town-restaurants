@@ -9,6 +9,9 @@ import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
+import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
+import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
+import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -20,7 +23,9 @@ import am.itspace.townrestaurantscommon.entity.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class MockData {
 
@@ -35,6 +40,13 @@ public class MockData {
                 .createdAt(LocalDateTime.now())
                 .role(Role.CUSTOMER)
                 .enabled(true)
+                .build();
+    }
+
+    public static ChangePasswordDto getChangePasswordDto() {
+        return ChangePasswordDto.builder()
+                .oldPassword("12345678")
+                .newPassword1("87654321")
                 .build();
     }
 
@@ -176,7 +188,7 @@ public class MockData {
                 .restaurant(getRestaurant())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
-                //.eventDateTime(getStartDate("2022-10-10"))
+//                .eventDateTime(LocalDateTime.parse("2022-10-10"))
                 .build();
     }
 
@@ -186,7 +198,7 @@ public class MockData {
                 .restaurantId(getRestaurant().getId())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
-//                .eventDateTime(getStartDate("2022-10-10"))
+//                .eventDateTime("2022-12-10")
                 .build();
     }
 
@@ -197,7 +209,7 @@ public class MockData {
                 .restaurantOverview(getRestaurantOverview())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
-                //.eventDateTime(getStartDate("2022-10-10"))
+//                .eventDateTime(LocalDateTime.parse("2022-10-10"))
                 .build();
     }
 
@@ -207,7 +219,7 @@ public class MockData {
                 .restaurantId(getRestaurant().getId())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
-                //.eventDateTime(getStartDate("2022-10-10"))
+//                .eventDateTime("2022-12-10")
                 .build();
     }
 
@@ -279,6 +291,55 @@ public class MockData {
                 .description("Mexican dish")
                 .productCategoryId(getProductCategory().getId())
                 .restaurantId(getRestaurant().getId())
+                .build();
+    }
+
+    //reserve
+    public static Reserve getReserve() {
+        return Reserve.builder()
+                .id(1)
+                .user(getUser())
+                .peopleCount(7)
+                .phoneNumber("099122134")
+//                .reservedAt(LocalDateTime.parse("222-10-10T20:30:00.00"))
+                .reservedDate(LocalDate.parse("2022-12-10"))
+                .reservedTime(LocalTime.parse("20:00:00"))
+                .restaurant(getRestaurant())
+                .status(ReserveStatus.PENDING)
+                .build();
+    }
+
+    public static EditReserveDto getEditReserveDto() {
+        return EditReserveDto.builder()
+                .status("PENDING")
+                .peopleCount(7)
+                .reservedDate("2022-12-10")
+                .reservedTime("20:00:00")
+                .phoneNumber("099122134")
+                .build();
+    }
+
+    public static CreateReserveDto getCreateReserveDto() {
+        return CreateReserveDto.builder()
+                .phoneNumber("099122134")
+                .peopleCount(7)
+                .reservedDate("2022-12-10")
+                .reservedTime("20:00:00")
+                .restaurantId(getRestaurant().getId())
+                .build();
+    }
+
+    public static ReserveOverview getReserveOverview() {
+        return ReserveOverview.builder()
+                .id(1)
+                .userOverview(getUserOverview())
+                .peopleCount(7)
+                .phoneNumber("099122134")
+//                .reservedAt(LocalDateTime.parse("222-10-10T20:30:00.00"))
+                .reservedDate(LocalDate.parse("2022-12-10"))
+                .reservedTime(LocalTime.parse("20:00:00"))
+                .restaurantOverview(getRestaurantOverview())
+                .status("PENDING")
                 .build();
     }
 }

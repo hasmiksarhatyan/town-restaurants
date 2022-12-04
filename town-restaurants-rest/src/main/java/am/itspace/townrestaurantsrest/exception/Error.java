@@ -40,7 +40,14 @@ public enum Error {
 
     BASKET_NOT_FOUND(4048, HttpStatus.NOT_FOUND, "Basket not found"),
 
-    BASKET_ALREADY_EXISTS(4008, HttpStatus.BAD_REQUEST, "Basket already exists");
+    BASKET_ALREADY_EXISTS(4008, HttpStatus.BAD_REQUEST, "Basket already exists"),
+
+    PROVIDED_WRONG_PASSWORD(4009, HttpStatus.BAD_REQUEST, "Provided wrong credentials to change the password"),
+
+    PROVIDED_SAME_PASSWORD(4091, HttpStatus.CONFLICT, "Provided the same password to change password"),
+
+    TOKEN(4006, HttpStatus.BAD_REQUEST, "token");
+
 
     private final Integer code;
     private final HttpStatus httpStatus;

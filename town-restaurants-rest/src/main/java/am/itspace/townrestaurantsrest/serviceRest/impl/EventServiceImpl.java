@@ -6,6 +6,7 @@ import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
+import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
@@ -14,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -23,8 +26,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final EventRepository eventRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public EventOverview save(CreateEventDto createEventDto) {
@@ -55,13 +59,42 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<EventOverview> findEventsByRestaurantId(int id) {
+        List<Event> events = eventRepository.findEventsByRestaurant_Id(id);
+        if (events.isEmpty()) {
+            log.info("Event not found");
+            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
+        } else {
+            log.info("Event successfully detected");
+            return eventMapper.mapToOverviewList(events);
+        }
+    }
+
+    @Override
     public EventOverview update(int id, EditEventDto editEventDto) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.EVENT_NOT_FOUND));
         log.info("Event with that id not found");
-        if (editEventDto.getName() != null) {
-            event.setName(editEventDto.getName());
-            eventRepository.save(event);
+        String name = editEventDto.getName();
+        if (StringUtils.hasText(name)) {
+            event.setName(name);
         }
+        String description = editEventDto.getDescription();
+        if (StringUtils.hasText(description)) {
+            event.setDescription(description);
+        }
+        double price = editEventDto.getPrice();
+        if (price >= 0) {
+            event.setPrice(price);
+        }
+        String eventDateTime = editEventDto.getEventDateTime();
+        if (eventDateTime != null) {
+            event.setEventDateTime(LocalDateTime.parse(eventDateTime));
+        }
+        Integer restaurantId = editEventDto.getRestaurantId();
+        if (restaurantId != null) {
+            event.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        }
+        eventRepository.save(event);
         log.info("The event was successfully stored in the database {}", event.getName());
         return eventMapper.mapToOverview(event);
     }

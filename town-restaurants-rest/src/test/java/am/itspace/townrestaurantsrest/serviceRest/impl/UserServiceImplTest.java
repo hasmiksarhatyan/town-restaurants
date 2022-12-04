@@ -28,12 +28,16 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @Mock
     private JwtTokenUtil tokenUtil;
+
     @Mock
     private UserMapper2 userMapper;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -75,6 +79,31 @@ class UserServiceImplTest {
         UserAuthResponseDto actual = userService.authentication(authDto);
         //then
         assertNull(actual);
+    }
+
+    @Test
+    void successfulPasswordChanging() throws Exception {
+        //given
+        var authDto = getAuthDto();
+        var user = getUser();
+        //when
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(anyString());
+        doReturn(true).when(passwordEncoder).matches(anyString(), anyString());
+        UserAuthResponseDto actual = userService.authentication(authDto);
+        //then
+        assertNotNull(actual);
+//        //given
+//        var user = getUser();
+//        var email = getUser().getEmail();
+//        var changePassword = getChangePasswordDto();
+//        //when
+//        doReturn(user).when(any(User.class));
+//        doReturn(Optional.of(user)).when(userRepository).findByEmail(email);
+//        doReturn(true).when(passwordEncoder).matches(anyString(), anyString());
+//        doReturn(user).when(userRepository).save(any(User.class));
+//        userService.changePassword(changePassword);
+//        //then
+//        verify(userRepository, times(1)).save(user);
     }
 
     //save

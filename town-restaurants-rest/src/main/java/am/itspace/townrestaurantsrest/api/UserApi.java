@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
+import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantsrest.exception.ApiError;
@@ -60,6 +61,28 @@ public interface UserApi {
             })
     @GetMapping("/{id}")
     ResponseEntity<UserOverview> getById(@PathVariable("id") int id);
+
+    @Operation(
+            summary = "Change password",
+            description = "Possible error codes: 4046")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Change password for user",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = UserOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4046",
+                            description = "User not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE))
+            })
+    ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto);
 
     @Operation(
             summary = "Update user",

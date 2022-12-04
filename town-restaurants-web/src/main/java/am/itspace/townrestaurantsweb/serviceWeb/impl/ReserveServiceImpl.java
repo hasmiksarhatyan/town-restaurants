@@ -35,7 +35,6 @@ public class ReserveServiceImpl implements ReserveService {
     private final RestaurantRepository restaurantRepository;
     private final ReserveMapper reserveMapper;
 
-
     @Override
     public Page<ReserveOverview> getAll(Pageable pageable) {
         return reserveRepository.findAll(pageable).map(reserveMapper::mapToOverview);

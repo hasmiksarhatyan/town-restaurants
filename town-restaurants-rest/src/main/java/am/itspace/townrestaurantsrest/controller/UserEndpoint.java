@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantsrest.serviceRest.UserService;
@@ -30,6 +31,13 @@ public class UserEndpoint implements UserApi {
     @GetMapping("/{id}")
     public ResponseEntity<UserOverview> getById(@PathVariable("id") int id) {
         return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @Override
+    @PutMapping("/password/change")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
+        userService.changePassword(changePasswordDto);
+        return ResponseEntity.ok().build();
     }
 
     @Override

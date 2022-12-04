@@ -193,18 +193,18 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/reserve")
-    public String restaurantRezerve(@PathVariable("id") int id, ModelMap modelMap) {
+    public String restaurantReserve(@PathVariable("id") int id, ModelMap modelMap) {
         modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
         return "addReserve";
     }
 
     @PostMapping("/{id}/reserve")
-    public String addReserve(@PathVariable("id") int id, @ModelAttribute CreateReserveDto dto, @AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
-        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
-
+    public String addReserve(@PathVariable("id") int id,
+                             @ModelAttribute CreateReserveDto dto,
+                             @AuthenticationPrincipal CurrentUser currentUser) {
+//        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
         reserveService.addReserve(dto, currentUser.getUser());
         return "redirect:/reservations";
     }
-
 }
 

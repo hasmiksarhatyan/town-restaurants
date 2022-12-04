@@ -18,19 +18,19 @@ public interface ProductService {
 
     List<ProductOverview> findAll();
 
-    List<ProductOverview> findAllById(int id);
-
-    void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException;
-
-    void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException;
-
-    byte[] getProductImage(String fileName) throws IOException;
+    ProductOverview findById(int id);
 
     void deleteProduct(int id, User user);
 
-    ProductOverview findById(int id);
+    List<ProductOverview> findAllById(int id);
 
     List<ProductOverview> findProductByUser(User user);
 
     List<ProductOverview> findProductsByRestaurant(int id);
+
+    byte[] getProductImage(String fileName) throws IOException;
+
+    void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException;
+
+    void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException;
 }

@@ -9,8 +9,6 @@ import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductCategoryService;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
-
-import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,14 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.Binding;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,7 +38,6 @@ public class ProductController {
                            @RequestParam(value = "page", defaultValue = "1") int page,
                            @RequestParam(value = "size", defaultValue = "15") int size,
                            ModelMap modelMap) {
-
         Page<ProductOverview> products = productService.sortProduct(PageRequest.of(page - 1, size), sort, id);
         modelMap.addAttribute("categories", productCategoryService.findAll());
         modelMap.addAttribute("products", products);
@@ -63,7 +55,6 @@ public class ProductController {
         if (currentUser.getUser().getRole() == Role.MANAGER) {
             List<ProductOverview> products = productService.findAll();
             modelMap.addAttribute("products", products);
-
         }
         if (currentUser.getUser().getRole() == Role.RESTAURANT_OWNER) {
             List<ProductOverview> productsMy = productService.findProductByUser(currentUser.getUser());
@@ -75,7 +66,6 @@ public class ProductController {
 
     @GetMapping("/add")
     public String addProductPage(ModelMap modelMap) {
-
         modelMap.addAttribute("restaurants", restaurantService.findAll());
         modelMap.addAttribute("categories", productCategoryService.findAll());
         return "manager/addProduct";
@@ -84,11 +74,9 @@ public class ProductController {
     @PostMapping("/add")
     public String addProduct(@ModelAttribute CreateProductDto dto, @RequestParam("productImage") MultipartFile[] files,
                              @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
-
-        productService.addProduct(dto, files,currentUser.getUser());
+        productService.addProduct(dto, files, currentUser.getUser());
         return "redirect:/products/my";
     }
-
 
     @GetMapping(value = "/getImages", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) throws IOException {
@@ -97,7 +85,6 @@ public class ProductController {
 
     @GetMapping("/edit/{id}")
     public String editProductPage(@PathVariable("id") int id, ModelMap modelMap) {
-
         modelMap.addAttribute("categories", productCategoryService.findAll());
         modelMap.addAttribute("restaurants", restaurantService.findAll());
         modelMap.addAttribute("product", productService.findById(id));
@@ -107,16 +94,13 @@ public class ProductController {
     @PostMapping("/edit/{id}")
     public String editProduct(@PathVariable("id") int id, @ModelAttribute EditProductDto dto,
                               @RequestParam("productImage") MultipartFile[] files) throws IOException {
-
         productService.editProduct(dto, id, files);
         return "redirect:/products/my";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") int id, @AuthenticationPrincipal CurrentUser currentUser) {
-
         productService.deleteProduct(id, currentUser.getUser());
         return "redirect:/products/my";
-
     }
 }

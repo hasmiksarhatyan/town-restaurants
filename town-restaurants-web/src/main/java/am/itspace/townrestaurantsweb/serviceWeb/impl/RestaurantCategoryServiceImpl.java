@@ -36,18 +36,6 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
         return restaurantCategoryOverviews;
     }
 
-
-//    @Override
-//    public List<RestaurantCategoryOverview> findAll() {
-//        List<RestaurantCategory> categories = restaurantCategoryRepository.findAll();
-//        List<RestaurantCategoryOverview> categoriesOverviews = new ArrayList<>();
-//        for (RestaurantCategory category : categories) {
-//            categoriesOverviews.add(categoryMapper.mapToOverview(category));
-//        }
-//        return categoriesOverviews;
-//    }
-
-
     @Override
     public void addRestaurantCategory(CreateRestaurantCategoryDto dto) {
         restaurantCategoryRepository.save(categoryMapper.mapToEntity(dto));

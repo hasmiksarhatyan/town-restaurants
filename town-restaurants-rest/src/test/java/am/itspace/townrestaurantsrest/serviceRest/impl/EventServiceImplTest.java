@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
+import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,13 @@ import static org.mockito.Mockito.*;
 class EventServiceImplTest {
 
     @Mock
+    EventMapper eventMapper;
+
+    @Mock
     EventRepository eventRepository;
 
     @Mock
-    EventMapper eventMapper;
+    RestaurantRepository restaurantRepository;
 
     @InjectMocks
     EventServiceImpl eventService;
@@ -81,6 +85,28 @@ class EventServiceImplTest {
         //then
         assertNotNull(actual);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetByRestaurantId() {
+        //given
+        var events = List.of(getEvent(), getEvent(), getEvent());
+        var expected = List.of(getEventOverview(), getEventOverview(), getEventOverview());
+        //when
+        doReturn(events).when(eventRepository).findEventsByRestaurant_Id(anyInt());
+        doReturn(expected).when(eventMapper).mapToOverviewList(events);
+        List<EventOverview> actual = eventService.findEventsByRestaurantId(anyInt());
+        //then
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getByRestaurantIdShouldThrowEntityNotFoundException() {
+        //when
+        doReturn(List.of()).when(eventRepository).findEventsByRestaurant_Id(anyInt());
+        //then
+        assertThrows(EntityNotFoundException.class, () -> eventService.findEventsByRestaurantId(anyInt()));
     }
 
     @Test

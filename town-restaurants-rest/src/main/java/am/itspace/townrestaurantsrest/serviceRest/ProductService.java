@@ -9,14 +9,16 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductOverview save(CreateProductDto createProductDto);
+    void delete(int id);
 
     List<ProductOverview> getAll();
 
-    ProductOverview getById(int id) throws EntityNotFoundException;
+    List<ProductOverview> findProductsByRestaurant(int id);
+
+    ProductOverview save(CreateProductDto createProductDto);
 
     ProductOverview update(int id, EditProductDto editProductDto);
 
-    void delete(int id);
+    ProductOverview getById(int id) throws EntityNotFoundException;
 }
 

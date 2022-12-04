@@ -1,14 +1,11 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
-import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
-import am.itspace.townrestaurantscommon.mapper.EventMapper;
+import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper2;
-import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -18,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -27,10 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
-    private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper2 restaurantMapper;
-    private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public RestaurantOverview save(CreateRestaurantDto createRestaurantDto) {
@@ -65,10 +61,31 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantOverview update(int id, EditRestaurantDto editRestaurantDto) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND));
         log.info("Restaurant with that id not found");
-        if (editRestaurantDto.getName() != null) {
-            restaurant.setName(editRestaurantDto.getName());
-            restaurantRepository.save(restaurant);
+        String name = editRestaurantDto.getName();
+        if (StringUtils.hasText(name)) {
+            restaurant.setName(name);
         }
+        String email = editRestaurantDto.getEmail();
+        if (StringUtils.hasText(email)) {
+            restaurant.setEmail(email);
+        }
+        String phone = editRestaurantDto.getPhone();
+        if (StringUtils.hasText(phone)) {
+            restaurant.setPhone(phone);
+        }
+        String address = editRestaurantDto.getAddress();
+        if (StringUtils.hasText(address)) {
+            restaurant.setAddress(address);
+        }
+        Double deliveryPrice = editRestaurantDto.getDeliveryPrice();
+        if (deliveryPrice != null) {
+            restaurant.setDeliveryPrice(deliveryPrice);
+        }
+        RestaurantCategory restaurantCategory = editRestaurantDto.getRestaurantCategory();
+        if (restaurantCategory != null) {
+            restaurant.setRestaurantCategory(restaurantCategory);
+        }
+        restaurantRepository.save(restaurant);
         log.info("The restaurant was successfully stored in the database {}", restaurant.getName());
         return restaurantMapper.mapToResponseDto(restaurant);
     }
@@ -82,16 +99,5 @@ public class RestaurantServiceImpl implements RestaurantService {
             log.info("Restaurant not found");
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
-    }
-
-    @Override
-    public List<EventOverview> getByEventId(int id) {
-        List<Event> events = eventRepository.findEventsByRestaurant_Id(id);
-        if (events.isEmpty()) {
-            log.info("Event not found");
-            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
-        }
-        log.info("Event successfully detected");
-        return eventMapper.mapToOverviewList(events);
     }
 }

@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.dto.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.CreateUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthDto;
 import am.itspace.townrestaurantsrest.api.AuthApi;
@@ -7,9 +8,7 @@ import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -30,5 +29,10 @@ public class AuthEndpoint implements AuthApi {
     @PostMapping("/user/auth")
     public ResponseEntity<?> auth(@Valid @RequestBody UserAuthDto userAuthDto) {
         return ResponseEntity.ok(userService.authentication(userAuthDto));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyUser(@RequestBody VerificationTokenDto verificationTokenDto) throws Exception {
+        return ResponseEntity.ok((userService.verifyUser(verificationTokenDto)));
     }
 }

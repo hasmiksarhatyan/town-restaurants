@@ -1,9 +1,15 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.entity.Product;
+import am.itspace.townrestaurantscommon.entity.ProductCategory;
+import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
+import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
+import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
+import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -15,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static am.itspace.townrestaurantsrest.controller.MyControllerAdvice.getUserDetails;
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,7 +35,16 @@ class ProductServiceImplTest {
     ProductRepository productRepository;
 
     @Mock
+    RestaurantRepository restaurantRepository;
+
+    @Mock
+    ProductCategoryRepository productCategoryRepository;
+
+    @Mock
     ProductMapper productMapper;
+
+    @Mock
+    UserRepository userRepository;
 
     @InjectMocks
     ProductServiceImpl productService;
@@ -74,8 +90,9 @@ class ProductServiceImplTest {
 
     //getAll
     @Test
-    void shouldGetAllProducts() {
+    void shouldNotGetAllProducts() {
         //given
+        var user = getUser();
         var products = List.of(getProduct(), getProduct(), getProduct());
         var expected = List.of(getProductOverview(), getProductOverview(), getProductOverview());
         //when
@@ -85,6 +102,28 @@ class ProductServiceImplTest {
         //then
         assertNotNull(actual);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetByRestaurantId() {
+        //given
+        var products = List.of(getProduct(), getProduct(), getProduct());
+        var expected = List.of(getProductOverview(), getProductOverview(), getProductOverview());
+        //when
+        doReturn(products).when(productRepository).findProductsByRestaurant_Id(anyInt());
+        doReturn(expected).when(productMapper).mapToOverviewList(products);
+        List<ProductOverview> actual = productService.findProductsByRestaurant(anyInt());
+        //then
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getByRestaurantIdShouldThrowEntityNotFoundException() {
+        //when
+        doReturn(List.of()).when(productRepository).findProductsByRestaurant_Id(anyInt());
+        //then
+        assertThrows(EntityNotFoundException.class, () -> productService.findProductsByRestaurant(anyInt()));
     }
 
     @Test
@@ -131,7 +170,6 @@ class ProductServiceImplTest {
     @Test
     void shouldUpdateProduct() {
         //given
-        int productId = 1;
         var product = getProduct();
         var expected = getProductOverview();
         var editProduct = getEditProductDto();
@@ -139,7 +177,7 @@ class ProductServiceImplTest {
         doReturn(Optional.of(product)).when(productRepository).findById(anyInt());
         doReturn(expected).when(productMapper).mapToResponseDto(product);
         doReturn(product).when(productRepository).save(any(Product.class));
-        ProductOverview actual = productService.update(productId, editProduct);
+        ProductOverview actual = productService.update(anyInt(), editProduct);
         //then
         assertNotNull(actual);
         assertEquals(expected.getName(), actual.getName());

@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface RestaurantCategoryService {
 
-    Page<RestaurantCategoryOverview> findAll(Pageable pageable);
+    void deleteRestaurantCategory(int id);
 
     List<RestaurantCategoryOverview> findAll();
 
-    void addRestaurantCategory(CreateRestaurantCategoryDto dto);
+    Page<RestaurantCategoryOverview> findAll(Pageable pageable);
 
-    void deleteRestaurantCategory(int id);
+    void addRestaurantCategory(CreateRestaurantCategoryDto dto);
 }
