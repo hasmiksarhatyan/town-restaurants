@@ -75,4 +75,28 @@ class AuthEndpointTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token", hasToString(userAuthResponseDto.getToken())));
     }
+
+    @Test
+    void verifyToken() throws Exception {
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("plainToken", "1234567890");
+        mvc.perform(post("/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectNode.toString()))
+                .andExpect(status().isOk());
+    }
+
+
+//    @Test
+//    void successfulGettingUser() throws Exception {
+//        User user = userControllerTestParameters.getSavedUser();
+//        User adminUser = userControllerTestParameters.getSavedUser(ADMIN);
+//
+//        resultActions
+//                .getById(user.getId(), adminUser)
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").value(user.getId().toString()));
+//    }
+
 }

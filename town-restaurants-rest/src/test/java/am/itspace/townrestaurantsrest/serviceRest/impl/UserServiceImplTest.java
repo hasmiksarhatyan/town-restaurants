@@ -105,24 +105,24 @@ class UserServiceImplTest {
 //        //then
 //        verify(userRepository, times(1)).save(user);
     }
-
+/////nayiiii
     //save
-    @Test
-    void shouldSaveUser() {
-        //given
-        var createUserDto = getCreateUserDto();
-        var expected = getUserOverview();
-        var user = getUser();
-        //when
-        doReturn(false).when(userRepository).existsByEmail(anyString());
-        doReturn(user).when(userMapper).mapToEntity(createUserDto);
-        doReturn(expected).when(userMapper).mapToResponseDto(user);
-        doReturn(user).when(userRepository).save(any(User.class));
-        UserOverview actual = userService.save(createUserDto);
-        //then
-        assertNotNull(actual);
-        assertEquals(expected, actual);
-    }
+//    @Test
+//    void shouldSaveUser() {
+//        //given
+//        var createUserDto = getCreateUserDto();
+//        var expected = getUserOverview();
+//        var user = getUser();
+//        //when
+//        doReturn(false).when(userRepository).existsByEmail(anyString());
+//        doReturn(user).when(userMapper).mapToEntity(createUserDto);
+//        doReturn(expected).when(userMapper).mapToResponseDto(user);
+//        doReturn(user).when(userRepository).save(any(User.class));
+//        UserOverview actual = userService.save(createUserDto);
+//        //then
+//        assertNotNull(actual);
+//        assertEquals(expected, actual);
+//    }
 
     @Test
     void shouldThrowExceptionAsEmailAlreadyExists() {

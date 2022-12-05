@@ -1,16 +1,14 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.VerificationTokenDto;
+import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.entity.VerificationToken;
 import am.itspace.townrestaurantscommon.mapper.UserMapper2;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
-import am.itspace.townrestaurantsrest.exception.AuthenticationException;
-import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
-import am.itspace.townrestaurantsrest.exception.RegisterException;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.serviceRest.MailServiceRest;
 import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import am.itspace.townrestaurantsrest.serviceRest.VerificationTokenServiceRest;
@@ -24,20 +22,19 @@ import org.springframework.util.StringUtils;
 import javax.mail.MessagingException;
 import java.util.List;
 
-import static am.itspace.townrestaurantsrest.exception.Error.PROVIDED_SAME_PASSWORD;
-import static am.itspace.townrestaurantsrest.exception.Error.PROVIDED_WRONG_PASSWORD;
+import static am.itspace.townrestaurantsrest.exception.Error.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
     private final UserMapper2 userMapper;
-    private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
-    private final VerificationTokenServiceRest tokenService;
     private final MailServiceRest mailService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final VerificationTokenServiceRest tokenService;
 
     @Override
     public UserOverview save(CreateUserDto createUserDto) throws MessagingException {
@@ -53,33 +50,35 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToResponseDto(save);
     }
 
-    private void sendMail(User user) throws MessagingException {
+    private void sendMail(User user) {
         try {
             VerificationToken token = tokenService.createToken(user);
             mailService.sendEmail(user.getEmail(), "Welcome", "Hi, " + user.getFirstName() + user.getLastName() + "\n" +
-                    "please, verify your account by clicking on this link" + token.getPlainToken());
+                    "please, verify your account by sending this to /verify url  " + token.getPlainToken());
             log.info("Verification token was sent to email {}", user.getEmail());
-        } catch (Exception e) {
-            log.info("Failed email sending");
-            throw new RegisterException(Error.FAILED_EMAIL_SENDING);
+        } catch (MessagingException | RuntimeException e) {
+            log.info("Failed to send an email");
+            throw new RegisterException(SEND_EMAIL_FAILED);
         }
     }
-// MessagingException
 
     @Override
-    public UserOverview verifyUser(VerificationTokenDto verificationTokenDto) {
+    public UserOverview verifyToken(VerificationTokenDto verificationTokenDto) {
         String plainToken = verificationTokenDto.getPlainToken();
         VerificationToken token = tokenService.findByPlainToken(plainToken);
         User user = token.getUser();
         tokenService.delete(token);
         if (user == null) {
-            throw new IllegalStateException("User does not exists with email and token");
+            log.info("User does not exists with email and token");
+            throw new EntityNotFoundException(USER_NOT_FOUND);
         }
         if (user.isEnabled()) {
-            throw new IllegalStateException("User already enabled");
+            log.info("User already enabled");
+            throw new VerificationException(USER_ALREADY_ENABLED);
         }
         user.setEnabled(true);
         userRepository.save(user);
+        log.info("User successfully saved");
         return userMapper.mapToResponseDto(user);
     }
 
@@ -158,7 +157,7 @@ public class UserServiceImpl implements UserService {
     public void delete(int id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
-            log.info("The User has been successfully deleted");
+            log.info("User has been successfully deleted");
         } else {
             log.info("User not found");
             throw new EntityNotFoundException(Error.USER_NOT_FOUND);

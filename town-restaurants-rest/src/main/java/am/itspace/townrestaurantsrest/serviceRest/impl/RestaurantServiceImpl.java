@@ -45,7 +45,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             log.info("Restaurant not found");
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         } else {
-            log.info("Restaurant successfully detected");
+            log.info("Restaurant successfully found");
             return restaurantMapper.mapToResponseDtoList(restaurants);
         }
     }

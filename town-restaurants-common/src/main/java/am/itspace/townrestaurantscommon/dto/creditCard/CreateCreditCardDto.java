@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 public class CreateCreditCardDto {
 
     @NotBlank(message = "Card number is mandatory")
+    @Size(min=16,max=16)
     private String cardNumber;
 
     @NotBlank(message = "Name is mandatory")

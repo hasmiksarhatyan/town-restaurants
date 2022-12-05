@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.VerificationTokenDto;
+import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 
@@ -23,5 +23,5 @@ public interface UserService {
 
     void changePassword(ChangePasswordDto changePasswordDto,int userId);
 
-    UserOverview verifyUser(VerificationTokenDto token) throws Exception;
+    UserOverview verifyToken(VerificationTokenDto token);
 }

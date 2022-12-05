@@ -23,8 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
-    private final ProductCategoryRepository productCategoryRepository;
     private final ProductCategoryMapper productCategoryMapper;
+    private final ProductCategoryRepository productCategoryRepository;
 
     @Override
     public ProductCategoryOverview save(CreateProductCategoryDto createProductCategoryDto) {

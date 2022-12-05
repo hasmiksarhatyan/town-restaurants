@@ -36,7 +36,17 @@ public class ReserveServiceImpl implements ReserveService {
     private final RestaurantRepository restaurantRepository;
 
     @Override
+    public void addReserve(CreateReserveDto dto, User user) {
+        Reserve reserve = reserveMapper.mapToEntity(dto);
+        reserve.setUser(user);
+        reserve.setStatus(PENDING);
+        log.info("The reserve was successfully stored in the database {}", dto.getPhoneNumber());
+        reserveRepository.save(reserve);
+    }
+
+    @Override
     public Page<ReserveOverview> getAll(Pageable pageable) {
+        log.info("Reserve successfully found");
         return reserveRepository.findAll(pageable).map(reserveMapper::mapToOverview);
     }
 
@@ -50,25 +60,26 @@ public class ReserveServiceImpl implements ReserveService {
                 reserves.addAll(byRestaurant);
             }
         }
+        log.info("Reserve successfully found");
         Page<Reserve> reservePage = new PageImpl<>(reserves);
         return reservePage.map(reserveMapper::mapToOverview);
     }
 
     @Override
     public Page<ReserveOverview> getReserveByUser(int id, Pageable pageable) {
+        log.info("Reserve successfully found");
         return reserveRepository.findByUserId(id, pageable).map(reserveMapper::mapToOverview);
     }
 
     @Override
-    public void addReserve(CreateReserveDto dto, User user) {
-        Reserve reserve = reserveMapper.mapToEntity(dto);
-        reserve.setUser(user);
-        reserve.setStatus(PENDING);
-        reserveRepository.save(reserve);
+    public ReserveOverview getById(int id) {
+        log.info("Reserve successfully found");
+        return reserveMapper.mapToOverview(reserveRepository.getReferenceById(id));
     }
 
     @Override
     public void delete(int id) {
+        log.info("The reserve has been successfully deleted");
         reserveRepository.deleteById(id);
     }
 
@@ -76,6 +87,7 @@ public class ReserveServiceImpl implements ReserveService {
     public void editReserve(EditReserveDto dto, int id) {
         Optional<Reserve> reserveOptional = reserveRepository.findById(id);
         if (reserveOptional.isEmpty()) {
+            log.info("Reserve not found");
             throw new IllegalStateException("Sorry, something went wrong, try again.");
         }
         Reserve reserve = reserveOptional.get();
@@ -99,11 +111,7 @@ public class ReserveServiceImpl implements ReserveService {
         if (status != null) {
             reserve.setStatus(ReserveStatus.valueOf(status));
         }
+        log.info("The reserve was successfully stored in the database {}", reserve.getPhoneNumber());
         reserveRepository.save(reserve);
-    }
-
-    @Override
-    public ReserveOverview getById(int id) {
-        return reserveMapper.mapToOverview(reserveRepository.getReferenceById(id));
     }
 }

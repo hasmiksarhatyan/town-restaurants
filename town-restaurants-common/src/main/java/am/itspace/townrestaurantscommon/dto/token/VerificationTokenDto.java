@@ -1,9 +1,11 @@
-package am.itspace.townrestaurantscommon.dto;
+package am.itspace.townrestaurantscommon.dto.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -12,5 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VerificationTokenDto {
 
+    @NotBlank(message = "Token is mandatory")
     private String plainToken;
 }

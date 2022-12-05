@@ -16,6 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantCategoryMapper {
 
+    public List<RestaurantCategoryOverview> mapToOverviewList(List<RestaurantCategory> restaurantCategories) {
+        List<RestaurantCategoryOverview> restaurantCategoryOverviews = new ArrayList<>();
+        for (RestaurantCategory restaurantCategory : restaurantCategories) {
+            restaurantCategoryOverviews.add(mapToOverview(restaurantCategory));
+        }
+        return restaurantCategoryOverviews;
+    }
+
     public RestaurantCategoryOverview mapToOverview(RestaurantCategory restaurantCategory) {
         return RestaurantCategoryOverview.builder()
                 .id(restaurantCategory.getId())
