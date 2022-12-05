@@ -1,20 +1,42 @@
 spring:
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-    database-platform: org.hibernate.dialect.H2Dialect
-
   datasource:
-    url: jdbc:h2:mem:town_restaurants;DB_CLOSE_DELAY=-1;MODE=MySql
-    username: sa
-    password: sa
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: false
-      path: /h2
+    url: jdbc:mysql://localhost:3306/town_restaurants
+    username: root
+    password: yerevan21
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+server:
+  servlet:
+    context-path: /api/v1
+    port: 8080
+jwt:
+  secret: k2y75xxx
+  expiration: 330000
+
+logging:
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+      max-file-size: 10MB
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level - %msg%n"
+  level:
+    root: info
+    am.itspace: info
+
+#  liquibase:
+#    change-log: classpath:db/changelog/migration.xml
 
 
-
-
+#http://localhost:8081/api/v1/swagger-ui/index:
+#  html:
