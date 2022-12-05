@@ -4,7 +4,6 @@ import am.itspace.townrestaurantsrest.serviceRest.MailServiceRest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -16,7 +15,6 @@ public class MailServiceRestImpl implements MailServiceRest {
 
     private final JavaMailSender javaMailSender;
 
-    @Async
     @Override
     public void sendEmail(String to, String subject, String text) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -25,6 +23,5 @@ public class MailServiceRestImpl implements MailServiceRest {
         messageHelper.setSubject(subject);
         messageHelper.setText(text);
         javaMailSender.send(mimeMessage);
-
     }
 }

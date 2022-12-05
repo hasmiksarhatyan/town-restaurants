@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -36,7 +37,7 @@ public interface AuthApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
     @PostMapping("/user")
-    ResponseEntity<?> register(@Valid @RequestBody CreateUserDto createUserDto);
+    ResponseEntity<?> register(@Valid @RequestBody CreateUserDto createUserDto) throws MessagingException;
 
     @Operation(
             summary = "Authentication for user",

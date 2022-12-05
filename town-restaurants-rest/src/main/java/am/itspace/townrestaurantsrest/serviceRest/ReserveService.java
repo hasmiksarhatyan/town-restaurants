@@ -10,7 +10,7 @@ public interface ReserveService {
 
     void delete(int id);
 
-    List<ReserveOverview> getAll();
+    List<ReserveOverview> getAll(int userId);
 
     ReserveOverview save(CreateReserveDto createReserveDto);
 

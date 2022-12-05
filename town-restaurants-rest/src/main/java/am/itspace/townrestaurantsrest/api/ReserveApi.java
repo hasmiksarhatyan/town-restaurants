@@ -58,7 +58,7 @@ public interface ReserveApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
     @GetMapping
-    ResponseEntity<List<ReserveOverview>> getAll();
+    ResponseEntity<List<ReserveOverview>> getAll(int userId);
 
     @Operation(
             summary = "Update reserve",

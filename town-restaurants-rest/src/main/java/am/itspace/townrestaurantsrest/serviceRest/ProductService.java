@@ -11,7 +11,7 @@ public interface ProductService {
 
     void delete(int id);
 
-    List<ProductOverview> getAll();
+    List<ProductOverview> getAll(int userId);
 
     List<ProductOverview> findProductsByRestaurant(int id);
 

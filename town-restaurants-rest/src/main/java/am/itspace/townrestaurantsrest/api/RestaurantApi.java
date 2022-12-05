@@ -62,7 +62,6 @@ public interface RestaurantApi {
     @GetMapping
     ResponseEntity<List<RestaurantOverview>> getAll();
 
-
     @Operation(
             summary = "Get restaurant",
             description = "Possible error codes: 4041")

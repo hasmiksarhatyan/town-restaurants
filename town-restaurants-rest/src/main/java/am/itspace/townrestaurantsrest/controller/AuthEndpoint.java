@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @Slf4j
@@ -21,7 +22,7 @@ public class AuthEndpoint implements AuthApi {
 
     @Override
     @PostMapping("/user")
-    public ResponseEntity<?> register(@Valid @RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<?> register(@Valid @RequestBody CreateUserDto createUserDto) throws MessagingException {
         return ResponseEntity.ok((userService.save(createUserDto)));
     }
 

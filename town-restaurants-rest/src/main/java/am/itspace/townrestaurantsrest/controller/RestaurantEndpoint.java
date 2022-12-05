@@ -30,7 +30,7 @@ public class RestaurantEndpoint implements RestaurantApi {
     @Override
     @PostMapping
     public ResponseEntity<RestaurantOverview> create(@Valid @RequestBody CreateRestaurantDto createRestaurantDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.save(createRestaurantDto));
+        return ResponseEntity.ok(restaurantService.save(createRestaurantDto));
     }
 
     @Override

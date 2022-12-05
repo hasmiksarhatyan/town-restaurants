@@ -82,7 +82,7 @@ public interface UserApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto);
+    ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto,int userId);
 
     @Operation(
             summary = "Update user",

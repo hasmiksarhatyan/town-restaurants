@@ -27,8 +27,8 @@ public class ReserveEndpoint implements ReserveApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ReserveOverview>> getAll() {
-        return ResponseEntity.ok(reserveService.getAll());
+    public ResponseEntity<List<ReserveOverview>> getAll(int userId) {
+        return ResponseEntity.ok(reserveService.getAll(userId));
     }
 
     @Override

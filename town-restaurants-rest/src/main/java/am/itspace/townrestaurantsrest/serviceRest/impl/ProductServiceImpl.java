@@ -3,13 +3,14 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.Role;
+import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
+import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
@@ -22,8 +23,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static am.itspace.townrestaurantsrest.controller.MyControllerAdvice.getUserDetails;
-
 @Slf4j
 @Service
 @Transactional
@@ -31,6 +30,7 @@ import static am.itspace.townrestaurantsrest.controller.MyControllerAdvice.getUs
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper productMapper;
+    private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
@@ -46,29 +46,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductOverview> getAll() {
+    public List<ProductOverview> getAll(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
             log.info("Product not found");
             throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
         }
-        if (getUserDetails() != null) {
-            if (getUserDetails().getRole() == Role.MANAGER) {
-                log.info("Product successfully detected");
-                return productMapper.mapToOverviewList(products);
+        if (user.getRole() == Role.MANAGER) {
+            log.info("Products successfully detected");
+            return productMapper.mapToOverviewList(products);
+        } else {
+            List<Product> productsByUser = productRepository.findProductByUser(user);
+            if (productsByUser.isEmpty()) {
+                log.info("Product not found");
+                throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
             } else {
-                List<Product> productByUser = productRepository.findProductByUser(getUserDetails());
-                if (productByUser.isEmpty()) {
-                    log.info("Product not found");
-                    throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
-                } else {
-                    log.info("Product successfully detected");
-                    return productMapper.mapToOverviewList(productByUser);
-                }
+                log.info("Products successfully detected");
+                return productMapper.mapToOverviewList(productsByUser);
             }
-        }else {
-            log.info("Product not found");
-            throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
         }
     }
 

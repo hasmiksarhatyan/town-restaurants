@@ -4,11 +4,12 @@ import am.itspace.townrestaurantscommon.dto.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface UserService {
 
-    UserOverview save(CreateUserDto createUserDto);
+    UserOverview save(CreateUserDto createUserDto) throws MessagingException;
 
     UserAuthResponseDto authentication(UserAuthDto userAuthDto);
 
@@ -20,7 +21,7 @@ public interface UserService {
 
     void delete(int id);
 
-    void changePassword(ChangePasswordDto changePasswordDto);
+    void changePassword(ChangePasswordDto changePasswordDto,int userId);
 
     UserOverview verifyUser(VerificationTokenDto token) throws Exception;
 }

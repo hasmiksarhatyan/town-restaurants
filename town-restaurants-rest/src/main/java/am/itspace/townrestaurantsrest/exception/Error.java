@@ -46,7 +46,7 @@ public enum Error {
 
     PROVIDED_SAME_PASSWORD(4091, HttpStatus.CONFLICT, "Provided the same password to change password"),
 
-    TOKEN(4006, HttpStatus.BAD_REQUEST, "token");
+    FAILED_EMAIL_SENDING(4092, HttpStatus.CONFLICT, "Failed email sending");
 
 
     private final Integer code;

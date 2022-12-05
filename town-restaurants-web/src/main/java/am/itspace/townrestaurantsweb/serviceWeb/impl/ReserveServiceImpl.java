@@ -31,9 +31,9 @@ import static am.itspace.townrestaurantscommon.entity.ReserveStatus.PENDING;
 @RequiredArgsConstructor
 public class ReserveServiceImpl implements ReserveService {
 
+    private final ReserveMapper reserveMapper;
     private final ReserveRepository reserveRepository;
     private final RestaurantRepository restaurantRepository;
-    private final ReserveMapper reserveMapper;
 
     @Override
     public Page<ReserveOverview> getAll(Pageable pageable) {

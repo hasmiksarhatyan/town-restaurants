@@ -60,7 +60,7 @@ public interface ProductApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
     @GetMapping
-    ResponseEntity<List<ProductOverview>> getAll();
+    ResponseEntity<List<ProductOverview>> getAll(int userId);
 
     @Operation(
             summary = "Get product",

@@ -28,8 +28,8 @@ public class ProductEndpoint implements ProductApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ProductOverview>> getAll() {
-        return ResponseEntity.ok(productService.getAll());
+    public ResponseEntity<List<ProductOverview>> getAll(int userId) {
+        return ResponseEntity.ok(productService.getAll(userId));
     }
 
     @Override

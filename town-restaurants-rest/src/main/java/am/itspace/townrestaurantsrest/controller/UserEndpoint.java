@@ -35,8 +35,8 @@ public class UserEndpoint implements UserApi {
 
     @Override
     @PutMapping("/password/change")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
-        userService.changePassword(changePasswordDto);
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto,int userId) {
+        userService.changePassword(changePasswordDto,userId);
         return ResponseEntity.ok().build();
     }
 

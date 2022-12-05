@@ -17,16 +17,13 @@ import am.itspace.townrestaurantsrest.serviceRest.VerificationTokenServiceRest;
 import am.itspace.townrestaurantsrest.utilRest.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.mail.MessagingException;
 import java.util.List;
 
-import static am.itspace.townrestaurantsrest.controller.MyControllerAdvice.getUserDetails;
 import static am.itspace.townrestaurantsrest.exception.Error.PROVIDED_SAME_PASSWORD;
 import static am.itspace.townrestaurantsrest.exception.Error.PROVIDED_WRONG_PASSWORD;
 
@@ -43,7 +40,7 @@ public class UserServiceImpl implements UserService {
     private final MailServiceRest mailService;
 
     @Override
-    public UserOverview save(CreateUserDto createUserDto) {
+    public UserOverview save(CreateUserDto createUserDto) throws MessagingException {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
             log.info("User with that email already exists");
             throw new RegisterException(Error.USER_REGISTRATION_FAILED);
@@ -51,18 +48,20 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.mapToEntity(createUserDto);
         user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        token(user);
-        return userMapper.mapToResponseDto(userRepository.save(user));
+        User save = userRepository.save(user);
+        sendMail(user);
+        return userMapper.mapToResponseDto(save);
     }
 
-    private void token(User user) {
+    private void sendMail(User user) throws MessagingException {
         try {
             VerificationToken token = tokenService.createToken(user);
             mailService.sendEmail(user.getEmail(), "Welcome", "Hi, " + user.getFirstName() + user.getLastName() + "\n" +
                     "please, verify your account by clicking on this link" + token.getPlainToken());
             log.info("Verification token was sent to email {}", user.getEmail());
         } catch (Exception e) {
-            throw new RegisterException(Error.TOKEN);
+            log.info("Failed email sending");
+            throw new RegisterException(Error.FAILED_EMAIL_SENDING);
         }
     }
 // MessagingException
@@ -118,8 +117,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(ChangePasswordDto changePasswordDto) {
-        String username = getUserDetails().getEmail();
+    public void changePassword(ChangePasswordDto changePasswordDto, int userId) {
+        User currentUser = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+        String username = currentUser.getEmail();
         log.info("Request from user {} to change the password", username);
         User user = userRepository.findByEmail(username).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
         boolean matches = passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword());

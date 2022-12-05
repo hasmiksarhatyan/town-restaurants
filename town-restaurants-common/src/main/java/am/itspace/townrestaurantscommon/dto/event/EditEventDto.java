@@ -14,14 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 public class EditEventDto {
 
-    @NotBlank(message = "Name is mandatory")
     private String name;
 
     private String description;
 
     private double price;
 
-    @NotBlank(message = "Date is mandatory")
     private String eventDateTime;
 
     private Integer restaurantId;
