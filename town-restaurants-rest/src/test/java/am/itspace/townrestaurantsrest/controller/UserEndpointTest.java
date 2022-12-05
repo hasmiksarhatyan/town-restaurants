@@ -90,6 +90,7 @@ class UserEndpointTest {
                 .andExpect(status().isOk());
     }
 
+
     @Test
     void delete() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/users/{id}", user.getId())).

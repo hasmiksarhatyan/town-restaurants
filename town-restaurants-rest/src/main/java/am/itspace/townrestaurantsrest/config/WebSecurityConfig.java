@@ -1,18 +1,16 @@
 package am.itspace.townrestaurantsrest.config;
+
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.security.UserDetailServiceImpl;
 import am.itspace.townrestaurantsrest.security.JWTAuthenticationTokenFilter;
 import am.itspace.townrestaurantsrest.security.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,10 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserDetailServiceImpl userDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 //                .antMatchers(HttpMethod.POST, "/categories").hasAuthority(Role.ADMIN.name())
-                .antMatchers(HttpMethod.PUT, "/").hasAuthority(Role.MANAGER.name())
-                .antMatchers(HttpMethod.DELETE, "//{id}").hasAuthority(Role.MANAGER.name())
+//                .antMatchers(HttpMethod.PUT, "/").hasAuthority(Role.MANAGER.name())
+//                .antMatchers(HttpMethod.DELETE, "//{id}").hasAuthority(Role.MANAGER.name())
 //                .antMatchers(HttpMethod.POST, "/products").hasAuthority(Role.CUSTOMER.name())
 //                .antMatchers(HttpMethod.PUT, "/products").hasAuthority(Role.CUSTOMER.name())
 //                .antMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority(Role.CUSTOMER.name())

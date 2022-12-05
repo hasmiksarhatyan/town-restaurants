@@ -11,6 +11,7 @@ import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.EventService;
 import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -34,10 +36,12 @@ public class EventServiceImpl implements EventService {
     private final RestaurantRepository restaurantRepository;
 
     public Page<EventOverview> findAll(Pageable pageable) {
+        log.info("Event successfully found");
         return eventRepository.findAll(pageable).map(eventMapper::mapToOverview);
     }
 
     public Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable) {
+        log.info("Events successfully found by restaurantId");
         return eventRepository.findEventsByRestaurantId(id, pageable).map(eventMapper::mapToOverview);
     }
 
@@ -50,6 +54,7 @@ public class EventServiceImpl implements EventService {
                 events.put(restaurant.getId(), eventsByRestaurant);
             }
         }
+        log.info("Events successfully sorted by restaurant");
         return events;
     }
 
@@ -57,10 +62,12 @@ public class EventServiceImpl implements EventService {
     public void save(CreateEventDto dto, MultipartFile[] files) throws IOException {
         dto.setPictures(fileUtil.uploadImages(files));
         eventRepository.save(eventMapper.mapToEntity(dto));
+        log.info("The event was successfully stored in the database {}", dto.getName());
     }
 
     @Override
     public byte[] getEventImage(String fileName) throws IOException {
+        log.info("Images successfully found");
         return FileUtil.getImage(fileName);
     }
 
@@ -68,6 +75,7 @@ public class EventServiceImpl implements EventService {
     public void editEvent(EditEventDto dto, int id, MultipartFile[] files) throws IOException {
         Optional<Event> eventOptional = eventRepository.findById(id);
         if (eventOptional.isEmpty()) {
+            log.info("Event not found");
             throw new IllegalStateException("Sorry, something went wrong, try again.");
         }
         Event event = eventOptional.get();
@@ -95,14 +103,17 @@ public class EventServiceImpl implements EventService {
         if (pictures != event.getPictures()) {
             event.setPictures(fileUtil.uploadImages(files));
         }
+        log.info("The event was successfully stored in the database {}", event.getName());
         eventRepository.save(event);
     }
 
     @Override
     public void deleteEvent(int id) {
         if (!eventRepository.existsById(id)) {
+            log.info("Event not found");
             throw new IllegalStateException();
         }
+        log.info("The event has been successfully deleted");
         eventRepository.deleteById(id);
     }
 
@@ -110,8 +121,10 @@ public class EventServiceImpl implements EventService {
     public EventOverview findById(int id) {
         Optional<Event> event = eventRepository.findById(id);
         if (event.isEmpty()) {
+            log.info("Event not found");
             throw new IllegalStateException("There is no event");
         }
+        log.info("Event successfully found");
         return eventMapper.mapToOverview(event.get());
     }
 }

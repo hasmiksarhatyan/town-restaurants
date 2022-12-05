@@ -56,7 +56,7 @@ public class ReserveServiceImpl implements ReserveService {
             throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
         } else {
             if (user.getRole() == Role.MANAGER) {
-                log.info("Reserve successfully detected");
+                log.info("Reserve successfully found");
                 return reserveMapper.mapToOverviewList(reserves);
             } else if (user.getRole() == Role.RESTAURANT_OWNER) {
                 reserveForOwner(user);

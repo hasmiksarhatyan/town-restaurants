@@ -13,6 +13,7 @@ import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository productRepository;
+
+    private final FileUtil fileUtil;
     private final ProductMapper productMapper;
+    private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
-    private final FileUtil fileUtil;
 
     @Override
     public Page<ProductOverview> sortProduct(Pageable pageable, String sort, Integer id) {
@@ -49,11 +52,13 @@ public class ProductServiceImpl implements ProductService {
             default:
                 products = productRepository.findAll(pageable);
         }
+        log.info("Products successfully sorted");
         return products.map(productMapper::mapToResponseDto);
     }
 
     @Override
     public List<ProductOverview> findAll() {
+        log.info("Products successfully found");
         return productMapper.mapToOverviewList(productRepository.findAll());
     }
 
@@ -61,8 +66,10 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOverview> findAllById(int id) {
         List<Product> products = productRepository.findAllById(id);
         if (products.isEmpty()) {
-            throw new IllegalStateException();
+            log.info("Product not found");
+            throw new IllegalStateException("Product not found");
         }
+        log.info("Products successfully detected");
         return productMapper.mapToOverviewList(products);
     }
 
@@ -73,6 +80,7 @@ public class ProductServiceImpl implements ProductService {
             product.setPictures(fileUtil.uploadImages(files));
             product.setUser(user);
             productRepository.save(product);
+            log.info("The product was successfully stored in the database {}", dto.getName());
         }
     }
 
@@ -105,12 +113,14 @@ public class ProductServiceImpl implements ProductService {
             if (pictures != null) {
                 product.setPictures(fileUtil.uploadImages(files));
             }
+            log.info("The product was successfully stored in the database {}", product.getName());
             productRepository.save(product);
         }
     }
 
     @Override
     public byte[] getProductImage(String fileName) throws IOException {
+        log.info("Image successfully found");
         return FileUtil.getImage(fileName);
     }
 
@@ -121,22 +131,26 @@ public class ProductServiceImpl implements ProductService {
             if ((user.getRole() == Role.MANAGER) ||
                     (user.getId().equals(productOptional.get().getUser().getId()))) {
                 productRepository.deleteById(id);
+                log.info("The product has been successfully deleted");
             }
         }
     }
 
     @Override
     public ProductOverview findById(int id) {
+        log.info("Product successfully found");
         return productMapper.mapToResponseDto(productRepository.getReferenceById(id));
     }
 
     @Override
     public List<ProductOverview> findProductByUser(User user) {
+        log.info("Product successfully found");
         return productMapper.mapToOverviewList(productRepository.findProductByUser(user));
     }
 
     @Override
     public List<ProductOverview> findProductsByRestaurant(int id) {
+        log.info("Product successfully found");
         return productMapper.mapToOverviewList(productRepository.findProductsByRestaurant_Id(id));
     }
 }

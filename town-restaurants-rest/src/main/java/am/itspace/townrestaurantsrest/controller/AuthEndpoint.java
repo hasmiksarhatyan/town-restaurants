@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.VerificationTokenDto;
+import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.CreateUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthDto;
 import am.itspace.townrestaurantsrest.api.AuthApi;
@@ -32,8 +32,9 @@ public class AuthEndpoint implements AuthApi {
         return ResponseEntity.ok(userService.authentication(userAuthDto));
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestBody VerificationTokenDto verificationTokenDto) throws Exception {
-        return ResponseEntity.ok((userService.verifyUser(verificationTokenDto)));
+    @Override
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyToken(@Valid @RequestBody VerificationTokenDto verificationTokenDto){
+        return ResponseEntity.ok((userService.verifyToken(verificationTokenDto)));
     }
 }

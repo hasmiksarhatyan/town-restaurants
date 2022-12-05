@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
+import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.CreateUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthDto;
 import am.itspace.townrestaurantsrest.exception.ApiError;
@@ -58,4 +59,42 @@ public interface AuthApi {
             })
     @PostMapping("user/auth")
     ResponseEntity<?> auth(@Valid @RequestBody UserAuthDto userAuthDto);
+
+    @Operation(
+            summary = "Verification for user",
+            description = "Possible error codes: 4046,4092,4093,4051")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User should be verified.",
+                            content = @Content(mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4046",
+                            description = "User not found.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4092",
+                            description = "User already enabled.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4093",
+                            description = "Token has expired.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4051",
+                            description = "Failed to send an email.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))
+            })
+    @PostMapping("/verify")
+    ResponseEntity<?> verifyToken(@RequestBody VerificationTokenDto verificationTokenDto);
 }
+

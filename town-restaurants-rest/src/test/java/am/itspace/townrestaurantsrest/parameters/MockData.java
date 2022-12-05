@@ -23,6 +23,7 @@ import am.itspace.townrestaurantscommon.entity.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -340,6 +341,16 @@ public class MockData {
                 .reservedTime(LocalTime.parse("20:00:00"))
                 .restaurantOverview(getRestaurantOverview())
                 .status("PENDING")
+                .build();
+    }
+
+    //token
+
+    public static VerificationToken getVerificationToken(){
+        return VerificationToken.builder()
+                .id(1)
+                .user(getUser())
+                .plainToken("123456789")
                 .build();
     }
 }

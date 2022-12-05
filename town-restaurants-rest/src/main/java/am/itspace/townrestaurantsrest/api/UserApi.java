@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public interface UserApi {
+public interface  UserApi {
 
     @Operation(
             summary = "Get all users",

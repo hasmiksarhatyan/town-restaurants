@@ -60,52 +60,61 @@ public class UserServiceImpl implements UserService {
         User user = token.getUser();
         tokenService.delete(token);
         if (user == null) {
+            log.info("User does not exists with email and token");
             throw new IllegalStateException("User does not exists with email and token");
         }
         if (user.isEnabled()) {
+            log.info("User already enabled");
             throw new IllegalStateException("User already enabled");
         }
         user.setEnabled(true);
         userRepository.save(user);
+        log.info("User successfully saved");
     }
 
     @Override
     public void delete(int id) {
         if (!userRepository.existsById(id)) {
+            userRepository.deleteById(id);
             throw new IllegalStateException();
         }
         userRepository.deleteById(id);
+        log.info("User has been successfully deleted");
     }
 
     @Override
     public void changePassword(Integer id, ChangePasswordDto dto) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
+            log.info("User not found");
             throw new IllegalStateException("User doesn't exist");
         }
         User user = optionalUser.get();
         String oldPassword = dto.getOldPassword();
         String newPassword1 = dto.getNewPassword1();
         String newPassword2 = dto.getNewPassword2();
-
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            log.warn("User {} had provided wrong credentials to change the password", user.getEmail());
             throw new IllegalStateException("Provided wrong password");
         }
-
         if (!newPassword1.equals(newPassword2)) {
+            log.warn("User {} had provided wrong credentials to change the password", user.getEmail());
             throw new IllegalStateException("Given new passwords don't match");
         }
         if (passwordEncoder.matches(newPassword1, user.getPassword())) {
+            log.warn("Provided old password in change password request");
             throw new IllegalStateException("Provided old password in change password request");
         }
         user.setPassword(passwordEncoder.encode(newPassword1));
         userRepository.save(user);
+        log.info("User {} password was successfully changed", user.getEmail());
     }
 
     @Override
     public void editUser(EditUserDto dto, int userId) {
         Optional<User> optional = userRepository.findById(userId);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
+            log.info("User not found");
             throw new IllegalStateException("User not found");
         }
         User user = optional.get();
@@ -118,5 +127,6 @@ public class UserServiceImpl implements UserService {
             user.setLastName(lastName);
         }
         userRepository.save(user);
+        log.info("The user was successfully stored in the database {}", user.getFirstName());
     }
 }

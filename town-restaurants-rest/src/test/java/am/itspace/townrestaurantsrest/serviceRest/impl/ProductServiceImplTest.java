@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static am.itspace.townrestaurantsrest.controller.MyControllerAdvice.getUserDetails;
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -87,7 +86,7 @@ class ProductServiceImplTest {
         //then
         assertThrows(EntityAlreadyExistsException.class, () -> productService.save(createProduct));
     }
-
+/////nayi saaa
     //getAll
     @Test
     void shouldNotGetAllProducts() {
@@ -98,7 +97,7 @@ class ProductServiceImplTest {
         //when
         doReturn(products).when(productRepository).findAll();
         doReturn(expected).when(productMapper).mapToOverviewList(products);
-        List<ProductOverview> actual = productService.getAll();
+        List<ProductOverview> actual = productService.getAll(anyInt());
         //then
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -125,21 +124,21 @@ class ProductServiceImplTest {
         //then
         assertThrows(EntityNotFoundException.class, () -> productService.findProductsByRestaurant(anyInt()));
     }
-
+///nayii
     @Test
     void shouldThrowExceptionAsProductsListIsEmpty() {
         //when
         doReturn(List.of()).when(productRepository).findAll();
         //then
-        assertThrows(EntityNotFoundException.class, () -> productService.getAll());
+        assertThrows(EntityNotFoundException.class, () -> productService.getAll(anyInt()));
     }
-
+///nayii
     @Test
     void shouldEntityNotFoundExceptionAsProductNotFound() {
         //when
         doThrow(EntityNotFoundException.class).when(productRepository).findAll();
         //then
-        assertThrows(EntityNotFoundException.class, () -> productService.getAll());
+        assertThrows(EntityNotFoundException.class, () -> productService.getAll(anyInt()));
     }
 
     //getById
