@@ -42,7 +42,7 @@ class RestaurantCategoryServiceImplTest {
         //when
         doReturn(false).when(restaurantCategoryRepository).existsByName(anyString());
         doReturn(restaurantCategory).when(categoryMapper).mapToEntity(createRestaurantCategory);
-        doReturn(expected).when(categoryMapper).mapToResponseDto(restaurantCategory);
+        doReturn(expected).when(categoryMapper).mapToOverview(restaurantCategory);
         doReturn(restaurantCategory).when(restaurantCategoryRepository).save(any(RestaurantCategory.class));
         RestaurantCategoryOverview actual = restaurantCategoryService.save(createRestaurantCategory);
         //then
@@ -79,7 +79,7 @@ class RestaurantCategoryServiceImplTest {
         var expected = List.of(getRestaurantCategoryOverview(), getRestaurantCategoryOverview(), getRestaurantCategoryOverview());
         //when
         doReturn(categories).when(restaurantCategoryRepository).findAll();
-        doReturn(expected).when(categoryMapper).mapToResponseDtoList(categories);
+        doReturn(expected).when(categoryMapper).mapToOverviewList(categories);
         List<RestaurantCategoryOverview> actual = restaurantCategoryService.getAll();
         //then
         assertNotNull(actual);
@@ -112,7 +112,7 @@ class RestaurantCategoryServiceImplTest {
         var createRestaurantCategory = getCreateRestaurantCategoryDto();
         //when
         doReturn(Optional.of(restaurantCategory)).when(restaurantCategoryRepository).findById(anyInt());
-        doReturn(expected).when(categoryMapper).mapToResponseDto(restaurantCategory);
+        doReturn(expected).when(categoryMapper).mapToOverview(restaurantCategory);
         RestaurantCategoryOverview actual = restaurantCategoryService.getById(anyInt());
         //then
         assertNotNull(actual);
@@ -138,7 +138,7 @@ class RestaurantCategoryServiceImplTest {
         var createRestaurantCategory = getCreateRestaurantCategoryDto();
         //when
         doReturn(Optional.of(restaurantCategory)).when(restaurantCategoryRepository).findById(anyInt());
-        doReturn(expected).when(categoryMapper).mapToResponseDto(restaurantCategory);
+        doReturn(expected).when(categoryMapper).mapToOverview(restaurantCategory);
         doReturn(restaurantCategory).when(restaurantCategoryRepository).save(any(RestaurantCategory.class));
         RestaurantCategoryOverview actual = restaurantCategoryService.update(anyInt(), editRestaurantCategory);
         //then
