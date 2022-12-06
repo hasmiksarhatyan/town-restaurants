@@ -33,8 +33,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public List<ProductCategoryOverview> findAll() {
+        List<ProductCategory> categories = productCategoryRepository.findAll();
+        if (categories.isEmpty()) {
+            log.info("Category not found");
+            throw new IllegalStateException();
+        }
         log.info("Category successfully found");
-        return productCategoryMapper.mapToOverviewList(productCategoryRepository.findAll());
+        return productCategoryMapper.mapToOverviewList(categories);
     }
 
     @Override
@@ -50,7 +55,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         Optional<ProductCategory> productCategoryOptional = productCategoryRepository.findById(id);
         if (productCategoryOptional.isEmpty()) {
             log.info("Category not found");
-            throw new IllegalStateException("Sorry, something went wrong, try again.");
+            throw new IllegalStateException();
         }
         ProductCategory productCategory = productCategoryOptional.get();
         String name = dto.getName();
@@ -63,13 +68,19 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public void deleteProductCategory(int id) {
-        log.info("The category has been successfully deleted");
-        productCategoryRepository.deleteById(id);
+        if (productCategoryRepository.existsById(id)) {
+            productCategoryRepository.deleteById(id);
+            log.info("The category has been successfully deleted");
+        } else {
+            log.info("Category not found");
+            throw new IllegalStateException();
+        }
     }
 
     @Override
     public ProductCategoryOverview findById(int id) {
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(IllegalStateException::new);
         log.info("Category successfully found");
-        return productCategoryMapper.mapToOverview(productCategoryRepository.getReferenceById(id));
+        return productCategoryMapper.mapToOverview(productCategory);
     }
 }

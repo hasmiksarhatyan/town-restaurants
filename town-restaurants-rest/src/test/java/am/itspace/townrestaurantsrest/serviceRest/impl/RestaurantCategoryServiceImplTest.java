@@ -2,7 +2,7 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper2;
+import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -27,7 +27,7 @@ class RestaurantCategoryServiceImplTest {
     RestaurantCategoryRepository restaurantCategoryRepository;
 
     @Mock
-    RestaurantCategoryMapper2 categoryMapper;
+    RestaurantCategoryMapper categoryMapper;
 
     @InjectMocks
     RestaurantCategoryServiceImpl restaurantCategoryService;

@@ -73,12 +73,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void editEvent(EditEventDto dto, int id, MultipartFile[] files) throws IOException {
-        Optional<Event> eventOptional = eventRepository.findById(id);
-        if (eventOptional.isEmpty()) {
-            log.info("Event not found");
-            throw new IllegalStateException("Sorry, something went wrong, try again.");
-        }
-        Event event = eventOptional.get();
+        Event event = eventRepository.findById(id).orElseThrow(IllegalStateException::new);
         String name = dto.getName();
         if (StringUtils.hasText(name)) {
             event.setName(name);
@@ -119,13 +114,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventOverview findById(int id) {
-        Optional<Event> event = eventRepository.findById(id);
-        if (event.isEmpty()) {
-            log.info("Event not found");
-            throw new IllegalStateException("There is no event");
-        }
+        Event event = eventRepository.findById(id).orElseThrow(IllegalStateException::new);
         log.info("Event successfully found");
-        return eventMapper.mapToOverview(event.get());
+        return eventMapper.mapToOverview(event);
     }
 }
 

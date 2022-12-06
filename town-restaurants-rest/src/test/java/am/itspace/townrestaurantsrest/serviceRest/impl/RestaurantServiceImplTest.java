@@ -2,7 +2,7 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
-import am.itspace.townrestaurantscommon.mapper.RestaurantMapper2;
+import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -29,7 +29,7 @@ class RestaurantServiceImplTest {
     private RestaurantServiceImpl restaurantService;
 
     @Mock
-    private RestaurantMapper2 restaurantMapper;
+    private RestaurantMapper restaurantMapper;
 
     //save
     @Test

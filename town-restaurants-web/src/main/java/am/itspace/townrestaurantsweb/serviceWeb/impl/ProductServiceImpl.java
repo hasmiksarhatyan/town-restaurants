@@ -40,6 +40,9 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> products;
         if (id != null) {
             products = productRepository.findProductsByProductCategory_Id(id, pageable);
+            if (products.isEmpty()) {
+                throw new IllegalStateException();
+            }
             return products.map(productMapper::mapToResponseDto);
         }
         switch (sort) {
@@ -66,8 +69,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOverview> findAllById(int id) {
         List<Product> products = productRepository.findAllById(id);
         if (products.isEmpty()) {
-            log.info("Product not found");
-            throw new IllegalStateException("Product not found");
+            throw new IllegalStateException();
         }
         log.info("Products successfully detected");
         return productMapper.mapToOverviewList(products);
@@ -87,35 +89,37 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException {
         Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            String name = dto.getName();
-            if (StringUtils.hasText(name)) {
-                product.setName(name);
-            }
-            String description = dto.getDescription();
-            if (StringUtils.hasText(description)) {
-                product.setDescription(description);
-            }
-            Double price = dto.getPrice();
-            if (price >= 0) {
-                product.setPrice(price);
-            }
-            Integer restaurantId = dto.getRestaurantId();
-            if (restaurantId != null) {
-                product.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
-            }
-            Integer productCategoryId = dto.getProductCategoryId();
-            if (productCategoryId != null) {
-                product.setProductCategory(productCategoryRepository.getReferenceById(productCategoryId));
-            }
-            List<String> pictures = dto.getPictures();
-            if (pictures != null) {
-                product.setPictures(fileUtil.uploadImages(files));
-            }
-            log.info("The product was successfully stored in the database {}", product.getName());
-            productRepository.save(product);
+        if (productOptional.isEmpty()) {
+            log.info("Product not found");
+            throw new IllegalStateException();
         }
+        Product product = productOptional.get();
+        String name = dto.getName();
+        if (StringUtils.hasText(name)) {
+            product.setName(name);
+        }
+        String description = dto.getDescription();
+        if (StringUtils.hasText(description)) {
+            product.setDescription(description);
+        }
+        Double price = dto.getPrice();
+        if (price >= 0) {
+            product.setPrice(price);
+        }
+        Integer restaurantId = dto.getRestaurantId();
+        if (restaurantId != null) {
+            product.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        }
+        Integer productCategoryId = dto.getProductCategoryId();
+        if (productCategoryId != null) {
+            product.setProductCategory(productCategoryRepository.getReferenceById(productCategoryId));
+        }
+        List<String> pictures = dto.getPictures();
+        if (pictures != null) {
+            product.setPictures(fileUtil.uploadImages(files));
+        }
+        log.info("The product was successfully stored in the database {}", product.getName());
+        productRepository.save(product);
     }
 
     @Override
@@ -127,19 +131,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(int id, User user) {
         Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            if ((user.getRole() == Role.MANAGER) ||
-                    (user.getId().equals(productOptional.get().getUser().getId()))) {
-                productRepository.deleteById(id);
-                log.info("The product has been successfully deleted");
-            }
+        if (productOptional.isEmpty()) {
+            log.info("Product not found");
+            throw new IllegalStateException();
+        }
+        if ((user.getRole() == Role.MANAGER) || (user.getId().equals(productOptional.get().getUser().getId()))) {
+            productRepository.deleteById(id);
+            log.info("The product has been successfully deleted");
         }
     }
 
     @Override
     public ProductOverview findById(int id) {
+        Product product = productRepository.findById(id).orElseThrow(IllegalStateException::new);
         log.info("Product successfully found");
-        return productMapper.mapToResponseDto(productRepository.getReferenceById(id));
+        return productMapper.mapToResponseDto(product);
     }
 
     @Override
@@ -150,7 +156,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductOverview> findProductsByRestaurant(int id) {
+        List<Product> products = productRepository.findProductsByRestaurant_Id(id);
+        if (products.isEmpty()) {
+            log.info("Product not found");
+            throw new IllegalStateException();
+        }
         log.info("Product successfully found");
-        return productMapper.mapToOverviewList(productRepository.findProductsByRestaurant_Id(id));
+        return productMapper.mapToOverviewList(products);
     }
 }

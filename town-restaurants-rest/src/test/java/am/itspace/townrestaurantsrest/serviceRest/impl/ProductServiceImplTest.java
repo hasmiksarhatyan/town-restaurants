@@ -1,10 +1,7 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.entity.Product;
-import am.itspace.townrestaurantscommon.entity.ProductCategory;
-import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;

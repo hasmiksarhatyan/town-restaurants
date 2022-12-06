@@ -93,7 +93,7 @@
                 </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
-                <a class="nav-link" href="/customer">
+                <a class="nav-link" href="/users/home">
                     <i class="fa fa-fw fa-user"></i>
                     <span class="nav-link-text">My Profile</span>
                 </a>
@@ -181,22 +181,23 @@
                         </tr>
                     </table>
                     <span style="color: red" th:if="${errorMessageName!=null}" th:text="${errorMessageName}"></span><br>
+                    <span style="color: red" th:if="${errorMessagePassword!=null}" th:text="${errorMessageName}"></span><br>
                 </div>
             </div>
-<a th:href="@{'/users/edit/' + ${currentUser.id}}">Change First Name or/and Last Name:</a><br>
-<a th:href="@{'/users/edit/' + ${currentUser.id}}">Change Password:</a>
+            <a th:href="@{'/users/edit/' + ${currentUser.id}}">Change First Name or/and Last Name:</a><br>
+            <a th:href="@{'/users/edit/' + ${currentUser.id}}">Change Password:</a>
+        </div>
     </div>
+    <!-- /.container-fluid-->
 </div>
-<!-- /.container-fluid-->
-</div>
-    <!-- /.container-wrapper-->
-    <th:block th:insert="fragments/fragmentUser::footer"></th:block>
-    <!-- Scroll to Top Button-->
-    <th:block th:insert="fragments/fragmentUser::scroll"></th:block>
-    <!-- Logout Modal-->
-    <th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
 
-    <th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
 
 </body>
 </html>

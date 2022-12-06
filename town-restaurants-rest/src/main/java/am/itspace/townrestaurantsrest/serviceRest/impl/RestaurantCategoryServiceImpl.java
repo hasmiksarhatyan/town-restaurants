@@ -4,7 +4,7 @@ import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantC
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper2;
+import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -23,8 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantCategoryServiceImpl implements RestaurantCategoryService {
 
+    private final RestaurantCategoryMapper restaurantCategoryMapper;
     private final RestaurantCategoryRepository restaurantCategoryRepository;
-    private final RestaurantCategoryMapper2 restaurantCategoryMapper;
 
     @Override
     public RestaurantCategoryOverview save(CreateRestaurantCategoryDto createRestaurantCategoryDto) {
@@ -33,7 +33,7 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
             throw new EntityAlreadyExistsException(Error.RESTAURANT_CATEGORY_ALREADY_EXISTS);
         }
         log.info("The Category was successfully stored in the database {}", createRestaurantCategoryDto.getName());
-        return restaurantCategoryMapper.mapToResponseDto(restaurantCategoryRepository.save(restaurantCategoryMapper.mapToEntity(createRestaurantCategoryDto)));
+        return restaurantCategoryMapper.mapToOverview(restaurantCategoryRepository.save(restaurantCategoryMapper.mapToEntity(createRestaurantCategoryDto)));
     }
 
     @Override
@@ -44,14 +44,14 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
             throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
         }
         log.info("Category successfully detected");
-        return restaurantCategoryMapper.mapToResponseDtoList(categories);
+        return restaurantCategoryMapper.mapToOverviewList(categories);
     }
 
     @Override
     public RestaurantCategoryOverview getById(int id) {
         RestaurantCategory restaurantCategory = restaurantCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND));
         log.info("Category successfully found {}", restaurantCategory.getName());
-        return restaurantCategoryMapper.mapToResponseDto(restaurantCategory);
+        return restaurantCategoryMapper.mapToOverview(restaurantCategory);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
             restaurantCategoryRepository.save(restaurantCategory);
         }
         log.info("The category was successfully stored in the database {}", restaurantCategory.getName());
-        return restaurantCategoryMapper.mapToResponseDto(restaurantCategory);
+        return restaurantCategoryMapper.mapToOverview(restaurantCategory);
     }
 
     @Override

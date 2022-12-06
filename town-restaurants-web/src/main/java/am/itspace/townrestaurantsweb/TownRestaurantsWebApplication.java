@@ -33,7 +33,6 @@ public class TownRestaurantsWebApplication implements CommandLineRunner {
         SpringApplication.run(TownRestaurantsWebApplication.class, args);
     }
 
-
     @Override
     public void run(String... args) throws Exception {
         Optional<User> byEmail = userRepository.findByEmail("admin@mail.com");
@@ -46,7 +45,6 @@ public class TownRestaurantsWebApplication implements CommandLineRunner {
                     .role(Role.MANAGER)
                     .enabled(true)
                     .build());
-
         }
     }
 }

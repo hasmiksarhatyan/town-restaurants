@@ -85,6 +85,7 @@ public class RestaurantController {
         }
     }
 
+
     @GetMapping(value = "/getImages", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) throws IOException {
         return restaurantService.getRestaurantImage(fileName);

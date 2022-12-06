@@ -5,7 +5,7 @@ import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.mapper.RestaurantMapper2;
+import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
-    private final RestaurantMapper2 restaurantMapper;
+    private final RestaurantMapper restaurantMapper;
     private final RestaurantRepository restaurantRepository;
 
     @Override

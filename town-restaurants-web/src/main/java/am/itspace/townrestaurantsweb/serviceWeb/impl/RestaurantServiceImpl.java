@@ -6,7 +6,7 @@ import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import am.itspace.townrestaurantscommon.entity.User;
-import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
+import am.itspace.townrestaurantscommon.mapper.RestaurantMapperWeb;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,7 +28,7 @@ import java.util.Optional;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final FileUtil fileUtil;
-    private final RestaurantMapper restaurantMapper;
+    private final RestaurantMapperWeb restaurantMapper;
     private final RestaurantRepository restaurantRepository;
 
     public List<RestaurantOverview> findAll() {
@@ -52,19 +51,16 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public Page<RestaurantOverview> getRestaurantsByUser(User user, Pageable pageable) {
         Page<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUser(user, pageable);
-        if (restaurantsByUser.isEmpty()) {
-            log.info("Restaurant with that id not found");
-            throw new IllegalStateException("You don't have a restaurant");
-        }
         log.info("Restaurant successfully found");
         return restaurantMapper.mapToOverviewPage(restaurantsByUser, pageable);
     }
 
+    ////Այս մասը, եթե լինի կարագավորել, լավ կլինի
     @Override
     public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, CurrentUser currentUser) throws IOException {
         if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             log.info("Restaurant with that name already exists {}", dto.getName());
-            throw new IllegalStateException("Email already in use");
+            throw new IllegalStateException();
         }
         dto.setPictures(fileUtil.uploadImages(files));
         User user = currentUser.getUser();
@@ -79,6 +75,13 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    public Restaurant findRestaurant(int id) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
+        log.info("Restaurant successfully found {}", restaurant.getName());
+        return restaurant;
+    }
+
+    @Override
     public void deleteRestaurant(int id) {
         if (!restaurantRepository.existsById(id)) {
             log.info("Restaurant not found");
@@ -90,12 +93,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public void editRestaurant(EditRestaurantDto dto, int id) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-        if (restaurantOptional.isEmpty()) {
-            log.info("Restaurant with that id not found");
-            throw new IllegalStateException("Sorry, something went wrong, try again.");
-        }
-        Restaurant restaurant = restaurantOptional.get();
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
         String name = dto.getName();
         if (StringUtils.hasText(name)) {
             restaurant.setName(name);
@@ -126,23 +124,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantOverview getRestaurant(int id) {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        if (restaurant.isEmpty()) {
-            log.info("Restaurant with that id not found");
-            throw new IllegalStateException("There is no restaurant");
-        }
-        log.info("Restaurant successfully found {}", restaurant.get().getName());
-        return restaurantMapper.mapToOverview(restaurant.get());
-    }
-
-    @Override
-    public Restaurant findRestaurant(int id) {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        if (restaurant.isEmpty()) {
-            log.info("Restaurant with that id not found");
-            throw new IllegalStateException("There is no restaurant");
-        }
-        log.info("Restaurant successfully found {}", restaurant.get().getName());
-        return restaurant.get();
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
+        log.info("Restaurant successfully found {}", restaurant.getName());
+        return restaurantMapper.mapToOverview(restaurant);
     }
 }

@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsweb.serviceWeb;
+package am.itspace.townrestaurantscommon.service;
 
 
 import javax.mail.MessagingException;
