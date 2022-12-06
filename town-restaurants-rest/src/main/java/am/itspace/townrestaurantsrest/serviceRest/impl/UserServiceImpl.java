@@ -5,11 +5,12 @@ import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.entity.VerificationToken;
-import am.itspace.townrestaurantscommon.mapper.UserMapper2;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
-import am.itspace.townrestaurantsrest.exception.Error;
+import am.itspace.townrestaurantscommon.entity.exception.*;
 import am.itspace.townrestaurantsrest.exception.*;
-import am.itspace.townrestaurantsrest.serviceRest.MailServiceRest;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
+import am.itspace.townrestaurantscommon.repository.UserRepository;
+import am.itspace.townrestaurantscommon.service.MailService;
+import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import am.itspace.townrestaurantsrest.serviceRest.VerificationTokenServiceRest;
 import am.itspace.townrestaurantsrest.utilRest.JwtTokenUtil;
@@ -29,9 +30,9 @@ import static am.itspace.townrestaurantsrest.exception.Error.*;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper2 userMapper;
+    private final MailService mailService;
+    private final UserMapper userMapper;
     private final JwtTokenUtil jwtTokenUtil;
-    private final MailServiceRest mailService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenServiceRest tokenService;
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
             log.info("User not found");
             throw new EntityNotFoundException(Error.USER_NOT_FOUND);
         } else {
-            log.info("User successfully detected");
+            log.info("User successfully found");
             return userMapper.mapToResponseDtoList(users);
         }
     }

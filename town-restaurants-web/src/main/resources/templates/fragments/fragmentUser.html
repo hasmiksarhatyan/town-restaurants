@@ -40,6 +40,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
+                    <a class="nav-link" href="/users/home">
+                        <i class="fa fa-fw fa-user"></i>
+                        <span class="nav-link-text">My Profile</span>
+                    </a>
+                </li>
+
                 <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Basket">
                     <a class="nav-link" href="/baskets">
                         <i class="fa fa-fw fa-heart"></i>
@@ -89,7 +96,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
+                <li th:if="${currentUser.role.name == 'MANAGER'||currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Add a New Type of Restaurant">
                     <a class="nav-link" href="/restaurantsCategory/add">
                         <i class="fa fa-fw fa-plus-circle"></i>
                         <span class="nav-link-text">Add a New Type of Restaurant</span>

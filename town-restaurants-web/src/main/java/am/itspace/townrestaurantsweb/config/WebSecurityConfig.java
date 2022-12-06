@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/restaurants").permitAll()
                 .antMatchers("/restaurants/add").authenticated()
                 .antMatchers("/restaurants/delete/*").hasAuthority(Role.MANAGER.name())
-                .antMatchers("/restaurants/my").hasAnyAuthority(Role.MANAGER.name(), Role.RESTAURANT_OWNER.name())
+                .antMatchers("/restaurants/my").authenticated()
                 .antMatchers("/restaurants/edit/*").hasAuthority(Role.MANAGER.name())
                 .antMatchers("/restaurantsCategory").permitAll()
                 .antMatchers("/restaurantsCategory/add").hasAnyAuthority(Role.MANAGER.name(), Role.RESTAURANT_OWNER.name())

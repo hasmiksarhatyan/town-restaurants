@@ -49,7 +49,7 @@ public enum Error {
     SEND_EMAIL_FAILED(5001, HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send an email"),
 
     USER_ALREADY_ENABLED(4092, HttpStatus.CONFLICT, "User already enabled"),
-///erkusi tegh es toghel
+    ///erkusi tegh es toghel
     TOKEN_NOT_FOUND(4051, HttpStatus.NOT_FOUND, "Token not found"),
 
     TOKEN_EXPIRED(4093, HttpStatus.CONFLICT, "Token has expired");
@@ -58,6 +58,6 @@ public enum Error {
     private final Integer code;
     private final HttpStatus httpStatus;
     private final String message;
-}
+    }
 
 

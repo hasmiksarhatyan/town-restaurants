@@ -211,10 +211,14 @@
 
             <td th:each="restaurant:${restaurants.content}">
 
+
+            <li style="color: red" th:if="${restaurants.getContent()==null}" th:text="There is no restaurant"></li>
+
                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
                     <div class="strip">
                         <figure>
-                            <img th:if="${restaurant.pictures != null && restaurant.pictures.size != 0}" th:src="@{/restaurants/getImages(fileName=${restaurant.pictures.get(0)})}"
+                            <img th:if="${restaurant.pictures != null && restaurant.pictures.size != 0}"
+                                 th:src="@{/restaurants/getImages(fileName=${restaurant.pictures.get(0)})}"
                                  class="img-fluid lazy"
                                  alt="">
                             <a th:href="@{'/restaurants/' + ${restaurant.id}}" class="strip_info"></a>

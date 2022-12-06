@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static am.itspace.townrestaurantscommon.entity.ReserveStatus.PENDING;
 
@@ -73,24 +72,25 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Override
     public ReserveOverview getById(int id) {
+        Reserve reserve = reserveRepository.findById(id).orElseThrow(IllegalStateException::new);
         log.info("Reserve successfully found");
-        return reserveMapper.mapToOverview(reserveRepository.getReferenceById(id));
+        return reserveMapper.mapToOverview(reserve);
     }
 
     @Override
     public void delete(int id) {
-        log.info("The reserve has been successfully deleted");
-        reserveRepository.deleteById(id);
+        if (reserveRepository.existsById(id)) {
+            reserveRepository.deleteById(id);
+            log.info("The reserve has been successfully deleted");
+        } else {
+            log.info("Reserve not found");
+            throw new IllegalStateException();
+        }
     }
 
     @Override
     public void editReserve(EditReserveDto dto, int id) {
-        Optional<Reserve> reserveOptional = reserveRepository.findById(id);
-        if (reserveOptional.isEmpty()) {
-            log.info("Reserve not found");
-            throw new IllegalStateException("Sorry, something went wrong, try again.");
-        }
-        Reserve reserve = reserveOptional.get();
+        Reserve reserve = reserveRepository.findById(id).orElseThrow(IllegalStateException::new);
         String reservedDate = dto.getReservedDate();
         if (reservedDate != null) {
             reserve.setReservedDate(LocalDate.parse(reservedDate));

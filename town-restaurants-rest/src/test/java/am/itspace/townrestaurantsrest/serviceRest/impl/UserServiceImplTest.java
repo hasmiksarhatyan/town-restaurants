@@ -3,7 +3,7 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthResponseDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
-import am.itspace.townrestaurantscommon.mapper.UserMapper2;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -36,7 +36,7 @@ class UserServiceImplTest {
     private JwtTokenUtil tokenUtil;
 
     @Mock
-    private UserMapper2 userMapper;
+    private UserMapper userMapper;
 
     @InjectMocks
     private UserServiceImpl userService;

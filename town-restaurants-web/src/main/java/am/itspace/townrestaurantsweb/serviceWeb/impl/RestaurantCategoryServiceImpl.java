@@ -2,7 +2,7 @@ package am.itspace.townrestaurantsweb.serviceWeb.impl;
 
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
-import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
+import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapperWeb;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantCategoryService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantCategoryServiceImpl implements RestaurantCategoryService {
 
-    private final RestaurantCategoryMapper categoryMapper;
+    private final RestaurantCategoryMapperWeb categoryMapper;
     private final RestaurantCategoryRepository restaurantCategoryRepository;
 
     @Override
@@ -29,11 +29,6 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
 
     @Override
     public List<RestaurantCategoryOverview> findAll() {
-//        List<RestaurantCategory> allCategories = restaurantCategoryRepository.findAll();
-//        List<RestaurantCategoryOverview> restaurantCategoryOverviews = new ArrayList<>();
-//        for (RestaurantCategory category : allCategories) {
-//            restaurantCategoryOverviews.add(categoryMapper.mapToOverview(category));
-//        }
         log.info("Category successfully found");
         return categoryMapper.mapToOverviewList(restaurantCategoryRepository.findAll());
     }
@@ -46,10 +41,12 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
 
     @Override
     public void deleteRestaurantCategory(int id) {
-        if (!restaurantCategoryRepository.existsById(id)) {
+        if (restaurantCategoryRepository.existsById(id)) {
+            restaurantCategoryRepository.deleteById(id);
+            log.info("The category has been successfully deleted");
+        } else {
+            log.info("Category not found");
             throw new IllegalStateException();
         }
-        log.info("The category has been successfully deleted");
-        restaurantCategoryRepository.deleteById(id);
     }
 }

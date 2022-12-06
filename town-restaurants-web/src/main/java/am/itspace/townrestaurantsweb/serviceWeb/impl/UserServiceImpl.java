@@ -6,9 +6,9 @@ import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.entity.VerificationToken;
-import am.itspace.townrestaurantscommon.mapper.UserMapper;
+import am.itspace.townrestaurantscommon.mapper.UserMapperWeb;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
-import am.itspace.townrestaurantsweb.serviceWeb.MailService;
+import am.itspace.townrestaurantscommon.service.MailService;
 import am.itspace.townrestaurantsweb.serviceWeb.UserService;
 import am.itspace.townrestaurantsweb.serviceWeb.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper userMapper;
     private final MailService mailService;
+    private final UserMapperWeb userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenService tokenService;
@@ -74,22 +73,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) {
-        if (!userRepository.existsById(id)) {
+        if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
+            log.info("User has been successfully deleted");
+        } else {
+            log.info("User not found");
             throw new IllegalStateException();
         }
-        userRepository.deleteById(id);
-        log.info("User has been successfully deleted");
     }
 
     @Override
     public void changePassword(Integer id, ChangePasswordDto dto) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            log.info("User not found");
-            throw new IllegalStateException("User doesn't exist");
-        }
-        User user = optionalUser.get();
+        User user = userRepository.findById(id).orElseThrow(IllegalStateException::new);
         String oldPassword = dto.getOldPassword();
         String newPassword1 = dto.getNewPassword1();
         String newPassword2 = dto.getNewPassword2();
@@ -111,13 +106,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editUser(EditUserDto dto, int userId) {
-        Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) {
-            log.info("User not found");
-            throw new IllegalStateException("User not found");
-        }
-        User user = optional.get();
+    public void editUser(EditUserDto dto, int id) {
+        User user = userRepository.findById(id).orElseThrow(IllegalStateException::new);
         String firstName = dto.getFirstName();
         String lastName = dto.getLastName();
         if (StringUtils.hasText(firstName)) {

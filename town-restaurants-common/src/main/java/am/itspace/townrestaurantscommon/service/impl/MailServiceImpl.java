@@ -1,6 +1,7 @@
-package am.itspace.townrestaurantsweb.serviceWeb.impl;
+package am.itspace.townrestaurantscommon.service.impl;
 
-import am.itspace.townrestaurantsweb.serviceWeb.MailService;
+
+import am.itspace.townrestaurantscommon.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

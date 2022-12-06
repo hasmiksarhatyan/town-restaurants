@@ -21,7 +21,7 @@ public interface RestaurantService {
 
     void addRestaurant(CreateRestaurantDto restaurantDto, MultipartFile[] files, CurrentUser currentUser) throws IOException;
 
-    byte[] getRestaurantImage(String fileName) throws IOException;
+    byte[] getRestaurantImage(String fileName) throws IOException ;
 
     void deleteRestaurant(int id);
 
