@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
@@ -10,9 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,8 +36,7 @@ public interface ReserveApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping
-    ResponseEntity<ReserveOverview> create(@Valid @RequestBody CreateReserveDto createReserveDto);
+    ResponseEntity<ReserveOverview> create(CreateReserveDto createReserveDto);
 
     @Operation(
             summary = "Get all reserves",
@@ -57,8 +55,26 @@ public interface ReserveApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @GetMapping
-    ResponseEntity<List<ReserveOverview>> getAll(int userId);
+    ResponseEntity<List<ReserveOverview>> getAll();
+
+    @Operation(
+            summary = "Get all reserves",
+            description = "Possible error codes: 4047")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched reserves from DB",
+                            content = @Content(
+                                    schema = @Schema(implementation = ReserveOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4047",
+                            description = "Reserve not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<ReserveOverview>> getAll(FetchRequestDto fetchRequestDto);
 
     @Operation(
             summary = "Update reserve",
@@ -80,8 +96,7 @@ public interface ReserveApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @PutMapping("/{id}")
-    ResponseEntity<ReserveOverview> update(@Valid @PathVariable("id") int id, @RequestBody EditReserveDto editReserveDto);
+    ResponseEntity<ReserveOverview> update(int id, EditReserveDto editReserveDto);
 
     @Operation(
             summary = "Delete reserve",
@@ -99,6 +114,5 @@ public interface ReserveApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable("id") int id);
+    ResponseEntity<?> delete(int id);
 }

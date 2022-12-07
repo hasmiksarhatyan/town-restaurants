@@ -202,8 +202,9 @@ public class RestaurantController {
     @PostMapping("/{id}/reserve")
     public String addReserve(@PathVariable("id") int id,
                              @ModelAttribute CreateReserveDto dto,
-                             @AuthenticationPrincipal CurrentUser currentUser) {
-//        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
+                             @AuthenticationPrincipal CurrentUser currentUser,
+                             ModelMap modelMap) {
+        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
         reserveService.addReserve(dto, currentUser.getUser());
         return "redirect:/reservations";
     }

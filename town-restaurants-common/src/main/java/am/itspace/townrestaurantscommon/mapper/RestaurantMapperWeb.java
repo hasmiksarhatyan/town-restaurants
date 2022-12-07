@@ -61,7 +61,6 @@ public class RestaurantMapperWeb {
         return new PageImpl<>(restaurantOverviews, pageable, restaurantOverviews.size());
     }
 
-
     public List<RestaurantOverview> mapToOverviewList(List<Restaurant> all) {
         List<RestaurantOverview> restaurantOverviews = new ArrayList<>();
         for (Restaurant restaurant : all) {

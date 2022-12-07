@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -13,6 +14,9 @@ import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -48,6 +52,18 @@ public class RestaurantServiceImpl implements RestaurantService {
             log.info("Restaurant successfully found");
             return restaurantMapper.mapToResponseDtoList(restaurants);
         }
+    }
+
+    @Override
+    public List<Restaurant> getRestaurantsList(FetchRequestDto dto) {
+        PageRequest pageReq
+                = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+        Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(dto.getInstance(), pageReq);
+        if (restaurants.isEmpty()) {
+            log.info("Restaurant not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        }
+        return restaurants.getContent();
     }
 
     @Override
@@ -100,4 +116,31 @@ public class RestaurantServiceImpl implements RestaurantService {
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
     }
+
+//
+//    @Override
+//    public ImageOverview uploadImage(UUID restid, MultipartFile multipartFile) {
+//        Restaurant restaurant = restaurantRepository.findById(restid);
+//        imageService.uploadImagesToS3("restaurant", restid, restaurant.getImageVersion(), multipartFile, restid);
+//
+//        user.setImageVersion(restaurant.getImageVersion() + 1);
+//        user = restaurantRepository.saveAndFlush(user);
+//        return userMapper.mapToUserImageOverview(user);
+//    }
+//
+//    @Override
+//    public void deleteImage(UUID userId) {
+//        User user =
+//                userRepository
+//                        .findById(userId)
+//                        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+//        String className = User.class.getSimpleName().toLowerCase();
+//
+//        imageService.checkExistenceOfObject(
+//                imageService.getImagePath(className, userId, user.getImageVersion(), true), userId);
+//        imageService.checkExistenceOfObject(
+//                imageService.getImagePath(className, userId, user.getImageVersion(), false), userId);
+//        imageService.deleteImagesFromS3("user", userId, user.getImageVersion());
+//    }
+
 }

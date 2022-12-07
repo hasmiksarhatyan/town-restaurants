@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
@@ -12,6 +13,9 @@ import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.ProductCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +49,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         log.info("Category successfully detected");
         return productCategoryMapper.mapToOverviewList(categories);
+    }
+
+    @Override
+    public List<ProductCategory> getCategoriesList(FetchRequestDto dto) {
+        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+        Page<ProductCategory> categories = productCategoryRepository.findByProductCategoryName(dto.getInstance(), pageReq);
+        if (categories.isEmpty()) {
+            log.info("Category not found");
+            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
+        }
+        return categories.getContent();
     }
 
     @Override

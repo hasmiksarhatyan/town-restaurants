@@ -1,17 +1,21 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
-import am.itspace.townrestaurantsrest.serviceRest.UserService;
+import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantsrest.api.UserApi;
+import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -19,12 +23,21 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserEndpoint implements UserApi {
 
+    private final ModelMapper modelMapper;
     private final UserService userService;
 
     @Override
     @GetMapping
     public ResponseEntity<List<UserOverview>> getAll() {
         return ResponseEntity.ok(userService.getAll());
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<List<UserOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
+        List<User> users = userService.getUsersList(fetchRequestDto);
+        return ResponseEntity.ok(users.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -34,9 +47,9 @@ public class UserEndpoint implements UserApi {
     }
 
     @Override
-    @PutMapping("/password/change")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto,int userId) {
-        userService.changePassword(changePasswordDto,userId);
+    @PutMapping("/password/restore")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
+        userService.changePassword(changePasswordDto);
         return ResponseEntity.ok().build();
     }
 
@@ -52,5 +65,11 @@ public class UserEndpoint implements UserApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    private UserOverview convertToDto(User user) {
+        UserOverview userOverview = modelMapper.map(user, UserOverview.class);
+        userOverview.setEmail(user.getEmail());
+        return userOverview;
     }
 }

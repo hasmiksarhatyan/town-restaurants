@@ -1,21 +1,24 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.entity.VerificationToken;
-import am.itspace.townrestaurantscommon.entity.exception.*;
-import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantscommon.service.MailService;
 import am.itspace.townrestaurantsrest.exception.Error;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import am.itspace.townrestaurantsrest.serviceRest.VerificationTokenServiceRest;
 import am.itspace.townrestaurantsrest.utilRest.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,9 +39,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenServiceRest tokenService;
+    private final SecurityContextServiceImpl securityContextService;
 
     @Override
-    public UserOverview save(CreateUserDto createUserDto) throws MessagingException {
+    public UserOverview save(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
             log.info("User with that email already exists");
             throw new RegisterException(Error.USER_REGISTRATION_FAILED);
@@ -83,6 +87,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToResponseDto(user);
     }
 
+
     @Override
     public UserAuthResponseDto authentication(UserAuthDto userAuthDto) {
         User user = userRepository.findByEmail(userAuthDto.getEmail()).orElseThrow(() -> new AuthenticationException(Error.UNAUTHORIZED));
@@ -98,30 +103,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserOverview> getAll() {
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            log.info("User not found");
-            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
-        } else {
-            log.info("User successfully found");
-            return userMapper.mapToResponseDtoList(users);
-        }
-    }
-
-    @Override
-    public UserOverview getById(int id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
-        log.info("User successfully found {}", user.getFirstName());
-        return userMapper.mapToResponseDto(user);
-    }
-
-    @Override
-    public void changePassword(ChangePasswordDto changePasswordDto, int userId) {
-        User currentUser = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
-        String username = currentUser.getEmail();
-        log.info("Request from user {} to change the password", username);
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+        String email = securityContextService.getUserDetails().getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+        log.info("Request from user {} to change the password", user.getEmail());
         boolean matches = passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword());
         if (!matches) {
             log.warn("User {} had provided wrong credentials to change the password", user.getEmail());
@@ -134,6 +119,37 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword1()));
         userRepository.save(user);
         log.info("User {} password was successfully changed", user.getEmail());
+    }
+
+    @Override
+    public List<UserOverview> getAll() {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            log.info("User not found");
+            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
+        } else {
+            log.info("User successfully found");
+            return userMapper.mapToResponseDtoList(users);
+        }
+    }
+
+    @Override
+    public List<User> getUsersList(FetchRequestDto dto) {
+        PageRequest pageReq
+                = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+        Page<User> users = userRepository.findByEmail(dto.getInstance(), pageReq);
+        if (users.isEmpty()) {
+            log.info("User not found");
+            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
+        }
+        return users.getContent();
+    }
+
+    @Override
+    public UserOverview getById(int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+        log.info("User successfully found {}", user.getFirstName());
+        return userMapper.mapToResponseDto(user);
     }
 
     @Override

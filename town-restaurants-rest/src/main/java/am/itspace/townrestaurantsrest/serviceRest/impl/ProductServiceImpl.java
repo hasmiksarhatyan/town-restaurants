@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -17,6 +18,9 @@ import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -33,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
+    private final SecurityContextServiceImpl securityContextService;
     private final ProductCategoryRepository productCategoryRepository;
 
     @Override
@@ -46,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductOverview> getAll(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+    public List<ProductOverview> getAll() {
+        User user = securityContextService.getUserDetails().getUser();
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
             log.info("Product not found");
@@ -66,6 +71,17 @@ public class ProductServiceImpl implements ProductService {
                 return productMapper.mapToOverviewList(productsByUser);
             }
         }
+    }
+
+    @Override
+    public List<Product> getProductsList(FetchRequestDto dto) {
+        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+        Page<Product> products = productRepository.findByProductName(dto.getInstance(), pageReq);
+        if (products.isEmpty()) {
+            log.info("Product not found");
+            throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
+        }
+        return products.getContent();
     }
 
     @Override

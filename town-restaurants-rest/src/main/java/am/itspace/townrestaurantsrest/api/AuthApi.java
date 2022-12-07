@@ -10,11 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.mail.MessagingException;
-import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -37,8 +32,7 @@ public interface AuthApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @PostMapping("/user")
-    ResponseEntity<?> register(@Valid @RequestBody CreateUserDto createUserDto) throws MessagingException;
+    ResponseEntity<?> register(CreateUserDto createUserDto);
 
     @Operation(
             summary = "Authentication for user",
@@ -57,8 +51,7 @@ public interface AuthApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping("user/auth")
-    ResponseEntity<?> auth(@Valid @RequestBody UserAuthDto userAuthDto);
+    ResponseEntity<?> auth(UserAuthDto userAuthDto);
 
     @Operation(
             summary = "Verification for user",
@@ -94,7 +87,6 @@ public interface AuthApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping("/verify")
-    ResponseEntity<?> verifyToken(@RequestBody VerificationTokenDto verificationTokenDto);
+    ResponseEntity<?> verifyToken(VerificationTokenDto verificationTokenDto);
 }
 

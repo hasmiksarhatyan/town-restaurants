@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
@@ -14,6 +15,9 @@ import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.ReserveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +37,7 @@ public class ReserveServiceImpl implements ReserveService {
     private final UserRepository userRepository;
     private final ReserveRepository reserveRepository;
     private final RestaurantRepository restaurantRepository;
+    private final SecurityContextServiceImpl securityContextService;
 
     @Override
     public ReserveOverview save(CreateReserveDto createReserveDto) {
@@ -48,8 +53,8 @@ public class ReserveServiceImpl implements ReserveService {
     }
 
     @Override
-    public List<ReserveOverview> getAll(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+    public List<ReserveOverview> getAll() {
+        User user = securityContextService.getUserDetails().getUser();
         List<Reserve> reserves = reserveRepository.findAll();
         if (reserves.isEmpty()) {
             log.info("Reserve not found");
@@ -71,6 +76,17 @@ public class ReserveServiceImpl implements ReserveService {
         }
         log.info("Reserve not found");
         throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+    }
+
+    @Override
+    public List<Reserve> getReservesList(FetchRequestDto dto) {
+        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+        Page<Reserve> reserves = reserveRepository.findByReservePhoneNumber(dto.getInstance(), pageReq);
+        if (reserves.isEmpty()) {
+            log.info("Reserve not found");
+            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+        }
+        return reserves.getContent();
     }
 
     @Override
