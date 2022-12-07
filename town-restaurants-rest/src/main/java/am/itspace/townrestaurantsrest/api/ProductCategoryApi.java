@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
-
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
@@ -11,9 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -39,8 +37,7 @@ public interface ProductCategoryApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping
-    public ResponseEntity<ProductCategoryOverview> create(@Valid @RequestBody CreateProductCategoryDto createProductCategoryDto);
+    ResponseEntity<ProductCategoryOverview> create(CreateProductCategoryDto createProductCategoryDto);
 
     @Operation(
             summary = "Get all product categories",
@@ -59,8 +56,26 @@ public interface ProductCategoryApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @GetMapping
     ResponseEntity<List<ProductCategoryOverview>> getAll();
+
+    @Operation(
+            summary = "Get all product categories",
+            description = "Possible error codes: 4045")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched product categories from DB",
+                            content = @Content(
+                                    schema = @Schema(implementation = ProductCategoryOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4045",
+                            description = "Product category not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<ProductCategoryOverview>> getAll(FetchRequestDto fetchRequestDto);
 
     @Operation(
             summary = "Get product category",
@@ -82,8 +97,7 @@ public interface ProductCategoryApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/{id}")
-    ResponseEntity<ProductCategoryOverview> getById(@PathVariable("id") int id);
+    ResponseEntity<ProductCategoryOverview> getById(int id);
 
     @Operation(
             summary = "Update product category",
@@ -105,9 +119,7 @@ public interface ProductCategoryApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @PutMapping("/{id}")
-    ResponseEntity<ProductCategoryOverview> update(@Valid @PathVariable("id") int id,
-                                                   @RequestBody EditProductCategoryDto editProductCategoryDto);
+    ResponseEntity<ProductCategoryOverview> update(int id, EditProductCategoryDto editProductCategoryDto);
 
     @Operation(
             summary = "Delete product category",
@@ -125,7 +137,6 @@ public interface ProductCategoryApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable("id") int id);
+    ResponseEntity<?> delete(int id);
 }
 

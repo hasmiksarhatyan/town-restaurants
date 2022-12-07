@@ -38,7 +38,7 @@ public class TownRestaurantsRestApplication implements CommandLineRunner {
                     .firstName("admin")
                     .lastName("admin")
                     .email("admin@mail.com")
-                    .password(passwordEncoder.encode("admin"))
+                    .password(passwordEncoder.encode("admin1234"))
                     .role(Role.MANAGER)
                     .enabled(true)
                     .build());

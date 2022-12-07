@@ -68,7 +68,7 @@
                     </a>
                 </li>
 
-                <li th:if="${currentUser.role.name == 'RESTAURANT_OWNER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                <li th:if="${currentUser.role.name == 'RESTAURANT_OWNER'|| currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
                     <a class="nav-link" href="/restaurants/my">
                         <i class="fa fa-fw fa-list-ul"></i>
                         <span class="nav-link-text">See My Restaurants</span>

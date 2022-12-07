@@ -3,6 +3,7 @@ package am.itspace.townrestaurantsrest.api;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,9 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,8 +36,7 @@ public interface EventApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping
-    ResponseEntity<EventOverview> create(@Valid @RequestBody CreateEventDto createEventDto);
+    ResponseEntity<EventOverview> create(CreateEventDto createEventDto);
 
     @Operation(
             summary = "Get all events",
@@ -57,8 +55,26 @@ public interface EventApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @GetMapping
     ResponseEntity<List<EventOverview>> getAll();
+
+    @Operation(
+            summary = "Get all events",
+            description = "Possible error codes: 4044")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched events from DB",
+                            content = @Content(
+                                    schema = @Schema(implementation = EventOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4044",
+                            description = "Event not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<EventOverview>> getAll(FetchRequestDto fetchRequestDto);
 
     @Operation(
             summary = "Get event",
@@ -80,8 +96,7 @@ public interface EventApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/{id}")
-    ResponseEntity<EventOverview> getById(@PathVariable("id") int id);
+    ResponseEntity<EventOverview> getById(int id);
 
     @Operation(
             summary = "Update event",
@@ -103,8 +118,7 @@ public interface EventApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @PutMapping("/{id}")
-    ResponseEntity<EventOverview> update(@Valid @PathVariable("id") int id, @RequestBody EditEventDto editEventDto);
+    ResponseEntity<EventOverview> update(int id, EditEventDto editEventDto);
 
     @Operation(
             summary = "Delete event",
@@ -122,6 +136,5 @@ public interface EventApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable("id") int id);
+    ResponseEntity<?> delete(int id);
 }

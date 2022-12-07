@@ -5,6 +5,9 @@ import am.itspace.townrestaurantscommon.security.UserDetailServiceImpl;
 import am.itspace.townrestaurantsrest.security.JWTAuthenticationTokenFilter;
 import am.itspace.townrestaurantsrest.security.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.ui.Model;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -31,21 +35,66 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, "/categories").hasAuthority(Role.ADMIN.name())
-//                .antMatchers(HttpMethod.PUT, "/").hasAuthority(Role.MANAGER.name())
-//                .antMatchers(HttpMethod.DELETE, "//{id}").hasAuthority(Role.MANAGER.name())
-//                .antMatchers(HttpMethod.POST, "/products").hasAuthority(Role.CUSTOMER.name())
-//                .antMatchers(HttpMethod.PUT, "/products").hasAuthority(Role.CUSTOMER.name())
-//                .antMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority(Role.CUSTOMER.name())
+
+                .antMatchers(HttpMethod.POST, "/registration").permitAll()
+                .antMatchers(HttpMethod.POST, "/activation").permitAll()
+                .antMatchers(HttpMethod.POST, "/verification").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/users").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.GET, "/users/pages").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.GET, "/users/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.PUT, "/users/{id}").authenticated()
+                .antMatchers(HttpMethod.PUT, "/users/password/restore").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAuthority(Role.MANAGER.name())
+
+                .antMatchers(HttpMethod.POST, "/events").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.GET, "/events").authenticated()
+                .antMatchers(HttpMethod.GET, "/events/pages").authenticated()
+                .antMatchers(HttpMethod.GET, "/events/{id}").authenticated()
+                .antMatchers(HttpMethod.PUT, "/events/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/events/{id}").hasAuthority(Role.MANAGER.name())
+
+                .antMatchers(HttpMethod.POST, "/products").permitAll()
+                .antMatchers(HttpMethod.GET, "/products").permitAll()
+                .antMatchers(HttpMethod.GET, "/products/pages").permitAll()
+                .antMatchers(HttpMethod.GET, "/products/{id}").permitAll()
+                .antMatchers(HttpMethod.PUT, "/products/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/products/{id}").hasAuthority(Role.MANAGER.name())
+
+                .antMatchers(HttpMethod.POST, "/productCategories").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.GET, "/productCategories").permitAll()
+                .antMatchers(HttpMethod.GET, "/productCategories/pages").permitAll()
+                .antMatchers(HttpMethod.GET, "/productCategories/{id}").permitAll()
+                .antMatchers(HttpMethod.PUT, "/productCategories/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/productCategories/{id}").hasAuthority(Role.MANAGER.name())
+
+                .antMatchers(HttpMethod.POST, "/restaurants").authenticated()
+                .antMatchers(HttpMethod.GET, "/restaurants").permitAll()
+                .antMatchers(HttpMethod.GET, "/restaurants/pages").permitAll()
+                .antMatchers(HttpMethod.GET, "/restaurants/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/restaurants/events/{id}").authenticated()
+                .antMatchers(HttpMethod.GET, "/restaurants/products/{id}").authenticated()
+                .antMatchers(HttpMethod.PUT, "/restaurants/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/restaurants/{id}").hasAuthority(Role.MANAGER.name())
+
+
+                .antMatchers(HttpMethod.POST, "/restaurantsCategories").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.GET, "/restaurantsCategories").permitAll()
+                .antMatchers(HttpMethod.GET, "/restaurantsCategories/pages").permitAll()
+                .antMatchers(HttpMethod.GET, "/restaurantsCategories/{id}").permitAll()
+                .antMatchers(HttpMethod.PUT, "/restaurantsCategories/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/restaurantsCategories/{id}").hasAuthority(Role.MANAGER.name())
+
+                .antMatchers(HttpMethod.POST, "/reservation").authenticated()
+                .antMatchers(HttpMethod.GET, "/reservation").authenticated()
+                .antMatchers(HttpMethod.GET, "/reservation/pages").authenticated()
+                .antMatchers(HttpMethod.PUT, "/reservation/{id}").hasAuthority(Role.MANAGER.name())
+                .antMatchers(HttpMethod.DELETE, "/reservation/{id}").hasAuthority(Role.MANAGER.name())
+
                 .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();
     }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

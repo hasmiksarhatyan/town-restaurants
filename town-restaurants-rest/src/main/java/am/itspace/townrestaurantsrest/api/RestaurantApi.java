@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.api;
 
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
@@ -12,9 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -39,8 +38,7 @@ public interface RestaurantApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    @PostMapping
-    ResponseEntity<RestaurantOverview> create(@Valid @RequestBody CreateRestaurantDto createRestaurantDto);
+    ResponseEntity<RestaurantOverview> create(CreateRestaurantDto createRestaurantDto);
 
     @Operation(
             summary = "Get all restaurants",
@@ -59,8 +57,26 @@ public interface RestaurantApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @GetMapping
     ResponseEntity<List<RestaurantOverview>> getAll();
+
+    @Operation(
+            summary = "Get all restaurants",
+            description = "Possible error codes: 4041")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched restaurants from DB",
+                            content = @Content(
+                                    schema = @Schema(implementation = RestaurantOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4041",
+                            description = "Restaurant not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<RestaurantOverview>> getAll(FetchRequestDto fetchRequestDto);
 
     @Operation(
             summary = "Get restaurant",
@@ -82,8 +98,7 @@ public interface RestaurantApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/{id}")
-    ResponseEntity<RestaurantOverview> getById(@PathVariable("id") int id);
+    ResponseEntity<RestaurantOverview> getById(int id);
 
     @Operation(
             summary = "Get events by restaurantId",
@@ -105,8 +120,7 @@ public interface RestaurantApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/event/{id}")
-    ResponseEntity<List<EventOverview>> findEventsByRestaurantId(@PathVariable("id") int id);
+    ResponseEntity<List<EventOverview>> findEventsByRestaurantId(int id);
 
     @Operation(
             summary = "Get products by restaurantId",
@@ -128,8 +142,7 @@ public interface RestaurantApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/products/{id}")
-    ResponseEntity<List<ProductOverview>> findProductsByRestaurantId(@PathVariable("id") int id);
+    ResponseEntity<List<ProductOverview>> findProductsByRestaurantId(int id);
 
     @Operation(
             summary = "Update restaurant",
@@ -151,8 +164,7 @@ public interface RestaurantApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @PutMapping("/{id}")
-    ResponseEntity<RestaurantOverview> update(@Valid @PathVariable("id") int id, @RequestBody EditRestaurantDto editRestaurantDto);
+    ResponseEntity<RestaurantOverview> update(int id, EditRestaurantDto editRestaurantDto);
 
     @Operation(
             summary = "Delete restaurant",
@@ -170,6 +182,5 @@ public interface RestaurantApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable("id") int id);
+    ResponseEntity<?> delete(int id);
 }

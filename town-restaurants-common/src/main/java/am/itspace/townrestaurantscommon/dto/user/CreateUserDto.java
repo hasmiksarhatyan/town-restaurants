@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantscommon.dto.user;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,16 +18,28 @@ import javax.validation.constraints.Size;
 public class CreateUserDto {
 
     @NotBlank(message = "Name is mandatory")
+    @Schema(description = "Name's length should be between 3 and 15 and name should contain only letters.",
+            example = "Hayk",
+            minLength = 3,
+            maxLength = 15,
+            pattern = "^[A-Za-z]{2,15}$")
     private String firstName;
 
+    @Schema(description = "Lastname's length should be between 3 and 15 and name should contain only letters.",
+            example = "Sargsyan",
+            minLength = 3,
+            maxLength = 15,
+            pattern = "^[A-Za-z]{2,15}$")
     private String lastName;
 
     @Email
+    @Schema(example = "example@gmail.com")
     @NotBlank(message = "Email is mandatory")
     private String email;
 
+    @Schema(example = "Example1234$")
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 5, max = 30, message = "Password must be at least 5 characters")
+    @Size(min = 8, max = 20, message = "The length should be between 2 and 20 characters!")
     private String password;
 
     private String verifyToken;

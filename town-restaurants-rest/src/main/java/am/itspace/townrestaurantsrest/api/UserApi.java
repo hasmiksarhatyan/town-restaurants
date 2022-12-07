@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
+import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
@@ -10,14 +11,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public interface  UserApi {
+public interface UserApi {
 
     @Operation(
             summary = "Get all users",
@@ -36,8 +36,26 @@ public interface  UserApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    @GetMapping
     ResponseEntity<List<UserOverview>> getAll();
+
+    @Operation(
+            summary = "Get all users",
+            description = "Possible error codes: 4046")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched users from DB",
+                            content = @Content(
+                                    schema = @Schema(implementation = UserOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4046",
+                            description = "User not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<UserOverview>> getAll(FetchRequestDto fetchRequestDto);
 
     @Operation(
             summary = "Get user",
@@ -59,7 +77,6 @@ public interface  UserApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @GetMapping("/{id}")
     ResponseEntity<UserOverview> getById(@PathVariable("id") int id);
 
     @Operation(
@@ -82,7 +99,7 @@ public interface  UserApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto,int userId);
+    ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto);
 
     @Operation(
             summary = "Update user",
@@ -104,8 +121,7 @@ public interface  UserApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @PutMapping("/{id}")
-    ResponseEntity<UserOverview> update(@Valid @PathVariable("id") int id, @RequestBody EditUserDto editUserDto);
+    ResponseEntity<UserOverview> update(int id, EditUserDto editUserDto);
 
     @Operation(
             summary = "Delete user",
@@ -123,6 +139,5 @@ public interface  UserApi {
                                     schema = @Schema(implementation = ApiError.class),
                                     mediaType = APPLICATION_JSON_VALUE))
             })
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable("id") int id);
+    ResponseEntity<?> delete(int id);
 }

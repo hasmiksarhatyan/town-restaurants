@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantscommon.dto.restaurant;
 
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,20 +19,30 @@ import java.util.List;
 public class EditRestaurantDto {
 
     @NotBlank(message = "Name is mandatory")
+    @Schema(description = "Name's length should be between 2 and 15.",
+            example = "Limone",
+            minLength = 3,
+            maxLength = 15,
+            pattern = "^[A-Za-z]{2,15}$")
     private String name;
 
     private String address;
 
     @Email
+    @Schema(example = "example@gmail.com")
     @NotBlank(message = "Email is mandatory")
     private String email;
 
-    @Size(min = 8, max = 9, message = "Phone number must be   least 8 characters")
+    @Schema(example = "+37499112233",
+            pattern = "^[+]{1}[0-9]{12}$")
+    @Size(min = 12, max = 12, message = "Phone number should start with '+' character and have 11 numbers after it.")
     private String phone;
 
     @NotBlank(message = "Category is mandatory")
     private RestaurantCategory restaurantCategory;
 
+    @NotBlank(message = "Price is mandatory")
+    @Schema(description = "Price must consist of numbers only")
     private Double deliveryPrice;
 
     private List<String> pictures;

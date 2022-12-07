@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantscommon.dto.restaurantCategory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,10 @@ import javax.validation.constraints.NotBlank;
 public class CreateRestaurantCategoryDto {
 
     @NotBlank(message = "Name is mandatory")
+    @Schema(description = "Name's length should be between 2 and 15.",
+            example = "Italian",
+            minLength = 3,
+            maxLength = 15,
+            pattern = "^[A-Za-z]{2,15}$")
     private String name;
 }
