@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
-
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -10,6 +10,7 @@ import am.itspace.townrestaurantsrest.api.ProductApi;
 import am.itspace.townrestaurantsrest.serviceRest.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,15 @@ public class ProductEndpoint implements ProductApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<ProductOverview> create(@Valid @RequestBody CreateProductDto createProductDto) {
-        return ResponseEntity.ok(productService.save(createProductDto));
+    public ResponseEntity<ProductOverview> create(@Valid @ModelAttribute CreateProductDto createProductDto,
+                                                  @ModelAttribute FileDto fileDto) {
+        return ResponseEntity.ok(productService.save(createProductDto, fileDto));
+    }
+
+    @Override
+    @GetMapping(value = "/getImages", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getImage(@RequestParam("fileName") String fileName) {
+        return productService.getProductImage(fileName);
     }
 
     @Override
@@ -44,6 +52,12 @@ public class ProductEndpoint implements ProductApi {
         return ResponseEntity.ok(products.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    @GetMapping("/user")
+    public ResponseEntity<List<ProductOverview>> getByUser() {
+        return ResponseEntity.ok(productService.findProductByUser());
     }
 
     @Override

@@ -35,43 +35,43 @@ class EventServiceImplTest {
     @InjectMocks
     EventServiceImpl eventService;
 
-    @Test
-    void shouldSaveEvent() {
-        //given
-        var event = getEvent();
-        var expected = getEventOverview();
-        var createEvent = getCreateEventDto();
-        //when
-        doReturn(false).when(eventRepository).existsByName(anyString());
-        doReturn(event).when(eventMapper).mapToEntity(createEvent);
-        doReturn(expected).when(eventMapper).mapToOverview(event);
-        doReturn(event).when(eventRepository).save(any(Event.class));
-        EventOverview actual = eventService.save(createEvent);
-        //then
-        assertNotNull(actual);
-        assertEquals(expected, actual);
-        verify(eventRepository, times(1)).save(event);
-    }
+//    @Test
+//    void shouldSaveEvent() {
+//        //given
+//        var event = getEvent();
+//        var expected = getEventOverview();
+//        var createEvent = getCreateEventDto();
+//        //when
+//        doReturn(false).when(eventRepository).existsByName(anyString());
+//        doReturn(event).when(eventMapper).mapToEntity(createEvent);
+//        doReturn(expected).when(eventMapper).mapToOverview(event);
+//        doReturn(event).when(eventRepository).save(any(Event.class));
+//        EventOverview actual = eventService.save(createEvent);
+//        //then
+//        assertNotNull(actual);
+//        assertEquals(expected, actual);
+//        verify(eventRepository, times(1)).save(event);
+//    }
 
-    @Test
-    void saveThrowsEntityAlreadyExistsException() {
-        //given
-        var createEvent = getCreateEventDto();
-        //when
-        doThrow(EntityAlreadyExistsException.class).when(eventRepository).existsByName(anyString());
-        //then
-        assertThrows(EntityAlreadyExistsException.class, () -> eventService.save(createEvent));
-    }
-
-    @Test
-    void shouldThrowExceptionAsNameExists() {
-        //given
-        var createEvent = getCreateEventDto();
-        //when
-        doReturn(true).when(eventRepository).existsByName(anyString());
-        //then
-        assertThrows(EntityAlreadyExistsException.class, () -> eventService.save(createEvent));
-    }
+//    @Test
+//    void saveThrowsEntityAlreadyExistsException() {
+//        //given
+//        var createEvent = getCreateEventDto();
+//        //when
+//        doThrow(EntityAlreadyExistsException.class).when(eventRepository).existsByName(anyString());
+//        //then
+//        assertThrows(EntityAlreadyExistsException.class, () -> eventService.save(createEvent));
+//    }
+//
+//    @Test
+//    void shouldThrowExceptionAsNameExists() {
+//        //given
+//        var createEvent = getCreateEventDto();
+//        //when
+//        doReturn(true).when(eventRepository).existsByName(anyString());
+//        //then
+//        assertThrows(EntityAlreadyExistsException.class, () -> eventService.save(createEvent));
+//    }
 
     @Test
     void shouldGetAllEvents() {

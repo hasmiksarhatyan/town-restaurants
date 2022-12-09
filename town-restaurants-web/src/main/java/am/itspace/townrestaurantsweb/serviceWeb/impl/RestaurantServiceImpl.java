@@ -10,7 +10,7 @@ import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
-import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
+import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -53,7 +53,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         return new PageImpl<>(restaurantMapper.mapToResponseDtoList(restaurantsByUserId));
     }
 
-    ////Այս մասը, եթե լինի կարագավորել, լավ կլինի
+    ////Այս մասը, եթե լինի կարագավորել, լավ կլինի,որ email եթե կա արդեն, ցույց տա, որ կա
     @Override
     public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, User user) throws IOException {
         if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {

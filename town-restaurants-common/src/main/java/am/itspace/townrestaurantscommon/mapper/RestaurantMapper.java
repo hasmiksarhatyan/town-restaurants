@@ -12,7 +12,6 @@ import java.util.List;
 public interface RestaurantMapper {
 
     @Mapping(source = "dto.restaurantCategoryId", target = "restaurantCategory.id")
-    @Mapping(source = "dto.userOverview", target = "user")
     Restaurant mapToEntity(CreateRestaurantDto dto);
 
     @Mapping(source = "restaurant.restaurantCategory", target = "restaurantCategoryOverview")

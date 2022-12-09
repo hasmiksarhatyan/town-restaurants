@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantscommon.dto.fetchRequest;
+package am.itspace.townrestaurantscommon.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

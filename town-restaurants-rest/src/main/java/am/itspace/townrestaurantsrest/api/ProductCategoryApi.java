@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;

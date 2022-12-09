@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
@@ -65,40 +65,40 @@ public interface UserApi {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Fetched a user from DB",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = UserOverview.class),
                                     mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
                             responseCode = "4046",
                             description = "User not found",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
+                                    mediaType = APPLICATION_JSON_VALUE))})
     ResponseEntity<UserOverview> getById(@PathVariable("id") int id);
 
     @Operation(
             summary = "Change password",
-            description = "Possible error codes: 4046")
+            description = "Possible error codes: 4046, 4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Change password for user",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = UserOverview.class),
                                     mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
                             responseCode = "4046",
                             description = "User not found",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4094",
+                            description = "Needs to authenticate",
+                            content = @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE))})
     ResponseEntity<?> changePassword(ChangePasswordDto changePasswordDto);
 
     @Operation(
@@ -109,18 +109,15 @@ public interface UserApi {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Updated a user from DB",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = UserOverview.class),
                                     mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
                             responseCode = "4046",
                             description = "User not found",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
+                                    mediaType = APPLICATION_JSON_VALUE))})
     ResponseEntity<UserOverview> update(int id, EditUserDto editUserDto);
 
     @Operation(
@@ -134,10 +131,8 @@ public interface UserApi {
                     @ApiResponse(
                             responseCode = "4046",
                             description = "User not found",
-                            content =
-                            @Content(
+                            content = @Content(
                                     schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
+                                    mediaType = APPLICATION_JSON_VALUE))})
     ResponseEntity<?> delete(int id);
 }

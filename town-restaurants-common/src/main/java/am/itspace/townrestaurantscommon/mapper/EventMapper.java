@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface EventMapper {
 
-    @Mapping(source = "eventDto.restaurantId", target = "restaurant.id")
     Event mapToEntity(CreateEventDto eventDto);
 
     @Mapping(source = "event.restaurant", target = "restaurantOverview")

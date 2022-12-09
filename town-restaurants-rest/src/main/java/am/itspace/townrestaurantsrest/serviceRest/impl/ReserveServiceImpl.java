@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
@@ -8,7 +8,7 @@ import am.itspace.townrestaurantscommon.entity.*;
 import am.itspace.townrestaurantscommon.mapper.ReserveMapper;
 import am.itspace.townrestaurantscommon.repository.ReserveRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
+import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.Error;
@@ -26,6 +26,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static am.itspace.townrestaurantsrest.exception.Error.NEEDS_AUTHENTICATION;
+
 
 @Slf4j
 @Service
@@ -34,7 +36,6 @@ import java.util.List;
 public class ReserveServiceImpl implements ReserveService {
 
     private final ReserveMapper reserveMapper;
-    private final UserRepository userRepository;
     private final ReserveRepository reserveRepository;
     private final RestaurantRepository restaurantRepository;
     private final SecurityContextServiceImpl securityContextService;
@@ -54,28 +55,32 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Override
     public List<ReserveOverview> getAll() {
-        User user = securityContextService.getUserDetails().getUser();
-        List<Reserve> reserves = reserveRepository.findAll();
-        if (reserves.isEmpty()) {
-            log.info("Reserve not found");
-            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
-        } else {
-            if (user.getRole() == Role.MANAGER) {
-                log.info("Reserve successfully found");
-                return reserveMapper.mapToOverviewList(reserves);
-            } else if (user.getRole() == Role.RESTAURANT_OWNER) {
-                reserveForOwner(user);
-            } else if (user.getRole() == Role.CUSTOMER) {
-                List<Reserve> reserveByUser = reserveRepository.findByUser(user);
-                if (reserveByUser.isEmpty()) {
+        try {
+            User user = securityContextService.getUserDetails().getUser();
+            List<Reserve> reserves = reserveRepository.findAll();
+            if (!reserves.isEmpty()) {
+                if (user.getRole() == Role.MANAGER) {
+                    log.info("Reserve successfully found");
+                    return reserveMapper.mapToOverviewList(reserves);
+                } else if (user.getRole() == Role.RESTAURANT_OWNER) {
+                    return reserveForOwner(user);
+                } else if (user.getRole() == Role.CUSTOMER) {
+                    List<Reserve> reserveByUser = reserveRepository.findByUser(user);
+                    if (!reserveByUser.isEmpty()) {
+                        log.info("Reserve not found");
+                        throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+                    }
+                    return reserveMapper.mapToOverviewList(reserveByUser);
+                } else {
                     log.info("Reserve not found");
                     throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
                 }
-                return reserveMapper.mapToOverviewList(reserveByUser);
             }
+            log.info("Reserve not found");
+            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+        } catch (ClassCastException e) {
+            throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
-        log.info("Reserve not found");
-        throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
     }
 
     @Override
@@ -135,8 +140,8 @@ public class ReserveServiceImpl implements ReserveService {
         if (!restaurants.isEmpty()) {
             for (Restaurant restaurant : restaurants) {
                 if (restaurant != null && restaurant.getUser().getId().equals(user.getId())) {
-                    List<Reserve> byRestaurant = reserveRepository.findByRestaurantId(restaurant.getId());
-                    reservesForOwner.addAll(byRestaurant);
+                    List<Reserve> reserveByRestaurant = reserveRepository.findByRestaurantId(restaurant.getId());
+                    reservesForOwner.addAll(reserveByRestaurant);
                 }
                 log.info("Reserve successfully detected");
                 return reserveMapper.mapToOverviewList(reservesForOwner);

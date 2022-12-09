@@ -9,7 +9,7 @@ import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.EventService;
-import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
+import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,16 +34,19 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final RestaurantRepository restaurantRepository;
 
+    @Override
     public Page<EventOverview> findAll(Pageable pageable) {
         log.info("Event successfully found");
         return eventRepository.findAll(pageable).map(eventMapper::mapToOverview);
     }
 
+    @Override
     public Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable) {
         log.info("Events successfully found by restaurantId");
         return eventRepository.findEventsByRestaurantId(id, pageable).map(eventMapper::mapToOverview);
     }
 
+    @Override
     public Map<Integer, List<EventOverview>> sortEventsByRestaurant() {
         Map<Integer, List<EventOverview>> events = new HashMap<>();
         List<Restaurant> all = restaurantRepository.findAll();

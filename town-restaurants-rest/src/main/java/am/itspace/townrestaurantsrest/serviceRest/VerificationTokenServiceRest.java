@@ -10,6 +10,5 @@ public interface VerificationTokenServiceRest {
     VerificationToken findByPlainToken(String plainToken);
 
     void delete(VerificationToken token);
-
 }
 

@@ -4,13 +4,9 @@ import am.itspace.townrestaurantscommon.security.UserDetailServiceImpl;
 import am.itspace.townrestaurantsrest.utilRest.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,7 +23,7 @@ import java.io.IOException;
 public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil tokenUtil;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

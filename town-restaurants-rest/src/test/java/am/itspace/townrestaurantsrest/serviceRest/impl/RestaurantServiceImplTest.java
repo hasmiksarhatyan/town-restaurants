@@ -31,44 +31,44 @@ class RestaurantServiceImplTest {
     @Mock
     private RestaurantMapper restaurantMapper;
 
-    //save
-    @Test
-    void shouldSaveRestaurant() {
-        //given
-        var restaurant = getRestaurant();
-        var expected = getRestaurantOverview();
-        var createRestaurant = getCreateRestaurantDto();
-        //when
-        doReturn(false).when(restaurantRepository).existsByName(anyString());
-        doReturn(restaurant).when(restaurantMapper).mapToEntity(createRestaurant);
-        doReturn(expected).when(restaurantMapper).mapToResponseDto(restaurant);
-        doReturn(restaurant).when(restaurantRepository).save(any(Restaurant.class));
-        RestaurantOverview actual = restaurantService.save(createRestaurant);
-        //then
-        assertNotNull(actual);
-        assertEquals(expected.getName(), actual.getName());
-        verify(restaurantRepository, times(1)).save(restaurant);
-    }
+//    //save
+//    @Test
+//    void shouldSaveRestaurant() {
+//        //given
+//        var restaurant = getRestaurant();
+//        var expected = getRestaurantOverview();
+//        var createRestaurant = getCreateRestaurantDto();
+//        //when
+//        doReturn(false).when(restaurantRepository).existsByName(anyString());
+//        doReturn(restaurant).when(restaurantMapper).mapToEntity(createRestaurant);
+//        doReturn(expected).when(restaurantMapper).mapToResponseDto(restaurant);
+//        doReturn(restaurant).when(restaurantRepository).save(any(Restaurant.class));
+//        RestaurantOverview actual = restaurantService.save(createRestaurant);
+//        //then
+//        assertNotNull(actual);
+//        assertEquals(expected.getName(), actual.getName());
+//        verify(restaurantRepository, times(1)).save(restaurant);
+//    }
 
-    @Test
-    void saveThrowsEntityAlreadyExistsException() {
-        //given
-        var createRestaurantDto = getCreateRestaurantDto();
-        //when
-        doThrow(EntityAlreadyExistsException.class).when(restaurantRepository).existsByName(anyString());
-        //then
-        assertThrows(EntityAlreadyExistsException.class, () -> restaurantService.save(createRestaurantDto));
-    }
-
-    @Test
-    void shouldThrowExceptionAsNameExists() {
-        //given
-        var createRestaurantDto = getCreateRestaurantDto();
-        //when
-        doReturn(true).when(restaurantRepository).existsByName(anyString());
-        //then
-        assertThrows(EntityAlreadyExistsException.class, () -> restaurantService.save(createRestaurantDto));
-    }
+//    @Test
+//    void saveThrowsEntityAlreadyExistsException() {
+//        //given
+//        var createRestaurantDto = getCreateRestaurantDto();
+//        //when
+//        doThrow(EntityAlreadyExistsException.class).when(restaurantRepository).existsByName(anyString());
+//        //then
+//        assertThrows(EntityAlreadyExistsException.class, () -> restaurantService.save(createRestaurantDto));
+//    }
+//
+//    @Test
+//    void shouldThrowExceptionAsNameExists() {
+//        //given
+//        var createRestaurantDto = getCreateRestaurantDto();
+//        //when
+//        doReturn(true).when(restaurantRepository).existsByName(anyString());
+//        //then
+//        assertThrows(EntityAlreadyExistsException.class, () -> restaurantService.save(createRestaurantDto));
+//    }
 
     //getAll
     @Test

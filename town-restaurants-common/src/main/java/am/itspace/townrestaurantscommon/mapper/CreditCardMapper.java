@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CreditCardMapper {
-    @Mapping(source = "dto.userOverview", target = "user")
+
     CreditCard mapToEntity(CreateCreditCardDto dto);
 
     @Mapping(source = "creditCard.user", target = "userOverview")

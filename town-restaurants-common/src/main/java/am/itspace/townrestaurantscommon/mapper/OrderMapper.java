@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderMapper {
-    @Mapping(source = "dto.userOverview", target = "user")
+
     @Mapping(source = "dto.productOverviews", target = "products")
     Order mapToEntity(CreateOrderDto dto);
 

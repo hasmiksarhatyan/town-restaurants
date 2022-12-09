@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BasketMapper {
-    @Mapping(source = "dto.userOverview", target = "user")
+
     @Mapping(source = "dto.productId", target = "product.id")
     Basket mapToEntity(CreateBasketDto dto);
 

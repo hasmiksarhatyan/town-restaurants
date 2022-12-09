@@ -71,32 +71,32 @@ class ReserveServiceImplTest {
         //then
         assertThrows(EntityAlreadyExistsException.class, () -> reserveService.save(createReserve));
     }
-
-    //getAll
-    //////nayi sa
-    @Test
-    void getAllReservesShouldThrowEntityNotFoundException() {
-        //when
-        doReturn(List.of()).when(reserveRepository).findAll();
-        //then
-        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(anyInt()));
-    }
-///nayii saa
-    @Test
-    void getAllShouldThrowEntityNotFoundException() {
-        //when
-        doReturn(List.of()).when(reserveRepository).findAll();
-        //then
-        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(anyInt()));
-    }
+//
+//    //getAll
+//    //////nayi sa
+//    @Test
+//    void getAllReservesShouldThrowEntityNotFoundException() {
+//        //when
+//        doReturn(List.of()).when(reserveRepository).findAll();
+//        //then
+//        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(any()));
+//    }
+/////nayii saa
+//    @Test
+//    void getAllShouldThrowEntityNotFoundException() {
+//        //when
+//        doReturn(List.of()).when(reserveRepository).findAll();
+//        //then
+//        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(anyInt()));
+//    }
 ///nayi saaa
-    @Test
-    void shouldEntityNotFoundExceptionAsReserveNotFound() {
-        //when
-        doThrow(EntityNotFoundException.class).when(reserveRepository).findAll();
-        //then
-        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(anyInt()));
-    }
+//    @Test
+//    void shouldEntityNotFoundExceptionAsReserveNotFound() {
+//        //when
+//        doThrow(EntityNotFoundException.class).when(reserveRepository).findAll();
+//        //then
+//        assertThrows(EntityNotFoundException.class, () -> reserveService.getAll(anyInt()));
+//    }
 
     //update
     @Test

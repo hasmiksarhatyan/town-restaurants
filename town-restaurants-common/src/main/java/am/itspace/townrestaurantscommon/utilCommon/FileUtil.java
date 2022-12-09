@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsweb.utilWeb;
+package am.itspace.townrestaurantscommon.utilCommon;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 public class FileUtil {
 
     @Value("${project.images.folder}")
-    private String folderPath;
+    private static String folderPath;
 
     public List<String> uploadImages(MultipartFile[] files) throws IOException {
         List<String> pictures = new ArrayList<>();
@@ -29,7 +29,8 @@ public class FileUtil {
         }
         return pictures;
     }
-    public byte[] getImage(String fileName) throws IOException {
+
+    public static byte[] getImage(String fileName) throws IOException {
         return Files.readAllBytes(Paths.get(folderPath + File.separator + fileName));
     }
 }

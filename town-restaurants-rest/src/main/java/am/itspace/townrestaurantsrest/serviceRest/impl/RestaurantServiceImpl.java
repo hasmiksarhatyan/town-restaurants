@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -11,8 +12,8 @@ import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
-import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
+import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+
+import static am.itspace.townrestaurantsrest.exception.Error.*;
 
 @Slf4j
 @Service
@@ -32,18 +37,43 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
+    private final FileUtil fileUtil;
     private final RestaurantMapper restaurantMapper;
     private final RestaurantCategoryRepository restaurantCategoryRepository;
     private final RestaurantRepository restaurantRepository;
+    private final SecurityContextServiceImpl securityContextService;
 
     @Override
-    public RestaurantOverview save(CreateRestaurantDto createRestaurantDto) {
+    public RestaurantOverview save(CreateRestaurantDto createRestaurantDto, FileDto fileDto) {
         if (restaurantRepository.existsByName(createRestaurantDto.getName())) {
             log.info("Restaurant with that name already exists {}", createRestaurantDto.getName());
             throw new EntityAlreadyExistsException(Error.RESTAURANT_ALREADY_EXISTS);
         }
+        try {
+            MultipartFile[] files = fileDto.getFiles();
+            for (MultipartFile file : files) {
+                if (!file.isEmpty() && file.getSize() > 0) {
+                    if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                        throw new MyFileNotFoundException(FILE_NOT_FOUND);
+                    }
+                }
+            }
+            createRestaurantDto.setPictures(fileUtil.uploadImages(files));
+        } catch (IOException e) {
+            throw new FileStorageException(FILE_UPLOAD_FAILED);
+        }
         log.info("The restaurant was successfully stored in the database {}", createRestaurantDto.getName());
         return restaurantMapper.mapToResponseDto(restaurantRepository.save(restaurantMapper.mapToEntity(createRestaurantDto)));
+    }
+
+    @Override
+    public byte[] getRestaurantImage(String fileName) {
+        try {
+            log.info("Images successfully found");
+            return FileUtil.getImage(fileName);
+        } catch (IOException e) {
+            throw new MyFileNotFoundException(FILE_NOT_FOUND);
+        }
     }
 
     @Override
@@ -68,6 +98,23 @@ public class RestaurantServiceImpl implements RestaurantService {
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
         return restaurants.getContent();
+    }
+
+    @Override
+    public List<Restaurant> getRestaurantsByUser(FetchRequestDto dto) {
+        try {
+            List<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUserId(securityContextService.getUserDetails().getUser().getId());
+            if (!restaurantsByUser.isEmpty()) {
+                for (Restaurant restaurant : restaurantsByUser) {
+                    PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+                    Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(restaurant.getEmail(), pageReq);
+                    return restaurants.getContent();
+                }
+            }
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        } catch (ClassCastException e) {
+            throw new AuthenticationException(NEEDS_AUTHENTICATION);
+        }
     }
 
     @Override
@@ -121,17 +168,30 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
     }
 
-//
 //    @Override
-//    public ImageOverview uploadImage(UUID restid, MultipartFile multipartFile) {
-//        Restaurant restaurant = restaurantRepository.findById(restid);
-//        imageService.uploadImagesToS3("restaurant", restid, restaurant.getImageVersion(), multipartFile, restid);
+//    public ImageOverview uploadImage(int restaurantId, MultipartFile multipartFile) {
+//        checkNotNull(multipartFile, IMAGE_IS_REQUIRED);
+//        Optional<Restaurant> byId = restaurantRepository.findById(restaurantId);
+////        User user = findUserById(userId);
+//        imageService.uploadImagesToS3("user", userId, user.getImageVersion(), multipartFile, userId);
 //
-//        user.setImageVersion(restaurant.getImageVersion() + 1);
-//        user = restaurantRepository.saveAndFlush(user);
+//        user.setImageVersion(user.getImageVersion() + 1);
+//        user = userRepository.saveAndFlush(user);
 //        return userMapper.mapToUserImageOverview(user);
 //    }
+
+
+//    public ImageOverview uploadImage(UUID userId, MultipartFile multipartFile) {
+//        checkNotNull(multipartFile, IMAGE_IS_REQUIRED);
+//        User user = findUserById(userId);
+//        imageService.uploadImagesToS3("user", userId, user.getImageVersion(), multipartFile, userId);
 //
+//        user.setImageVersion(user.getImageVersion() + 1);
+//        user = userRepository.saveAndFlush(user);
+//        return userMapper.mapToUserImageOverview(user);
+//    }
+
+
 //    @Override
 //    public void deleteImage(UUID userId) {
 //        User user =

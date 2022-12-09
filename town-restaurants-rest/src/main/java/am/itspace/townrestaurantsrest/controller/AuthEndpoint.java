@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @RestController
@@ -34,7 +33,7 @@ public class AuthEndpoint implements AuthApi {
 
     @Override
     @PostMapping("/verification")
-    public ResponseEntity<?> verifyToken(@Valid @RequestBody VerificationTokenDto verificationTokenDto){
+    public ResponseEntity<?> verifyToken(@Valid @RequestBody VerificationTokenDto verificationTokenDto) {
         return ResponseEntity.ok((userService.verifyToken(verificationTokenDto)));
     }
 }

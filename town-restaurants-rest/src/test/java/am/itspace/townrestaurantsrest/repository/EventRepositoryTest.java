@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+import static am.itspace.townrestaurantsrest.parameters.MockData.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -40,32 +41,11 @@ class EventRepositoryTest {
 
     @Test
     void findEventsByRestaurant_Id() {
-        RestaurantCategory category = RestaurantCategory.builder()
-                .name("aa")
-                .build();
-        categoryRepository.save(category);
-        User user = User.builder()
-                .email("yan@gmail.com")
-                .firstName("Victoria")
-                .password(passwordEncoder.encode("password"))
-                .role(Role.MANAGER)
-                .lastName("Yan")
-                .build();
-        userRepository.save(user);
-        Restaurant restaurant = Restaurant.builder()
-                .name("Limone")
-                .address("P")
-                .phone("099112233")
-                .restaurantCategory(category)
-                .deliveryPrice(200.0)
-                .user(user)
-                .email("limone@mail.com")
-                .build();
+        categoryRepository.save(getRestaurantCategory());
+        userRepository.save(getUser());
+        Restaurant restaurant = getRestaurant();
         restaurantRepository.save(restaurant);
-        Event event = Event.builder()
-                .name("Mexican party")
-                .restaurant(restaurant)
-                .build();
+        Event event = getEvent();
         eventRepository.save(event);
         List<Event> events = eventRepository.findEventsByRestaurant_Id(restaurant.getId());
         assertTrue(events.contains(event));
