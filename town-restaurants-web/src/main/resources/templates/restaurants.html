@@ -236,8 +236,8 @@
             <div th:if="${restaurants.totalPages>0}" class="pagination"
                  th:each="pageNumber:${pageNumbers}">
                 <a th:href="@{/restaurants(size=${restaurants.size}, page=${pageNumber})}"
-                   th:text="${pageNumber + 1}"
-                   th:class="${pageNumber==restaurants.number}?active" class="active"></a>
+                   th:text="${pageNumber}"
+                   th:class="${pageNumber==restaurants.number+1}?active" class="active"></a>
             </div>
         </div>
 

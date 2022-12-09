@@ -1,5 +1,7 @@
 package am.itspace.townrestaurantscommon.dto.reserve;
 
+import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
+import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +34,6 @@ public class CreateReserveDto {
     private String phoneNumber;
 
     private Integer restaurantId;
+
+    private UserOverview userOverview;
 }

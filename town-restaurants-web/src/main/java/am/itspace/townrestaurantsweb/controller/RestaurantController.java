@@ -42,10 +42,10 @@ public class RestaurantController {
 
 
     @GetMapping
-    public String restaurants(@RequestParam(value = "page", defaultValue = "0") int page,
+    public String restaurants(@RequestParam(value = "page", defaultValue = "1") int page,
                               @RequestParam(value = "size", defaultValue = "5") int size,
                               ModelMap modelMap) {
-        Page<RestaurantOverview> restaurants = restaurantService.findAllRestaurants(PageRequest.of(page, size));
+        Page<RestaurantOverview> restaurants = restaurantService.findAllRestaurants(PageRequest.of(page-1, size));
         modelMap.addAttribute("restaurants", restaurants);
         modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(restaurants));
         return "restaurants";
@@ -73,7 +73,7 @@ public class RestaurantController {
             }
         }
         try {
-            restaurantService.addRestaurant(dto, files, currentUser);
+            restaurantService.addRestaurant(dto, files, currentUser.getUser());
             if (currentUser.getUser().getRole() == Role.RESTAURANT_OWNER) {
                 return "redirect:/restaurants/my";
             } else {

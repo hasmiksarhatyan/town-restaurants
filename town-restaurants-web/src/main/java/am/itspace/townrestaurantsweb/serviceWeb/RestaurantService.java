@@ -19,7 +19,7 @@ public interface RestaurantService {
 
     Page<RestaurantOverview> findAllRestaurants(Pageable pageable);
 
-    void addRestaurant(CreateRestaurantDto restaurantDto, MultipartFile[] files, CurrentUser currentUser) throws IOException;
+    void addRestaurant(CreateRestaurantDto restaurantDto, MultipartFile[] files, User user) throws IOException;
 
     byte[] getRestaurantImage(String fileName) throws IOException ;
 

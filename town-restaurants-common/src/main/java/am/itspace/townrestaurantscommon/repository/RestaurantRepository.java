@@ -11,7 +11,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>, PagingAndSortingRepository<Restaurant, Integer> {
@@ -24,9 +23,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
 
     Page<Restaurant> findRestaurantsByUser(User user, Pageable pageable);
 
-    Optional<Restaurant> findRestaurantsByUser(User user);
-
-    List<Restaurant> findRestaurantsByUserId(User user);
+    List<Restaurant> findRestaurantsByUserId(int id);
 
     @Query("select email from Restaurant email where email=:email")
     Page<Restaurant> findByRestaurantEmail(@Param("email") String email, Pageable pageReq);

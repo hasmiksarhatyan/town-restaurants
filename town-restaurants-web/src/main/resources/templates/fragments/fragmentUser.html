@@ -47,16 +47,9 @@
                     </a>
                 </li>
 
-                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Basket">
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Basket">
                     <a class="nav-link" href="/baskets">
                         <i class="fa fa-fw fa-heart"></i>
-                        <span class="nav-link-text">Baskets</span>
-                    </a>
-                </li>
-
-                <li th:if="${currentUser.role.name != 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="My Basket">
-                    <a class="nav-link" href="/baskets">
-                        <i class="fa fa-fw fa-user"></i>
                         <span class="nav-link-text">My Basket</span>
                     </a>
                 </li>

@@ -2,7 +2,6 @@ package am.itspace.townrestaurantscommon.dto.order;
 
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
-import am.itspace.townrestaurantscommon.entity.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +22,6 @@ public class OrderOverview {
     private LocalDateTime orderAt;
     private double totalPrice;
     private String status;
-    private Payment payment;
     private List<ProductOverview> productOverviews;
     private UserOverview userOverview;
     private boolean isPaid;

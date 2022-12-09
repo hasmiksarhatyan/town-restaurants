@@ -1,5 +1,7 @@
 package am.itspace.townrestaurantscommon.dto.restaurant;
 
+import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
+import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,9 +42,11 @@ public class CreateRestaurantDto {
     @NotBlank(message = "Category is mandatory")
     private Integer restaurantCategoryId;
 
-    @NotBlank(message = "Price is mandatory")
-    @Schema(description = "Price must consist of numbers only")
+//    @NotBlank(message = "Price is mandatory")
+//    @Schema(description = "Price must consist of numbers only")
     private Double deliveryPrice;
 
     private List<String> pictures;
+
+    private UserOverview userOverview;
 }

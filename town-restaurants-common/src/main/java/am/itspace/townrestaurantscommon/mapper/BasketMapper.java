@@ -4,21 +4,23 @@ import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
 import am.itspace.townrestaurantscommon.entity.Basket;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BasketMapper {
+    @Mapping(source = "dto.userOverview", target = "user")
+    @Mapping(source = "dto.productId", target = "product.id")
+    Basket mapToEntity(CreateBasketDto dto);
 
-    Basket mapToEntity(CreateBasketDto createBasketDto);
-
+    @Mapping(source = "basket.product", target = "productOverview")
+    @Mapping(source = "basket.user", target = "userOverview")
     BasketOverview mapToDto(Basket basket);
 
-    List<BasketOverview> mapToDto(List<Basket> baskets);
+    List<BasketOverview> mapToDtoList(List<Basket> baskets);
 
-    List<BasketOverview> mapToDto(Page<Basket> baskets);
 }
 

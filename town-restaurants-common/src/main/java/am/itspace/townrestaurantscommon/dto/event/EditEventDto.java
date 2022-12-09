@@ -40,5 +40,4 @@ public class EditEventDto {
 
     private List<String> pictures;
 
-//    private MultipartFile image;
 }

@@ -32,10 +32,10 @@ public class Order {
     private double totalPrice;
 
     @Enumerated(value = EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status=OrderStatus.NEW;
 
-    @OneToOne
-    private Payment payment;
+    @Enumerated(value = EnumType.STRING)
+    private PaymentOption paymentOption;
 
     @OneToMany
     private List<Product> products;
@@ -43,5 +43,5 @@ public class Order {
     @ManyToOne
     private User user;
 
-    private boolean isPaid;
+    private boolean isPaid=false;
 }

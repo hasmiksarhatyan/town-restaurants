@@ -117,7 +117,7 @@ class BasketRepositoryTest {
                 .user(user)
                 .build();
         basketRepository.save(basket);
-        Page<Basket> basketByUser = basketRepository.findBasketByUser(user, Pageable.unpaged());
+        List<Basket> basketByUser = basketRepository.findBasketByUser(user);
         assertNotNull(basketByUser);
     }
 

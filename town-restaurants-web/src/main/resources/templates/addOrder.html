@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Foogra - Discover & Book the best restaurants at the best price">
+    <meta name="author" content="Ansonika">
+    <title>Foogra - Discover & Book the best restaurants at the best price</title>
+
+    <th:block th:insert="fragments/fragment::headerImport"></th:block>
+
+    <!-- SPECIFIC CSS -->
+    <link href="/css/booking-sign_up.css" rel="stylesheet">
+    <link href="/css/detail-page-delivery.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<th:block th:insert="fragments/fragment::header"></th:block>
+<!-- /header -->
+
+<main class="bg_gray pattern">
+
+    <form action="/orders/add" method="post" class="container margin_60_40">
+        <div class="row justify-content-center">
+            <div class="col-xl-6 col-lg-8">
+                <div class="box_booking_2 style_2">
+                    <div class="head">
+                        <div class="title">
+                            <h3>Personal Details</h3>
+                        </div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+                        <div class="row">
+                            <div>
+                                <div class="form-group">
+                                    <label>Full Address</label>
+                                    <input class="form-control" name="additionalAddress" placeholder="Address">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input class="form-control" name="additionalPhone" placeholder="Phone">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /box_booking -->
+                <div class="box_booking_2 style_2">
+                    <div class="head">
+                        <div class="title">
+                            <h3>Payment Method</h3>
+                        </div>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+                        <div class="payment_select">
+                            <label class="container_radio">Credit Card
+                                <input type="radio" value="CREDIT_CARD" checked="checked" name="paymentOption">
+                                <span class="checkmark"></span>
+                            </label>
+                            <i class="icon_creditcard"></i>
+                        </div>
+                        <div class="form-group">
+                            <label>Name on card</label>
+                            <input type="text" class="form-control" id="name_card_order" name="cardHolder"
+                                   placeholder="First and last name">
+                        </div>
+                        <div class="form-group">
+                            <label>Card number</label>
+                            <input type="text" id="card_number" name="cardNumber" class="form-control"
+                                   placeholder="Card number">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Expiration date</label>
+                                <div class="row">
+                                    <div class="col-md-8 col-8">
+                                        <div class="form-group">
+                                            <input type="date" id="expire_month" name="cardExpiresAt"
+                                                   class="form-control" placeholder="Expiration Date">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Security code</label>
+                                    <div class="row">
+                                        <div class="col-md-4 col-6">
+                                            <div class="form-group">
+                                                <input type="text" id="ccv" name="cvv" class="form-control"
+                                                       placeholder="CVV">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-6">
+                                            <img src="/img/icon_ccv.gif" width="50" height="29" alt="ccv"><small>Last 3
+                                            digits</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--End row -->
+                        <div class="payment_select">
+                            <label class="container_radio">Pay with Cash
+                                <input type="radio" value="CASH"  name="paymentOption">
+                                <span class="checkmark"></span>
+                            </label>
+                            <i class="icon_wallet"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- /box_booking -->
+            </div>
+            <!-- /col -->
+            <div class="col-xl-4 col-lg-4" id="sidebar_fixed">
+                <div class="box_booking">
+                    <div class="head">
+                        <h3>Order Summary</h3>
+                    </div>
+                    <!-- /head -->
+                    <div class="main">
+                        <ul>
+                            <li>Type<span>Delivery</span></li>
+                        </ul>
+                        <hr>
+                        <ul class="clearfix" th:each="basket: ${baskets}">
+                            <li>
+                                <strong th:text="${basket.quantity}+'x'+' '+${basket.productOverview.name}"></strong>
+                                <span th:text="'$'+${basket.quantity*basket.productOverview.price}"></span>
+                            </li>
+                        </ul>
+
+                        <ul class="clearfix">
+                            <li class="total">Total Price<span th:text="'$'+${totalPrice}"></span></li>
+                        </ul>
+                        <input type="submit" value="Order Now" class="btn_1 full-width mb_5"></input>
+                        <div class="text-center"><small>Or Call Us at <strong>0432 48432854</strong></small></div>
+                    </div>
+                </div>
+                <!-- /box_booking -->
+            </div>
+        </div>
+        <!-- /row -->
+    </form>
+    <!-- /container -->
+
+</main>
+<!-- /main -->
+
+<th:block th:insert="fragments/fragment::footer"></th:block>
+<!--/footer-->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<div class="layer"></div><!-- Opacity Mask Menu Mobile -->
+
+<!-- Sign In Modal -->
+<th:block th:insert="fragments/fragment::signInModal"></th:block>
+<!-- /Sign In Modal -->
+
+<!-- COMMON SCRIPTS -->
+<th:block th:insert="fragments/fragment::commonScripts"></th:block>
+
+<!-- SPECIFIC SCRIPTS -->
+<script src="/js/sticky_sidebar.min.js"></script>
+<script src="/js/specific_detail.js"></script>
+
+</body>
+</html>

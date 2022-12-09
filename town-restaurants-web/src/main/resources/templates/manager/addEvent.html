@@ -168,7 +168,7 @@
   </div>
 </nav>
 <!-- /Navigation-->
-<form action="/manager/events/add" method="post" enctype="multipart/form-data">
+<form action="/events/add" method="post" enctype="multipart/form-data">
 <div class="content-wrapper">
   <div class="container-fluid">
     <!-- Breadcrumbs-->
@@ -187,7 +187,7 @@
           <div class="form-group">
             <label>Restaurant</label>
             <div class="styled-select">
-              <select name="restaurant">
+              <select name="restaurantId">
                 <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}" th:text="${restaurant.name}"></option>
               </select>
             </div>

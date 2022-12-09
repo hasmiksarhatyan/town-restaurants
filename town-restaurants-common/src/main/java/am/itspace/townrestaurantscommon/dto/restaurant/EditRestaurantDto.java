@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantscommon.dto.restaurant;
 
+import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ public class EditRestaurantDto {
     private String phone;
 
     @NotBlank(message = "Category is mandatory")
-    private RestaurantCategory restaurantCategory;
+    private Integer restaurantCategoryId;
 
     @NotBlank(message = "Price is mandatory")
     @Schema(description = "Price must consist of numbers only")
