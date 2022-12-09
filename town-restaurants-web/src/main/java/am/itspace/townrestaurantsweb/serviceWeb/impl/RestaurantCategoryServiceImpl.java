@@ -2,12 +2,13 @@ package am.itspace.townrestaurantsweb.serviceWeb.impl;
 
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
-import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapperWeb;
+import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantCategoryServiceImpl implements RestaurantCategoryService {
 
-    private final RestaurantCategoryMapperWeb categoryMapper;
+    private final RestaurantCategoryMapper categoryMapper;
     private final RestaurantCategoryRepository restaurantCategoryRepository;
 
     @Override
     public Page<RestaurantCategoryOverview> findAll(Pageable pageable) {
         log.info("Category successfully found");
-        return categoryMapper.mapToOverviewPage(restaurantCategoryRepository.findAll(pageable), pageable);
+        List<RestaurantCategoryOverview> restaurantCategoryOverviews = categoryMapper.mapToOverviewList(restaurantCategoryRepository.findAll());
+        return new PageImpl<>(restaurantCategoryOverviews);
     }
 
     @Override

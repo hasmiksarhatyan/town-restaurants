@@ -4,16 +4,17 @@ import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
-import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import am.itspace.townrestaurantscommon.entity.User;
-import am.itspace.townrestaurantscommon.mapper.RestaurantMapperWeb;
+import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
+import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
 import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,50 +29,47 @@ import java.util.List;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final FileUtil fileUtil;
-    private final RestaurantMapperWeb restaurantMapper;
+    private final RestaurantMapper restaurantMapper;
+    private final UserMapper userMapper;
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantCategoryRepository restaurantCategoryRepository;
 
     public List<RestaurantOverview> findAll() {
         log.info("Restaurant successfully found");
-        return restaurantMapper.mapToOverviewList(restaurantRepository.findAll());
+        return restaurantMapper.mapToResponseDtoList(restaurantRepository.findAll());
     }
 
     @Override
     public Page<RestaurantOverview> findAllRestaurants(Pageable pageable) {
         log.info("Restaurant successfully found");
-        return restaurantMapper.mapToOverviewPage(restaurantRepository.findAll(pageable), pageable);
-        //        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
-//        List<RestaurantOverview> restaurantOverviews = new ArrayList<>();
-//        for (Restaurant restaurant : restaurants) {
-//            restaurantOverviews.add(restaurantMapper.mapToOverview(restaurant));
-//        }
-//        return new PageImpl<>(restaurantOverviews, pageable, restaurantOverviews.size());
+        List<RestaurantOverview> restaurantOverviews = restaurantMapper.mapToResponseDtoList(restaurantRepository.findAll());
+        return new PageImpl<>(restaurantOverviews);
     }
 
     @Override
     public Page<RestaurantOverview> getRestaurantsByUser(User user, Pageable pageable) {
-        Page<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUser(user, pageable);
+        List<Restaurant> restaurantsByUserId = restaurantRepository.findRestaurantsByUserId(user.getId());
         log.info("Restaurant successfully found");
-        return restaurantMapper.mapToOverviewPage(restaurantsByUser, pageable);
+        return new PageImpl<>(restaurantMapper.mapToResponseDtoList(restaurantsByUserId));
     }
 
     ////Այս մասը, եթե լինի կարագավորել, լավ կլինի
     @Override
-    public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, CurrentUser currentUser) throws IOException {
+    public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, User user) throws IOException {
         if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             log.info("Restaurant with that name already exists {}", dto.getName());
             throw new IllegalStateException();
         }
         dto.setPictures(fileUtil.uploadImages(files));
-        User user = currentUser.getUser();
+        dto.setUserOverview(userMapper.mapToResponseDto(user));
         log.info("The restaurant was successfully stored in the database {}", dto.getName());
-        restaurantRepository.save(restaurantMapper.mapToEntity(dto, user));
+        restaurantRepository.save(restaurantMapper.mapToEntity(dto));
     }
 
     @Override
     public byte[] getRestaurantImage(String fileName) throws IOException {
         log.info("Images successfully found");
-        return FileUtil.getImage(fileName);
+        return fileUtil.getImage(fileName);
     }
 
     @Override
@@ -82,6 +80,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+
     public void deleteRestaurant(int id) {
         if (!restaurantRepository.existsById(id)) {
             log.info("Restaurant not found");
@@ -114,9 +113,9 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (deliveryPrice != null) {
             restaurant.setDeliveryPrice(deliveryPrice);
         }
-        RestaurantCategory restaurantCategory = dto.getRestaurantCategory();
-        if (restaurantCategory != null) {
-            restaurant.setRestaurantCategory(restaurantCategory);
+        Integer restaurantCategoryId = dto.getRestaurantCategoryId();
+        if (restaurantCategoryId != null) {
+            restaurant.setRestaurantCategory(restaurantCategoryRepository.getReferenceById(restaurantCategoryId));
         }
         log.info("The restaurant was successfully stored in the database {}", restaurant.getName());
         restaurantRepository.save(restaurant);
@@ -126,6 +125,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantOverview getRestaurant(int id) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
         log.info("Restaurant successfully found {}", restaurant.getName());
-        return restaurantMapper.mapToOverview(restaurant);
+        return restaurantMapper.mapToResponseDto(restaurant);
     }
 }

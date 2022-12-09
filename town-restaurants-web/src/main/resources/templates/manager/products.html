@@ -1,51 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org/">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Products</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h3> Products </h3>-->
-<!--<a href="/manager/products/add">Add New Product</a>-->
-<!--<table>-->
-
-<!--    <tr>-->
-<!--        <th>Product Pictures</th>-->
-<!--        <th>Name</th>-->
-<!--        <th>Description</th>-->
-<!--        <th>Price</th>-->
-<!--        <th>Product Category</th>-->
-<!--        <th>Restaurant</th>-->
-
-<!--    </tr>-->
-
-<!--    <tr th:each="product:${products.content}">-->
-<!--        <td th:if="${product.pictures != null && !product.pictures.isEmpty()}"-->
-<!--            th:each="picture:${product.pictures}">-->
-<!--            <img th:src="@{/manager/products/getImages(fileName=${picture})}">-->
-<!--        <img th:if="${product.pictures == null || product.pictures.isEmpty()}" src=""></td>-->
-<!--        <td th:text="${product.name}"></td>-->
-<!--        <td th:text="${product.description}"></td>-->
-<!--        <td th:text="${product.price}"></td>-->
-<!--        <td th:if="${product.productCategoryOverview!= null}" th:text="${product.productCategoryOverview.name}"></td>-->
-<!--        <td th:if="${product.restaurantOverview!= null}"th:text="${product.restaurantOverview.name}"></td>-->
-<!--        <td><a th:href="@{'/manager/products/edit/'+${product.id}}">Edit</a></td>-->
-<!--        <td><a th:href="@{'/manager/products/delete/'+${product.id}}">Delete</a></td>-->
-
-<!--    </tr>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <th th:if="${products.totalPages > 0}" class="pagination"-->
-<!--        th:each="pageNumber : ${pageNumbers}">-->
-<!--        <a th:href="@{/manager/products(size=${products.size}, page=${pageNumber})}"-->
-<!--           th:text="${pageNumber}"-->
-<!--           th:class="${pageNumber==products.number + 1} ? active"></a>-->
-<!--    </th>-->
-<!--</table>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
@@ -124,15 +76,13 @@
         </div>
     </div>
     <!-- /box_general-->
-    <div style="padding-left: 50px" class="pagination pagination-sm add_bottom_30">
+    <div style="padding-left: 50px" class="pagination_fg">
         <table class="page-item">
-            <th href="#">&laquo;</th>
-            <th th:if="${categories.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" class="page-link">
+            <th th:if="${categories.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" >
                 <a class="active" th:href="@{/products/my(size=${categories.size}, page=${pageNumber})}"
                    th:text="${pageNumber}"
                    th:class="${pageNumber==categories.number + 1} ? active"></a>
             </th>
-            <th href="#">&raquo;</th>
         </table>
     </div>
     <!-- /pagination-->

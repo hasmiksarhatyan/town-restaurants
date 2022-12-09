@@ -8,6 +8,7 @@ import am.itspace.townrestaurantscommon.entity.ReserveStatus;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ReserveMapper;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.ReserveRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.ReserveService;
@@ -31,13 +32,14 @@ import static am.itspace.townrestaurantscommon.entity.ReserveStatus.PENDING;
 public class ReserveServiceImpl implements ReserveService {
 
     private final ReserveMapper reserveMapper;
+    private final UserMapper userMapper;
     private final ReserveRepository reserveRepository;
     private final RestaurantRepository restaurantRepository;
 
     @Override
     public void addReserve(CreateReserveDto dto, User user) {
+        dto.setUserOverview(userMapper.mapToResponseDto(user));
         Reserve reserve = reserveMapper.mapToEntity(dto);
-        reserve.setUser(user);
         reserve.setStatus(PENDING);
         log.info("The reserve was successfully stored in the database {}", dto.getPhoneNumber());
         reserveRepository.save(reserve);

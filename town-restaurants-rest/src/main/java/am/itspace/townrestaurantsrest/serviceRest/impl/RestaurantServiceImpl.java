@@ -4,9 +4,12 @@ import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
+import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
+import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
+import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
@@ -30,6 +33,7 @@ import java.util.List;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
+    private final RestaurantCategoryRepository restaurantCategoryRepository;
     private final RestaurantRepository restaurantRepository;
 
     @Override
@@ -97,9 +101,9 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (deliveryPrice != null) {
             restaurant.setDeliveryPrice(deliveryPrice);
         }
-        RestaurantCategory restaurantCategory = editRestaurantDto.getRestaurantCategory();
-        if (restaurantCategory != null) {
-            restaurant.setRestaurantCategory(restaurantCategory);
+        Integer restaurantCategoryId = editRestaurantDto.getRestaurantCategoryId();
+        if (restaurantCategoryId != null) {
+            restaurant.setRestaurantCategory(restaurantCategoryRepository.getReferenceById(restaurantCategoryId));
         }
         restaurantRepository.save(restaurant);
         log.info("The restaurant was successfully stored in the database {}", restaurant.getName());

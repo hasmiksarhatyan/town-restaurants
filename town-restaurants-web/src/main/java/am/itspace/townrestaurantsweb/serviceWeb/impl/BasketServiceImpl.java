@@ -1,13 +1,14 @@
 package am.itspace.townrestaurantsweb.serviceWeb.impl;
 
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
+import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
 import am.itspace.townrestaurantscommon.entity.Basket;
 import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.BasketMapper;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
-import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.BasketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,50 +27,70 @@ public class BasketServiceImpl implements BasketService {
 
     private final BasketRepository basketRepository;
     private final BasketMapper basketMapper;
+    private final UserMapper userMapper;
     private final ProductRepository productRepository;
 
     @Override
     public Page<BasketOverview> getBaskets(Pageable pageable, User user) {
-        Page<Basket> basketByUser = basketRepository.findBasketByUser(user, pageable);
-        if (basketByUser.isEmpty()) {
-            throw new IllegalStateException("You don't have a basket");
-        }
-        List<BasketOverview> basketOverviews = basketMapper.mapToDto(basketByUser);
-        return new PageImpl<>(basketOverviews, pageable, basketOverviews.size());
+        List<Basket> basketByUser = basketRepository.findBasketByUser(user);
+        Page<Basket> basketPage = new PageImpl<>(basketByUser);
+        return basketPage.map(basketMapper::mapToDto);
     }
 
     @Override
-    public void addBasket(int id, CurrentUser currentUser) {
-        if (currentUser == null) {
+    public List<BasketOverview> getBaskets(User user) {
+        return basketMapper.mapToDtoList(basketRepository.findBasketByUser(user));
+    }
+
+    public void addProductToBasket(int id, User user) {
+        if (user == null) {
             throw new IllegalStateException();
         }
-        Basket basket = new Basket();
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             throw new IllegalStateException();
         }
         Product product = productOptional.get();
-        if (!basketRepository.existsByProduct(product)) {
-            basket.setProduct(product);
-            basket.setQuantity(1);
-            basket.setUser(currentUser.getUser());
+        if (!basketRepository.existsByProductAndUser(product, user)) {
+            CreateBasketDto basketDto = new CreateBasketDto();
+            basketDto.setProductId(id);
+            basketDto.setQuantity(1);
+            basketDto.setUserOverview(userMapper.mapToResponseDto(user));
+            Basket basket = basketMapper.mapToEntity(basketDto);
             basketRepository.save(basket);
         } else {
-            basket = basketRepository.findByProductAndUser(product, currentUser.getUser());
+            Basket basket = basketRepository.findByProductAndUser(product, user);
             basket.setQuantity(basket.getQuantity() + 1);
             basketRepository.save(basket);
         }
     }
 
+    public double totalPrice(User user) {
+        double totalPrice = 0;
+        List<Basket> basketByUser = basketRepository.findBasketByUser(user);
+        if (!basketByUser.isEmpty()) {
+            for (Basket basket : basketByUser) {
+                Product product = basket.getProduct();
+                totalPrice += product.getPrice() * basket.getQuantity();
+            }
+        }
+        return totalPrice;
+    }
+
     @Override
-    public void delete(int id) {
-        if (!basketRepository.existsByProductId(id)) {
+    public void delete(int id, User user) {
+        if (!basketRepository.existsByProductAndUser(productRepository.getReferenceById(id), user)) {
             throw new IllegalStateException();
         }
-        Basket basket = basketRepository.findBasketByProductId(id);
+        Basket basket = basketRepository.findByProductAndUser(productRepository.getReferenceById(id), user);
         double quantity = basket.getQuantity();
-        quantity = quantity-1;
-        basket.setQuantity(quantity);
-        basketRepository.save(basket);
+        if (quantity == 1) {
+            basket.setQuantity(0);
+            basketRepository.delete(basket);
+        } else {
+            quantity = quantity - 1;
+            basket.setQuantity(quantity);
+            basketRepository.save(basket);
+        }
     }
 }

@@ -7,6 +7,8 @@ import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
+import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
+import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
@@ -31,6 +33,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final FileUtil fileUtil;
     private final ProductMapper productMapper;
+    private final UserMapper userMapper;
+    private final RestaurantMapper restaurantMapper;
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
@@ -78,13 +82,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException {
         if (StringUtils.hasText(dto.getName()) && dto.getPrice() >= 0) {
+            dto.setUserOverview(userMapper.mapToResponseDto(user));
             Product product = productMapper.mapToEntity(dto);
             product.setPictures(fileUtil.uploadImages(files));
-            product.setUser(user);
             productRepository.save(product);
             log.info("The product was successfully stored in the database {}", dto.getName());
         }
     }
+
 
     @Override
     public void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException {
@@ -125,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public byte[] getProductImage(String fileName) throws IOException {
         log.info("Image successfully found");
-        return FileUtil.getImage(fileName);
+        return fileUtil.getImage(fileName);
     }
 
     @Override

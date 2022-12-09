@@ -68,7 +68,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public byte[] getEventImage(String fileName) throws IOException {
         log.info("Images successfully found");
-        return FileUtil.getImage(fileName);
+        return fileUtil.getImage(fileName);
     }
 
     @Override

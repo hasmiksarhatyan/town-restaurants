@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantscommon.dto.creditCard;
 
+import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,5 @@ public class CreditCardOverview {
     private String cardHolder;
     private LocalDate cardExpiresAt;
     private int cvv;
-    private User user;
+    private UserOverview userOverview;
 }

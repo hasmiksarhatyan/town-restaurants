@@ -3,6 +3,7 @@ package am.itspace.townrestaurantsweb.controller;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.BasketService;
+import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,25 +25,26 @@ import static am.itspace.townrestaurantsweb.utilWeb.PageUtil.getTotalPages;
 public class BasketController {
 
     private final BasketService basketService;
+    private final ProductService productService;
 
     @GetMapping("/add/{id}")
-    public String addBasket(@PathVariable("id") int id,
-                            @AuthenticationPrincipal CurrentUser currentUser) {
+    public String addToBasket(@PathVariable("id") int id,
+                              @AuthenticationPrincipal CurrentUser currentUser) {
         try {
-            basketService.addBasket(id, currentUser);
-            return "redirect:/baskets";
+            basketService.addProductToBasket(id, currentUser.getUser());
+            return "redirect:/products";
         } catch (IllegalStateException e) {
             return "index";
         }
     }
 
     @GetMapping
-    public String baskets(@RequestParam(value = "page", defaultValue = "0") int page,
+    public String baskets(@RequestParam(value = "page", defaultValue = "1") int page,
                           @RequestParam(value = "size", defaultValue = "5") int size,
                           @AuthenticationPrincipal CurrentUser currentUser,
                           ModelMap modelMap) {
         try {
-            Page<BasketOverview> baskets = basketService.getBaskets(PageRequest.of(page, size), currentUser.getUser());
+            Page<BasketOverview> baskets = basketService.getBaskets(PageRequest.of(page - 1, size), currentUser.getUser());
             modelMap.addAttribute("baskets", baskets);
             List<Integer> pageNumbers = getTotalPages(baskets);
             modelMap.addAttribute("pageNumbers", pageNumbers);
@@ -57,9 +59,9 @@ public class BasketController {
 //    }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id, ModelMap modelMap) {
+    public String delete(@PathVariable("id") int id, ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
         try { //ka basket,
-            basketService.delete(id);
+            basketService.delete(id, currentUser.getUser());
             return "redirect:/baskets";
         } catch (IllegalStateException e) {
             modelMap.addAttribute("errorMessageId", "Something went wrong, Try again!");

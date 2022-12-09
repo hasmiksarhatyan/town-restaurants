@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantscommon.dto.restaurant;
 
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
+import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,5 @@ public class RestaurantOverview {
     private RestaurantCategoryOverview restaurantCategoryOverview;
     private Double deliveryPrice;
     private List<String> pictures;
-    private User user;
+    private UserOverview userOverview;
 }

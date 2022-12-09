@@ -2,14 +2,9 @@ package am.itspace.townrestaurantscommon.mapper;
 
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.Product;
-import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.entity.User;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -18,6 +13,7 @@ public interface ProductMapper {
 
     @Mapping(source = "dto.restaurantId", target = "restaurant.id")
     @Mapping(source = "dto.productCategoryId", target = "productCategory.id")
+    @Mapping(source = "dto.userOverview", target = "user")
     Product mapToEntity(CreateProductDto dto);
 
     @Mapping(source = "product.restaurant", target = "restaurantOverview")

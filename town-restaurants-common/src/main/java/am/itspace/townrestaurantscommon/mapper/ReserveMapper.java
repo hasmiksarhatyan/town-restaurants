@@ -14,6 +14,7 @@ import java.util.List;
 public interface ReserveMapper {
 
     @Mapping(source = "dto.restaurantId", target = "restaurant.id")
+    @Mapping(source = "dto.userOverview", target = "user")
     Reserve mapToEntity(CreateReserveDto dto);
 
     @Mapping(source = "reserve.restaurant", target = "restaurantOverview")

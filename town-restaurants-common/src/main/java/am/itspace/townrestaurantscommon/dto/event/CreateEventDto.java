@@ -33,7 +33,7 @@ public class CreateEventDto {
     @Schema(description = "Price must consist of numbers only")
     private double price;
 
-//    @NotBlank(message = "Date is mandatory")
+    @NotBlank(message = "Date is mandatory")
     private String eventDateTime;
 
     private Integer restaurantId;
