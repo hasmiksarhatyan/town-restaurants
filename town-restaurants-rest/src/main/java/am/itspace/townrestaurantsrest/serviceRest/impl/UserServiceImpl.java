@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.Role;
@@ -51,11 +51,11 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User save = userRepository.save(user);
-        sendMail(user);
+        sendEmail(user);
         return userMapper.mapToResponseDto(save);
     }
 
-    private void sendMail(User user) {
+    private void sendEmail(User user) {
         try {
             VerificationToken token = tokenService.createToken(user);
             mailService.sendEmail(user.getEmail(), "Welcome", "Hi, " + user.getFirstName() + user.getLastName() + "\n" +
@@ -87,7 +87,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.mapToResponseDto(user);
     }
 
-
     @Override
     public UserAuthResponseDto authentication(UserAuthDto userAuthDto) {
         User user = userRepository.findByEmail(userAuthDto.getEmail()).orElseThrow(() -> new AuthenticationException(Error.UNAUTHORIZED));
@@ -95,7 +94,7 @@ public class UserServiceImpl implements UserService {
         if (passwordEncoder.matches(userAuthDto.getPassword(), user.getPassword())) {
             log.info("User with username {} get auth token", user.getEmail());
             return UserAuthResponseDto.builder()
-                    .token(jwtTokenUtil.generateToken(user.getEmail(), user))
+                    .token(jwtTokenUtil.generateToken(user))
                     .build();
         } else {
             throw new AuthenticationException(Error.UNAUTHORIZED);
@@ -104,21 +103,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {
-        String email = securityContextService.getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
-        log.info("Request from user {} to change the password", user.getEmail());
-        boolean matches = passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword());
-        if (!matches) {
-            log.warn("User {} had provided wrong credentials to change the password", user.getEmail());
-            throw new AuthenticationException(PROVIDED_WRONG_PASSWORD);
+        try {
+            String email = securityContextService.getUserDetails().getUsername();
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Error.USER_NOT_FOUND));
+            log.info("Request from user {} to change the password", user.getEmail());
+            boolean matches = passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword());
+            if (!matches) {
+                log.warn("User {} had provided wrong credentials to change the password", user.getEmail());
+                throw new AuthenticationException(PROVIDED_WRONG_PASSWORD);
+            }
+            if (changePasswordDto.getOldPassword().equals(changePasswordDto.getNewPassword1())) {
+                log.warn("User {} provided the same password to change password", user.getEmail());
+                throw new AuthenticationException(PROVIDED_SAME_PASSWORD);
+            }
+            user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword1()));
+            userRepository.save(user);
+            log.info("User {} password was successfully changed", user.getEmail());
+        } catch (ClassCastException e) {
+            throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
-        if (changePasswordDto.getOldPassword().equals(changePasswordDto.getNewPassword1())) {
-            log.warn("User {} provided the same password to change password", user.getEmail());
-            throw new AuthenticationException(PROVIDED_SAME_PASSWORD);
-        }
-        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword1()));
-        userRepository.save(user);
-        log.info("User {} password was successfully changed", user.getEmail());
     }
 
     @Override

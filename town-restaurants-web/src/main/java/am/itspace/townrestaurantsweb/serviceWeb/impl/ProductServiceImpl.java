@@ -13,7 +13,7 @@ import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
-import am.itspace.townrestaurantsweb.utilWeb.FileUtil;
+import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

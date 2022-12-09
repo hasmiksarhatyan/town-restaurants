@@ -1,18 +1,19 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
+import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.entity.Event;
+import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
-import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
+import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.exception.Error;
 import am.itspace.townrestaurantsrest.serviceRest.EventService;
-import am.itspace.townrestaurantsrest.serviceRest.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static am.itspace.townrestaurantsrest.exception.Error.FILE_NOT_FOUND;
+import static am.itspace.townrestaurantsrest.exception.Error.FILE_UPLOAD_FAILED;
 
 @Slf4j
 @Service
@@ -31,19 +39,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    private final FileUtil fileUtil;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final RestaurantRepository restaurantRepository;
-    private final UserService userService;
 
     @Override
-    public EventOverview save(CreateEventDto createEventDto) {
+    public EventOverview save(CreateEventDto createEventDto, FileDto fileDto) {
         if (eventRepository.existsByName(createEventDto.getName())) {
             log.info("Event with that name already exists {}", createEventDto.getName());
             throw new EntityAlreadyExistsException(Error.EVENT_ALREADY_EXISTS);
         }
+        try {
+            MultipartFile[] files = fileDto.getFiles();
+            for (MultipartFile file : files) {
+                if (!file.isEmpty() && file.getSize() > 0) {
+                    if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                        throw new MyFileNotFoundException(FILE_NOT_FOUND);
+                    }
+                }
+            }
+            createEventDto.setPictures(fileUtil.uploadImages(files));
+        } catch (IOException e) {
+            throw new FileStorageException(FILE_UPLOAD_FAILED);
+        }
         log.info("The event was successfully stored in the database {}", createEventDto.getName());
         return eventMapper.mapToOverview(eventRepository.save(eventMapper.mapToEntity(createEventDto)));
+    }
+
+    @Override
+    public byte[] getEventImage(String fileName) {
+        try {
+            log.info("Images successfully found");
+            return FileUtil.getImage(fileName);
+        } catch (IOException e) {
+            throw new MyFileNotFoundException(FILE_NOT_FOUND);
+        }
     }
 
     @Override
@@ -85,6 +116,28 @@ public class EventServiceImpl implements EventService {
             log.info("Event successfully detected");
             return eventMapper.mapToOverviewList(events);
         }
+    }
+
+    @Override
+    public Map<Integer, List<EventOverview>> sortEventsByRestaurant() {
+        Map<Integer, List<EventOverview>> events = new HashMap<>();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        if (restaurants.isEmpty()) {
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        }
+        for (Restaurant restaurant : restaurants) {
+            if (restaurant != null) {
+                List<EventOverview> eventsByRestaurant = eventMapper.mapToOverviewList(eventRepository.findEventsByRestaurant_Id(restaurant.getId()));
+                if (!eventsByRestaurant.isEmpty()) {
+                    events.put(restaurant.getId(), eventsByRestaurant);
+                }
+            }
+        }
+        if (events.isEmpty()) {
+            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
+        }
+        log.info("Events successfully sorted by restaurant");
+        return events;
     }
 
     @Override

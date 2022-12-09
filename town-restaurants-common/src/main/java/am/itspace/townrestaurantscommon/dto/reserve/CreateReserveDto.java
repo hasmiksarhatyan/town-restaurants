@@ -34,6 +34,4 @@ public class CreateReserveDto {
     private String phoneNumber;
 
     private Integer restaurantId;
-
-    private UserOverview userOverview;
 }

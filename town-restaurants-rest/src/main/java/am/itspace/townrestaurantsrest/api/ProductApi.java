@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.api;
 
-
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -22,7 +22,7 @@ public interface ProductApi {
 
     @Operation(
             summary = "Add new product",
-            description = "Possible error codes: 4003")
+            description = "Possible error codes: 4003, 4010, 4050")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -36,13 +36,40 @@ public interface ProductApi {
                             description = "Product already exists",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))
-            })
-    ResponseEntity<ProductOverview> create(CreateProductDto createProductDto);
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4010",
+                            description = "Error occurred while uploading multipart file.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4050",
+                            description = "File not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<ProductOverview> create(CreateProductDto createProductDto, FileDto fileDto);
+
+    @Operation(
+            summary = "Get image",
+            description = "Possible error codes: 4050")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched image from DB"),
+                    @ApiResponse(
+                            responseCode = "4050",
+                            description = "File not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    byte[] getImage(String fileName);
 
     @Operation(
             summary = "Get all products",
-            description = "Possible error codes: 4043")
+            description = "Possible error codes: 4043,4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -54,6 +81,12 @@ public interface ProductApi {
                     @ApiResponse(
                             responseCode = "4043",
                             description = "Product not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4094",
+                            description = "Needs to authenticate",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
@@ -77,6 +110,33 @@ public interface ProductApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
     ResponseEntity<List<ProductOverview>> getAll(FetchRequestDto fetchRequestDto);
+
+    @Operation(
+            summary = "Get product",
+            description = "Possible error codes: 4043,4094")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched a product from DB",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ProductOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4043",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4094",
+                            description = "Needs to authenticate",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    ResponseEntity<List<ProductOverview>> getByUser();
 
     @Operation(
             summary = "Get product",

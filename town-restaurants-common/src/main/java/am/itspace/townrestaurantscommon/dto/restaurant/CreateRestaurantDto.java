@@ -47,6 +47,4 @@ public class CreateRestaurantDto {
     private Double deliveryPrice;
 
     private List<String> pictures;
-
-    private UserOverview userOverview;
 }

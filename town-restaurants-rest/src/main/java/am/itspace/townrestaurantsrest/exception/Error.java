@@ -49,15 +49,21 @@ public enum Error {
     SEND_EMAIL_FAILED(5001, HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send an email"),
 
     USER_ALREADY_ENABLED(4092, HttpStatus.CONFLICT, "User already enabled"),
-    ///erkusi tegh es toghel
-    TOKEN_NOT_FOUND(4051, HttpStatus.NOT_FOUND, "Token not found"),
 
-    TOKEN_EXPIRED(4093, HttpStatus.CONFLICT, "Token has expired");
+    TOKEN_NOT_FOUND(4049, HttpStatus.NOT_FOUND, "Token not found"),
+
+    TOKEN_EXPIRED(4093, HttpStatus.CONFLICT, "Token has expired"),
+
+    NEEDS_AUTHENTICATION(4094, HttpStatus.CONFLICT, "Needs to authenticate"),
+
+    FILE_NOT_FOUND(4050, HttpStatus.NOT_FOUND, "File not found"),
+
+    FILE_UPLOAD_FAILED(4010, HttpStatus.BAD_REQUEST, "Error occurred while uploading multipart file.");
 
 
     private final Integer code;
     private final HttpStatus httpStatus;
     private final String message;
-    }
+}
 
 

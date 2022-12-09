@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RestaurantCategoryMapper {
 
-    RestaurantCategory mapToEntity(CreateRestaurantCategoryDto createRestaurantCategoryDto);
+//    RestaurantCategory mapToEntity(CreateRestaurantCategoryDto createRestaurantCategoryDto);
 
     RestaurantCategoryOverview mapToOverview(RestaurantCategory restaurantCategory);
 

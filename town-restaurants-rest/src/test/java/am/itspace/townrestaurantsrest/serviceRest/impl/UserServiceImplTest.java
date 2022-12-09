@@ -51,7 +51,7 @@ class UserServiceImplTest {
         //when
         doReturn(Optional.of(user)).when(userRepository).findByEmail(anyString());
         doReturn(true).when(passwordEncoder).matches(anyString(), anyString());
-        doReturn(expected.getToken()).when(tokenUtil).generateToken(anyString(), any(User.class));
+        doReturn(expected.getToken()).when(tokenUtil).generateToken(any(User.class));
         UserAuthResponseDto actual = userService.authentication(authDto);
         //then
         assertNotNull(actual);

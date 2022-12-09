@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -15,9 +16,13 @@ public interface ProductService {
 
     List<ProductOverview> getAll();
 
+    byte[] getProductImage(String fileName);
+
+    List<ProductOverview> findProductByUser();
+
     List<ProductOverview> findProductsByRestaurant(int id);
 
-    ProductOverview save(CreateProductDto createProductDto);
+    ProductOverview save(CreateProductDto createProductDto, FileDto fileDto);
 
     ProductOverview update(int id, EditProductDto editProductDto);
 

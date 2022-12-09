@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;

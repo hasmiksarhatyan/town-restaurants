@@ -22,6 +22,5 @@ public class CreateOrderDto {
     private String status;
     private String paymentOption;
     private List<ProductOverview> productOverviews;
-    private UserOverview userOverview;
     private boolean isPaid;
 }

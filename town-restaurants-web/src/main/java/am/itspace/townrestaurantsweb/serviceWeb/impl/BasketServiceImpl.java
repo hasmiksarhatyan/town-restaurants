@@ -42,28 +42,33 @@ public class BasketServiceImpl implements BasketService {
         return basketMapper.mapToDtoList(basketRepository.findBasketByUser(user));
     }
 
+    @Override
     public void addProductToBasket(int id, User user) {
-        if (user == null) {
-            throw new IllegalStateException();
-        }
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        Product product = productOptional.get();
-        if (!basketRepository.existsByProductAndUser(product, user)) {
-            CreateBasketDto basketDto = new CreateBasketDto();
-            basketDto.setProductId(id);
-            basketDto.setQuantity(1);
-            basketDto.setUserOverview(userMapper.mapToResponseDto(user));
-            Basket basket = basketMapper.mapToEntity(basketDto);
-            basketRepository.save(basket);
-        } else {
-            Basket basket = basketRepository.findByProductAndUser(product, user);
-            basket.setQuantity(basket.getQuantity() + 1);
-            basketRepository.save(basket);
-        }
+
     }
+
+//    public void addProductToBasket(int id, User user) {
+//        if (user == null) {
+//            throw new IllegalStateException();
+//        }
+//        Optional<Product> productOptional = productRepository.findById(id);
+//        if (productOptional.isEmpty()) {
+//            throw new IllegalStateException();
+//        }
+//        Product product = productOptional.get();
+//        if (!basketRepository.existsByProductAndUser(product, user)) {
+//            CreateBasketDto basketDto = new CreateBasketDto();
+//            basketDto.setProductId(id);
+//            basketDto.setQuantity(1);
+//            basketDto.setUserOverview(userMapper.mapToResponseDto(user));
+//            Basket basket = basketMapper.mapToEntity(basketDto);
+//            basketRepository.save(basket);
+//        } else {
+//            Basket basket = basketRepository.findByProductAndUser(product, user);
+//            basket.setQuantity(basket.getQuantity() + 1);
+//            basketRepository.save(basket);
+//        }
+//    }
 
     public double totalPrice(User user) {
         double totalPrice = 0;

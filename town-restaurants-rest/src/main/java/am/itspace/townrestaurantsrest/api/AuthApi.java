@@ -17,7 +17,7 @@ public interface AuthApi {
 
     @Operation(
             summary = "Register new user",
-            description = "Possible error code: 4006")
+            description = "Possible error code: 4006,5001")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -29,6 +29,12 @@ public interface AuthApi {
                     @ApiResponse(
                             responseCode = "4006",
                             description = "There already is an duplicate value for email",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "5001",
+                            description = "Failed to send an email",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
@@ -55,7 +61,7 @@ public interface AuthApi {
 
     @Operation(
             summary = "Verification for user",
-            description = "Possible error codes: 4046,4092,4093,4051")
+            description = "Possible error codes: 4046,4049,4092,4093")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -65,6 +71,12 @@ public interface AuthApi {
                     @ApiResponse(
                             responseCode = "4046",
                             description = "User not found.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4049",
+                            description = "Token not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class))),
@@ -79,14 +91,7 @@ public interface AuthApi {
                             description = "Token has expired.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(
-                            responseCode = "4051",
-                            description = "Failed to send an email.",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))
-            })
+                                    schema = @Schema(implementation = ApiError.class)))})
     ResponseEntity<?> verifyToken(VerificationTokenDto verificationTokenDto);
 }
 

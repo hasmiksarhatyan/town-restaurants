@@ -1,12 +1,11 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 
-import javax.mail.MessagingException;
 import java.util.List;
 
 public interface UserService {

@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
@@ -40,7 +40,7 @@ public interface ReserveApi {
 
     @Operation(
             summary = "Get all reserves",
-            description = "Possible error codes: 4047")
+            description = "Possible error codes: 4047, 4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -52,6 +52,12 @@ public interface ReserveApi {
                     @ApiResponse(
                             responseCode = "4047",
                             description = "Reserve not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4094",
+                            description = "Needs to authenticate",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})

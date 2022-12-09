@@ -13,7 +13,6 @@ public interface ProductMapper {
 
     @Mapping(source = "dto.restaurantId", target = "restaurant.id")
     @Mapping(source = "dto.productCategoryId", target = "productCategory.id")
-    @Mapping(source = "dto.userOverview", target = "user")
     Product mapToEntity(CreateProductDto dto);
 
     @Mapping(source = "product.restaurant", target = "restaurantOverview")

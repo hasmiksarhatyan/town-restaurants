@@ -1,13 +1,14 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
+import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.fetchRequest.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.entity.Event;
-import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EventService {
 
@@ -15,13 +16,17 @@ public interface EventService {
 
     List<EventOverview> getAll();
 
-    EventOverview save(CreateEventDto createEventDto);
+    EventOverview getById(int id);
+
+    byte[] getEventImage(String fileName);
+
+    EventOverview save(CreateEventDto createEventDto, FileDto fileDto);
 
     List<EventOverview> findEventsByRestaurantId(int id);
 
     EventOverview update(int id, EditEventDto editEventDto);
 
-    EventOverview getById(int id) throws EntityNotFoundException;
+    Map<Integer, List<EventOverview>> sortEventsByRestaurant();
 
     List<Event> getEventsList(FetchRequestDto fetchRequestDto);
 }

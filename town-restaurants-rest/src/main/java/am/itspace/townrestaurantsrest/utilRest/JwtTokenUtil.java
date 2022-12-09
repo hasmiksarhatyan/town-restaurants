@@ -51,13 +51,13 @@ public class JwtTokenUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(String email, User user) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("ID" ,user.getId());
-        claims.put("name" ,user.getFirstName());
-        claims.put("surname" ,user.getLastName());
-//        claims.put("email" ,user.getEmail());
-        return doGenerateToken(claims, email);
+        claims.put("ID", user.getId());
+        claims.put("name", user.getFirstName());
+        claims.put("surname", user.getLastName());
+        claims.put("email", user.getEmail());
+        return doGenerateToken(claims, user.getEmail());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
