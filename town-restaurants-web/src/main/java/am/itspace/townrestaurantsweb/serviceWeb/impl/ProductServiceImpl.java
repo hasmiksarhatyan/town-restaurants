@@ -82,14 +82,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException {
         if (StringUtils.hasText(dto.getName()) && dto.getPrice() >= 0) {
-            dto.setUserOverview(userMapper.mapToResponseDto(user));
             Product product = productMapper.mapToEntity(dto);
+            product.setUser(user);
             product.setPictures(fileUtil.uploadImages(files));
             productRepository.save(product);
             log.info("The product was successfully stored in the database {}", dto.getName());
         }
     }
-
 
     @Override
     public void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException {
@@ -162,10 +161,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductOverview> findProductsByRestaurant(int id) {
         List<Product> products = productRepository.findProductsByRestaurant_Id(id);
-//        if (products.isEmpty()) {
-//            log.info("Product not found");
-//            throw new IllegalStateException();
-//        }
+        if (products.isEmpty()) {
+            log.info("Product not found");
+            throw new IllegalStateException();
+        }
         log.info("Product successfully found");
         return productMapper.mapToOverviewList(products);
     }

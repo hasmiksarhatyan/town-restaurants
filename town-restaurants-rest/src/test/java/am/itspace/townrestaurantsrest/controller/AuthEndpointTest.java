@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.user.UserAuthDto;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthResponseDto;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
@@ -26,9 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthEndpointTest {
 
@@ -78,7 +77,6 @@ class AuthEndpointTest {
 
     @Test
     void verifyToken() throws Exception {
-
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("plainToken", "1234567890");
         mvc.perform(post("/verify")

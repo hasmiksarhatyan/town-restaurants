@@ -26,9 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RestaurantCategoryEndpointTest {
 
@@ -42,7 +42,8 @@ class RestaurantCategoryEndpointTest {
 
     @BeforeEach
     void setUp() {
-        restaurantCategory = restaurantCategoryRepository.save(getRestaurantCategory());
+        restaurantCategory = getRestaurantCategory();
+        restaurantCategoryRepository.save(restaurantCategory);
     }
 
     @AfterEach
@@ -54,7 +55,7 @@ class RestaurantCategoryEndpointTest {
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "mexican");
-        mvc.perform(post("/restaurantsCategory")
+        mvc.perform(post("/restaurantsCategories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk());
@@ -62,7 +63,7 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/restaurantsCategory")
+        mvc.perform(get("/restaurantsCategories")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -70,7 +71,7 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void getById() throws Exception {
-        mvc.perform(get("/restaurantsCategory/{id}", restaurantCategory.getId())
+        mvc.perform(get("/restaurantsCategories/{id}", restaurantCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", hasToString(restaurantCategory.getName())));
@@ -80,7 +81,7 @@ class RestaurantCategoryEndpointTest {
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "mexican");
-        mvc.perform(put("/restaurantsCategory/{id}", restaurantCategory.getId())
+        mvc.perform(put("/restaurantsCategories/{id}", restaurantCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk())
@@ -89,7 +90,7 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/restaurantsCategory/{id}", restaurantCategory.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/restaurantsCategories/{id}", restaurantCategory.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

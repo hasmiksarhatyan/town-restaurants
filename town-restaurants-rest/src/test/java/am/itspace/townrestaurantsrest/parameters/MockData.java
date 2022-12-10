@@ -1,5 +1,7 @@
 package am.itspace.townrestaurantsrest.parameters;
 
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
@@ -18,15 +20,27 @@ import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
+import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.ManyToOne;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MockData {
 
@@ -40,6 +54,19 @@ public class MockData {
                 .password("hayk00")
                 .createdAt(LocalDateTime.now())
                 .role(Role.CUSTOMER)
+                .enabled(true)
+                .build();
+    }
+
+    public static User getUserOwner() {
+        return User.builder()
+                .id(1)
+                .firstName("Hayk")
+                .lastName("Yan")
+                .email("hayk@mail.com")
+                .password("hayk00")
+                .createdAt(LocalDateTime.now())
+                .role(Role.RESTAURANT_OWNER)
                 .enabled(true)
                 .build();
     }
@@ -97,6 +124,31 @@ public class MockData {
                 .build();
     }
 
+    public static Page<User> getPageUsers() {
+        return new PageImpl<>(List.of(getUser(), getUser()));
+    }
+
+    public static Page<User> getNullPageUsers() {
+        return new PageImpl<>(List.of());
+    }
+
+    //token
+
+    public static VerificationTokenDto getVerificationTokenDto() {
+        return VerificationTokenDto.builder()
+                .plainToken("123456789")
+                .build();
+    }
+
+
+    public static VerificationToken getVerificationToken() {
+        return VerificationToken.builder()
+                .id(1)
+                .user(getUser())
+                .plainToken("123456789")
+                .build();
+    }
+
     //restaurant
     public static Restaurant getRestaurant() {
         return Restaurant.builder()
@@ -114,7 +166,7 @@ public class MockData {
     public static RestaurantOverview getRestaurantOverview() {
         return RestaurantOverview.builder()
                 .id(1)
-                .user(getUser())
+                .userOverview(getUserOverview())
                 .name("Limone")
                 .phone("099112233")
                 .address("Tamanyan")
@@ -142,8 +194,16 @@ public class MockData {
                 .address("Tamanyan")
                 .deliveryPrice(2000.0)
                 .email("limone@gmail.com")
-                .restaurantCategory(getRestaurantCategory())
+                .restaurantCategoryId(getRestaurantCategory().getId())
                 .build();
+    }
+
+    public static Page<Restaurant> getPageRestaurants() {
+        return new PageImpl<>(List.of(getRestaurant(), getRestaurant()));
+    }
+
+    public static Page<Restaurant> getNullPageRestaurants() {
+        return new PageImpl<>(List.of());
     }
 
     //restaurantCategory
@@ -171,6 +231,14 @@ public class MockData {
         return EditRestaurantCategoryDto.builder()
                 .name("snack")
                 .build();
+    }
+
+    public static Page<RestaurantCategory> getPageRestaurantCategories() {
+        return new PageImpl<>(List.of(getRestaurantCategory(), getRestaurantCategory()));
+    }
+
+    public static Page<RestaurantCategory> getNullPageRestaurantCategories() {
+        return new PageImpl<>(List.of());
     }
 
     //event
@@ -224,6 +292,63 @@ public class MockData {
                 .build();
     }
 
+    public static Page<Event> getPageEvents() {
+        return new PageImpl<>(List.of(getEvent(), getEvent()));
+    }
+
+    public static Page<Event> getNullPageEvents() {
+        return new PageImpl<>(List.of());
+    }
+
+    public static Map<Integer, List<EventOverview>> getMapEvent() {
+        Map<Integer, List<EventOverview>> list = new HashMap<>();
+        list.put(1, List.of(getEventOverview(), getEventOverview()));
+        return list;
+    }
+
+    //fetch
+    public static FetchRequestDto getFetchRequestDto() {
+        return FetchRequestDto
+                .builder()
+                .page(1)
+                .size(1)
+                .sortDir("desc")
+                .sort("1")
+                .instance("1")
+                .build();
+    }
+
+    //file
+
+    public static FileDto getFileDto2() {
+        File file = new File("1666283155713_3219866.png");
+        MultipartFile[] file1 = new MultipartFile[]{(MultipartFile) file};
+        return FileDto.builder()
+                .files(file1)
+                .build();
+    }
+
+    public static FileDto getFileDto() {
+        Path path = Paths.get("/Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-common/src/main/resources/static/image/1666283155713_3219866.png");
+        String name = "1666283155713_3219866.png";
+        String originalName = "1666283155713_3219866.png";
+        String contentType = "image/plain";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (IOException e) {
+        }
+        MultipartFile result = new MockMultipartFile(name, originalName, contentType, content);
+
+        return FileDto.builder()
+                .files(new MultipartFile[]{result})
+                .build();
+    }
+
+    public static byte[] getBytes() {
+        return new byte[]{1};
+    }
+
     //productCategory
 
     public static ProductCategory getProductCategory() {
@@ -250,6 +375,14 @@ public class MockData {
         return EditProductCategoryDto.builder()
                 .name("snack")
                 .build();
+    }
+
+    public static Page<ProductCategory> getPageProductCategories() {
+        return new PageImpl<>(List.of(getProductCategory(), getProductCategory()));
+    }
+
+    public static Page<ProductCategory> getNullPageProductCategories() {
+        return new PageImpl<>(List.of());
     }
 
     //product
@@ -293,6 +426,14 @@ public class MockData {
                 .productCategoryId(getProductCategory().getId())
                 .restaurantId(getRestaurant().getId())
                 .build();
+    }
+
+    public static Page<Product> getPageProducts() {
+        return new PageImpl<>(List.of(getProduct(), getProduct()));
+    }
+
+    public static Page<Product> getNullPageProducts() {
+        return new PageImpl<>(List.of());
     }
 
     //reserve
@@ -344,13 +485,12 @@ public class MockData {
                 .build();
     }
 
-    //token
-
-    public static VerificationToken getVerificationToken(){
-        return VerificationToken.builder()
-                .id(1)
-                .user(getUser())
-                .plainToken("123456789")
-                .build();
+    public static Page<Reserve> getPageReserves() {
+        return new PageImpl<>(List.of(getReserve(), getReserve()));
     }
+
+    public static Page<Reserve> getNullPageReserves() {
+        return new PageImpl<>(List.of());
+    }
+
 }

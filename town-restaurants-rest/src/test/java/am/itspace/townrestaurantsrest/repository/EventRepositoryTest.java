@@ -47,6 +47,7 @@ class EventRepositoryTest {
         restaurantRepository.save(restaurant);
         Event event = getEvent();
         eventRepository.save(event);
+
         List<Event> events = eventRepository.findEventsByRestaurant_Id(restaurant.getId());
         assertTrue(events.contains(event));
     }

@@ -5,7 +5,9 @@ import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static am.itspace.townrestaurantsrest.parameters.MockData.getRestaurantCategory;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class RestaurantCategoryRepositoryTest {
@@ -15,12 +17,9 @@ class RestaurantCategoryRepositoryTest {
 
     @Test
     void existsByName() {
-        String name = "Shoe";
-        RestaurantCategory category = RestaurantCategory.builder()
-                .name(name)
-                .build();
-        restaurantCategoryRepository.save(category);
-        boolean expected = restaurantCategoryRepository.existsByName(name);
+        RestaurantCategory restaurantCategory = getRestaurantCategory();
+        restaurantCategoryRepository.save(restaurantCategory);
+        boolean expected = restaurantCategoryRepository.existsByName(restaurantCategory.getName());
         assertTrue(expected);
     }
 }

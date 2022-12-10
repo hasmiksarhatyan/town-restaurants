@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
-@CrossOrigin(origins = "http://localhost:8082")
+//@CrossOrigin(origins = "http://localhost:8082")
 public class RestaurantEndpoint implements RestaurantApi {
 
     private final ModelMapper modelMapper;

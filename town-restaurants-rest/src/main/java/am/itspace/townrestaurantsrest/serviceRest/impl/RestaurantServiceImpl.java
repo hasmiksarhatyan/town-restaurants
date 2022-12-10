@@ -5,10 +5,8 @@ import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
-import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
-import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.mapper.RestaurantCategoryMapper;
+import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
@@ -27,7 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import static am.itspace.townrestaurantsrest.exception.Error.*;
 
@@ -70,7 +68,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public byte[] getRestaurantImage(String fileName) {
         try {
             log.info("Images successfully found");
-            return FileUtil.getImage(fileName);
+            return fileUtil.getImage(fileName);
         } catch (IOException e) {
             throw new MyFileNotFoundException(FILE_NOT_FOUND);
         }
@@ -100,18 +98,35 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurants.getContent();
     }
 
+//    @Override
+//    public List<Restaurant> getRestaurantsByUser(FetchRequestDto dto) {
+//        Map<Object, Object> r = new HashMap<>();
+//        try {
+//            List<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUserId(securityContextService.getUserDetails().getUser().getId());
+//            if (!restaurantsByUser.isEmpty()) {
+//                for (Restaurant restaurant : restaurantsByUser) {
+//                    PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+//                    Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(restaurant.getEmail(), pageReq);
+//                    return restaurants.getContent();
+//                }
+//            }
+//            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+//        } catch (ClassCastException e) {
+//            throw new AuthenticationException(NEEDS_AUTHENTICATION);
+//        }
+//    }
+
     @Override
     public List<Restaurant> getRestaurantsByUser(FetchRequestDto dto) {
         try {
-            List<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUserId(securityContextService.getUserDetails().getUser().getId());
-            if (!restaurantsByUser.isEmpty()) {
-                for (Restaurant restaurant : restaurantsByUser) {
-                    PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-                    Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(restaurant.getEmail(), pageReq);
-                    return restaurants.getContent();
-                }
+            User user = securityContextService.getUserDetails().getUser();
+            PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
+            Page<Restaurant> restaurants = restaurantRepository.findRestaurantByUser(user, pageReq);
+            if (restaurants.isEmpty()) {
+                log.info("Restaurant not found");
+                throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
             }
-            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+            return restaurants.getContent();
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
@@ -167,44 +182,4 @@ public class RestaurantServiceImpl implements RestaurantService {
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
     }
-
-//    @Override
-//    public ImageOverview uploadImage(int restaurantId, MultipartFile multipartFile) {
-//        checkNotNull(multipartFile, IMAGE_IS_REQUIRED);
-//        Optional<Restaurant> byId = restaurantRepository.findById(restaurantId);
-////        User user = findUserById(userId);
-//        imageService.uploadImagesToS3("user", userId, user.getImageVersion(), multipartFile, userId);
-//
-//        user.setImageVersion(user.getImageVersion() + 1);
-//        user = userRepository.saveAndFlush(user);
-//        return userMapper.mapToUserImageOverview(user);
-//    }
-
-
-//    public ImageOverview uploadImage(UUID userId, MultipartFile multipartFile) {
-//        checkNotNull(multipartFile, IMAGE_IS_REQUIRED);
-//        User user = findUserById(userId);
-//        imageService.uploadImagesToS3("user", userId, user.getImageVersion(), multipartFile, userId);
-//
-//        user.setImageVersion(user.getImageVersion() + 1);
-//        user = userRepository.saveAndFlush(user);
-//        return userMapper.mapToUserImageOverview(user);
-//    }
-
-
-//    @Override
-//    public void deleteImage(UUID userId) {
-//        User user =
-//                userRepository
-//                        .findById(userId)
-//                        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-//        String className = User.class.getSimpleName().toLowerCase();
-//
-//        imageService.checkExistenceOfObject(
-//                imageService.getImagePath(className, userId, user.getImageVersion(), true), userId);
-//        imageService.checkExistenceOfObject(
-//                imageService.getImagePath(className, userId, user.getImageVersion(), false), userId);
-//        imageService.deleteImagesFromS3("user", userId, user.getImageVersion());
-//    }
-
 }

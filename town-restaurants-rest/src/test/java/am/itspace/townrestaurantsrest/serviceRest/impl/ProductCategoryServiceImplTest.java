@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +24,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductCategoryServiceImplTest {
 
-    @Mock
-    ProductCategoryRepository productCategoryRepository;
+    @InjectMocks
+    ProductCategoryServiceImpl productCategoryService;
 
     @Mock
     ProductCategoryMapper categoryMapper;
 
-    @InjectMocks
-    ProductCategoryServiceImpl productCategoryService;
-
-    //save
+    @Mock
+    ProductCategoryRepository productCategoryRepository;
 
     @Test
     void shouldSaveProductCategory() {
@@ -87,6 +87,31 @@ class ProductCategoryServiceImplTest {
     }
 
     @Test
+    void shouldGetCategoriesList() {
+        //given
+        var fetchRequest = getFetchRequestDto();
+        var listOfCategories = getPageProductCategories();
+        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
+        //when
+        doReturn(listOfCategories).when(productCategoryRepository).findByProductCategoryName("1", pageReq);
+        List<ProductCategory> actual = productCategoryService.getCategoriesList(fetchRequest);
+        //then
+        assertNotNull(actual);
+    }
+
+    @Test
+    void getCategoriesListShouldThrowException() {
+        //given
+        var fetchRequest = getFetchRequestDto();
+        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
+        var getNullPageCategories = getNullPageProductCategories();
+        //when
+        doReturn(getNullPageCategories).when(productCategoryRepository).findByProductCategoryName("1", pageReq);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> productCategoryService.getCategoriesList(fetchRequest));
+    }
+
+    @Test
     void shouldThrowExceptionAsProductCategoriesListIsEmpty() {
         //given
         List<ProductCategory> empty = List.of();
@@ -127,7 +152,6 @@ class ProductCategoryServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> productCategoryService.getById(anyInt()));
     }
 
-    //update
     @Test
     void shouldUpdateProductCategory() {
         //given
@@ -144,8 +168,6 @@ class ProductCategoryServiceImplTest {
         assertNotNull(actual);
         assertEquals(expected, actual);
     }
-
-    //delete
 
     @Test
     void deleteSuccess() {

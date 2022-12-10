@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +25,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RestaurantCategoryServiceImplTest {
 
-    @Mock
-    RestaurantCategoryRepository restaurantCategoryRepository;
+    @InjectMocks
+    RestaurantCategoryServiceImpl restaurantCategoryService;
 
     @Mock
     RestaurantCategoryMapper categoryMapper;
 
-    @InjectMocks
-    RestaurantCategoryServiceImpl restaurantCategoryService;
+    @Mock
+    RestaurantCategoryRepository restaurantCategoryRepository;
 
     //save
     @Test
@@ -125,6 +127,31 @@ class RestaurantCategoryServiceImplTest {
         doThrow(EntityNotFoundException.class).when(restaurantCategoryRepository).findById(anyInt());
         //then
         assertThrows(EntityNotFoundException.class, () -> restaurantCategoryService.getById(anyInt()));
+    }
+
+    @Test
+    void shouldGetCategoriesList() {
+        //given
+        var fetchRequest = getFetchRequestDto();
+        var listOfCategories = getPageRestaurantCategories();
+        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
+        //when
+        doReturn(listOfCategories).when(restaurantCategoryRepository).findByName("1", pageReq);
+        List<RestaurantCategory> actual = restaurantCategoryService.getCategoriesList(fetchRequest);
+        //then
+        assertNotNull(actual);
+    }
+
+    @Test
+    void shouldGetCategoriesListThrowException() {
+        //given
+        var fetchRequest = getFetchRequestDto();
+        var getNullPageCategories = getNullPageRestaurantCategories();
+        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
+        //when
+        doReturn(getNullPageCategories).when(restaurantCategoryRepository).findByName("1", pageReq);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> restaurantCategoryService.getCategoriesList(fetchRequest));
     }
 
     //update

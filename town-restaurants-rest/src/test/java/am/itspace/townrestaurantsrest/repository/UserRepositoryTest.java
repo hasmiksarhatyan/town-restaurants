@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.repository;
 
-import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -11,7 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getUser;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -30,31 +30,25 @@ class UserRepositoryTest {
 
     @Test
     void findByEmail() {
-        String email = "yan@gmail.com";
-        User user = User.builder()
-                .email(email)
-                .firstName("Hayk")
-                .password(passwordEncoder.encode("password"))
-                .role(Role.MANAGER)
-                .lastName("Yan")
-                .build();
+        User user = getUser();
         userRepository.save(user);
-        Optional<User> byEmail = userRepository.findByEmail(email);
-        assertEquals(user, byEmail.get());
+        Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
+        assertNotNull(userOptional);
     }
 
     @Test
     void existsByEmail() {
-        String email = "yan@gmail.com";
-        User user = User.builder()
-                .email(email)
-                .firstName("Hayk")
-                .password(passwordEncoder.encode("password"))
-                .role(Role.MANAGER)
-                .lastName("Yan")
-                .build();
+        User user = getUser();
         userRepository.save(user);
-        boolean expected = userRepository.existsByEmail(email);
+        boolean expected = userRepository.existsByEmail(user.getEmail());
+        assertTrue(expected);
+    }
+
+    @Test
+    void existsByEmailIgnoreCase() {
+        User user = getUser();
+        userRepository.save(user);
+        boolean expected = userRepository.existsByEmailIgnoreCase(user.getEmail());
         assertTrue(expected);
     }
 }

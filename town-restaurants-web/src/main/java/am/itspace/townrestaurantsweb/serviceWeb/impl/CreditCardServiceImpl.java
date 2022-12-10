@@ -41,20 +41,20 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @Override
     public void addCreditCard(CreateCreditCardDto cardDto, User user) {
-        validateCreditCard(cardDto,user);
-        cardDto.setUserOverview(userMapper.mapToResponseDto(user));
+        validateCreditCard(cardDto, user);
         CreditCard creditCard = creditCardMapper.mapToEntity(cardDto);
+        creditCard.setUser(user);
         creditCardRepository.save(creditCard);
     }
 
     private void validateCreditCard(CreateCreditCardDto creditCardDto, User user) {
         String cardHolder = creditCardDto.getCardHolder();
-        String userName = format("%s %s",user.getFirstName(),user.getLastName());
+        String userName = format("%s %s", user.getFirstName(), user.getLastName());
 
-        if(!cardHolder.equalsIgnoreCase(userName)){
+        if (!cardHolder.equalsIgnoreCase(userName)) {
             throw new IllegalStateException("Wrong Credit Card");
         }
-        if(creditCardDto.getCardExpiresAt().isBefore(now())){
+        if (creditCardDto.getCardExpiresAt().isBefore(now())) {
             throw new IllegalStateException("Expired Credit Card");
         }
     }

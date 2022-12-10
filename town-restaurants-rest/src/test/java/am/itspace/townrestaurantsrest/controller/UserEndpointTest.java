@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserEndpointTest {
 

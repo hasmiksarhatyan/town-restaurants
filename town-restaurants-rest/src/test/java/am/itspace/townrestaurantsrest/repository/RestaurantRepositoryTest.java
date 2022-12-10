@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static am.itspace.townrestaurantsrest.parameters.MockData.getRestaurant;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getUser;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,21 +32,17 @@ class RestaurantRepositoryTest {
 
     @AfterEach
     void tearDown() {
+        userRepository.deleteAll();
         restaurantRepository.deleteAll();
     }
 
     @Test
     void existsByEmailIgnoreCase() {
-        String email = "limone@gmail.com";
-        Restaurant restaurant = Restaurant.builder()
-                .name("Limone")
-                .address("Tamanayan")
-                .email(email)
-                .phone("099112233")
-                .deliveryPrice(2000.0)
-                .build();
+        User user = getUser();
+        userRepository.save(user);
+        Restaurant restaurant = getRestaurant();
         restaurantRepository.save(restaurant);
-        boolean expected = restaurantRepository.existsByEmailIgnoreCase(email);
+        boolean expected = restaurantRepository.existsByEmailIgnoreCase(restaurant.getEmail());
         assertTrue(expected);
     }
 

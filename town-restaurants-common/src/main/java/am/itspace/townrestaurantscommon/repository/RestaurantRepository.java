@@ -28,6 +28,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
     @Query("select email from Restaurant email where email=:email")
     Page<Restaurant> findByRestaurantEmail(@Param("email") String email, Pageable pageReq);
 
+    @Query("select user from Restaurant user where user=:userOverview")
+    Page<Restaurant> findRestaurantByUser(@Param("user") User user, Pageable pageReq);
+
     default Page<Restaurant> findByRestaurantEmail(RestaurantOverview restaurantOverview, Pageable pageReq) {
         return findByRestaurantEmail(restaurantOverview.getEmail(), pageReq);
     }

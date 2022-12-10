@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
     public byte[] getEventImage(String fileName) {
         try {
             log.info("Images successfully found");
-            return FileUtil.getImage(fileName);
+            return fileUtil.getImage(fileName);
         } catch (IOException e) {
             throw new MyFileNotFoundException(FILE_NOT_FOUND);
         }

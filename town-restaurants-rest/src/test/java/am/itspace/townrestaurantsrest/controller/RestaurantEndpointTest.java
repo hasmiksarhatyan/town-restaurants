@@ -29,9 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+//@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RestaurantEndpointTest {
 
@@ -39,7 +40,13 @@ class RestaurantEndpointTest {
     private MockMvc mvc;
 
     @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -47,27 +54,23 @@ class RestaurantEndpointTest {
     @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
 
-    @Autowired
-    private EventRepository eventRepository;
+    Event event;
 
-    @Autowired
-    ProductRepository productRepository;
+    Product product;
 
     Restaurant restaurant;
 
     RestaurantCategory restaurantCategory;
 
-    Event event;
-
-    Product product;
-
     @BeforeEach
     void setUp() {
         userRepository.save(getUser());
-        restaurantCategory = restaurantCategoryRepository.save(getRestaurantCategory());
-        restaurant = restaurantRepository.save(getRestaurant());
         event = eventRepository.save(getEvent());
-        product = productRepository.save(product);
+        product = productRepository.save(getProduct());
+        restaurantCategory = restaurantCategoryRepository.save(getRestaurantCategory());
+
+        restaurant = getRestaurant();
+        restaurantRepository.save(restaurant);
     }
 
     @AfterEach

@@ -1,8 +1,24 @@
 spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
+
   datasource:
-    url: jdbc:mysql://localhost:3306/town_restaurants
-    username: root
-    password: yerevan21
+    url: jdbc:h2:mem:town_restaurants;DB_CLOSE_DELAY=-1;MODE=MySql
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: false
+      path: /h2
+
+#  security:
+#    basic:
+#      enabled: false
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -14,10 +30,10 @@ spring:
           auth: true
           starttls:
             enable: true
-server:
-  servlet:
-    context-path: /api/v1
-    port: 8080
+#server:
+#  servlet:
+#    context-path: /api/v1
+#    port: 8080
 jwt:
   secret: k2y75xxx
   expiration: 330000

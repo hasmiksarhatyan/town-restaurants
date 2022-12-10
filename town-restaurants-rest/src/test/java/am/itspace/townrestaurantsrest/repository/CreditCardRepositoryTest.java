@@ -26,21 +26,21 @@ class CreditCardRepositoryTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Test
-    void findCreditCardByUser() {
-        User user = User.builder()
-                .email("yan@gmail.com")
-                .firstName("Victoria")
-                .password(passwordEncoder.encode("password"))
-                .role(Role.MANAGER)
-                .lastName("Yan")
-                .build();
-        userRepository.save(user);
-        CreditCard creditCard = CreditCard.builder()
-                .user(user)
-                .build();
-        creditCardRepository.save(creditCard);
-        Page<CreditCard> creditCardByUser = creditCardRepository.findCreditCardByUser(user, Pageable.unpaged());
-        assertNotNull(creditCardByUser);
-    }
+//    @Test
+//    void findCreditCardByUser() {
+//        User user = User.builder()
+//                .email("yan@gmail.com")
+//                .firstName("Victoria")
+//                .password(passwordEncoder.encode("password"))
+//                .role(Role.MANAGER)
+//                .lastName("Yan")
+//                .build();
+//        userRepository.save(user);
+//        CreditCard creditCard = CreditCard.builder()
+//                .user(user)
+//                .build();
+//        creditCardRepository.save(creditCard);
+//        Page<CreditCard> creditCardByUser = creditCardRepository.findCreditCardByUser(user, Pageable.unpaged());
+//        assertNotNull(creditCardByUser);
+//    }
 }

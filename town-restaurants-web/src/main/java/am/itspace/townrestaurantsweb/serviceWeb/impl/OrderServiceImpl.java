@@ -52,7 +52,6 @@ public class OrderServiceImpl implements OrderService {
     public void addOrder(CreateOrderDto orderDto, CreateCreditCardDto creditCardDto, User user) {
         orderDto.setTotalPrice(basketService.totalPrice(user));
         addProductToOrder(orderDto, user);
-        orderDto.setUserOverview(userMapper.mapToResponseDto(user));
         Order order = orderMapper.mapToEntity(orderDto);
         orderRepository.save(order);
         if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
@@ -76,7 +75,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
     }
-
 
     @Override
     public void delete(int id) {

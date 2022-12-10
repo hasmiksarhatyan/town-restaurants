@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public byte[] getProductImage(String fileName) {
         try {
             log.info("Images successfully found");
-            return FileUtil.getImage(fileName);
+            return fileUtil.getImage(fileName);
         } catch (IOException e) {
             throw new MyFileNotFoundException(FILE_NOT_FOUND);
         }
@@ -176,10 +176,6 @@ public class ProductServiceImpl implements ProductService {
         if (productCategoryId != null) {
             product.setProductCategory(productCategoryRepository.getReferenceById(productCategoryId));
         }
-//        List<String> pictures =editProductDto.getPictures();
-//        if (pictures != null) {
-//            product.setPictures(fileUtil.uploadImages(files));
-//        }
         productRepository.save(product);
         log.info("The product was successfully stored in the database {}", product.getName());
         return productMapper.mapToResponseDto(product);

@@ -36,19 +36,24 @@ public class ReserveServiceImpl implements ReserveService {
     private final ReserveRepository reserveRepository;
     private final RestaurantRepository restaurantRepository;
 
-    @Override
-    public void addReserve(CreateReserveDto dto, User user) {
-        dto.setUserOverview(userMapper.mapToResponseDto(user));
-        Reserve reserve = reserveMapper.mapToEntity(dto);
-        reserve.setStatus(PENDING);
-        log.info("The reserve was successfully stored in the database {}", dto.getPhoneNumber());
-        reserveRepository.save(reserve);
-    }
+//    @Override
+//    public void addReserve(CreateReserveDto dto, User user) {
+//        dto.setUserOverview(userMapper.mapToResponseDto(user));
+//        Reserve reserve = reserveMapper.mapToEntity(dto);
+//        reserve.setStatus(PENDING);
+//        log.info("The reserve was successfully stored in the database {}", dto.getPhoneNumber());
+//        reserveRepository.save(reserve);
+//    }
 
     @Override
     public Page<ReserveOverview> getAll(Pageable pageable) {
         log.info("Reserve successfully found");
         return reserveRepository.findAll(pageable).map(reserveMapper::mapToOverview);
+    }
+
+    @Override
+    public void addReserve(CreateReserveDto dto, User user) {
+
     }
 
     @Override

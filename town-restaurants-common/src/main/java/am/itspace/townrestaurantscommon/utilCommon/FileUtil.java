@@ -15,7 +15,7 @@ import java.util.List;
 public class FileUtil {
 
     @Value("${project.images.folder}")
-    private static String folderPath;
+    private String folderPath;
 
     public List<String> uploadImages(MultipartFile[] files) throws IOException {
         List<String> pictures = new ArrayList<>();
@@ -30,7 +30,7 @@ public class FileUtil {
         return pictures;
     }
 
-    public static byte[] getImage(String fileName) throws IOException {
+    public byte[] getImage(String fileName) throws IOException {
         return Files.readAllBytes(Paths.get(folderPath + File.separator + fileName));
     }
 }

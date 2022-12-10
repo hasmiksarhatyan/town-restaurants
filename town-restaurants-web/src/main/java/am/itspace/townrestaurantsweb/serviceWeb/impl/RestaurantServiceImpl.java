@@ -56,14 +56,14 @@ public class RestaurantServiceImpl implements RestaurantService {
     ////Այս մասը, եթե լինի կարագավորել, լավ կլինի,որ email եթե կա արդեն, ցույց տա, որ կա
     @Override
     public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, User user) throws IOException {
-        if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {
-            log.info("Restaurant with that name already exists {}", dto.getName());
-            throw new IllegalStateException();
-        }
-        dto.setPictures(fileUtil.uploadImages(files));
-        dto.setUserOverview(userMapper.mapToResponseDto(user));
-        log.info("The restaurant was successfully stored in the database {}", dto.getName());
-        restaurantRepository.save(restaurantMapper.mapToEntity(dto));
+//        if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {
+//            log.info("Restaurant with that name already exists {}", dto.getName());
+//            throw new IllegalStateException();
+//        }
+//        dto.setPictures(fileUtil.uploadImages(files));
+//        dto.setUserOverview(userMapper.mapToResponseDto(user));
+//        log.info("The restaurant was successfully stored in the database {}", dto.getName());
+//        restaurantRepository.save(restaurantMapper.mapToEntity(dto));
     }
 
     @Override
