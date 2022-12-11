@@ -45,7 +45,7 @@ public class RestaurantController {
     public String restaurants(@RequestParam(value = "page", defaultValue = "1") int page,
                               @RequestParam(value = "size", defaultValue = "5") int size,
                               ModelMap modelMap) {
-        Page<RestaurantOverview> restaurants = restaurantService.findAllRestaurants(PageRequest.of(page-1, size));
+        Page<RestaurantOverview> restaurants = restaurantService.findAllRestaurants(PageRequest.of(page - 1, size));
         modelMap.addAttribute("restaurants", restaurants);
         modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(restaurants));
         return "restaurants";

@@ -22,4 +22,5 @@ public interface ProductMapper {
 
     List<ProductOverview> mapToOverviewList(List<Product> products);
 
+    List<Product> mapToEntity(List<ProductOverview> productOverviews);
 }
