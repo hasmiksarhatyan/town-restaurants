@@ -47,7 +47,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             log.info("Category not found");
             throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
         }
-        log.info("Category successfully detected");
+        log.info("Category successfully found");
         return productCategoryMapper.mapToOverviewList(categories);
     }
 

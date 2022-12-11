@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class CreditCardOverview {
 
     private Integer id;
-    private int cardNumber;
+    private String cardNumber;
     private String cardHolder;
     private LocalDate cardExpiresAt;
     private int cvv;

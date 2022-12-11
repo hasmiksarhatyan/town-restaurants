@@ -58,8 +58,19 @@ public enum Error {
 
     FILE_NOT_FOUND(4050, HttpStatus.NOT_FOUND, "File not found"),
 
-    FILE_UPLOAD_FAILED(4010, HttpStatus.BAD_REQUEST, "Error occurred while uploading multipart file.");
+    FILE_UPLOAD_FAILED(4010, HttpStatus.BAD_REQUEST, "Error occurred while uploading multipart file."),
 
+    ORDER_ALREADY_EXISTS(4011, HttpStatus.BAD_REQUEST, "Order already exists"),
+
+    ORDER_NOT_FOUND(4051, HttpStatus.NOT_FOUND, "Order not found"),
+
+    WRONG_CREDIT_CARD_NUMBER(4095, HttpStatus.CONFLICT, "Credit card number is wrong"),
+
+    CREDIT_CARD_NOT_FOUND(4052, HttpStatus.NOT_FOUND, "Credit card not found"),
+
+    EXPIRED_CREDIT_CARD(4096, HttpStatus.CONFLICT, "Credit card has expired"),
+
+    PAYMENT_NOT_FOUND(4052, HttpStatus.NOT_FOUND, "Payment not found");
 
     private final Integer code;
     private final HttpStatus httpStatus;
