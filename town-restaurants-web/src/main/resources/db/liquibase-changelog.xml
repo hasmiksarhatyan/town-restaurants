@@ -1,0 +1,264 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="hsarhatyan" id="initdb">
+
+        <createTable tableName="user">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UK_user_email"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="enum('CUSTOMER','MANAGER','RESTAURANT_OWNER')">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp"/>
+            <column name="update_at" type="timestamp"/>
+            <column name="enabled" type="tinyint" defaultValue="0"/>
+        </createTable>
+
+        <createTable tableName="verification_token">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="plain_token" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_at" type="timestamp"/>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_verification_token_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="restaurant_category">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="restaurant">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="phone" type="varchar(255)"/>
+            <column name="delivery_price" type="double"/>
+            <column name="restaurant_category_id" type="int">
+                <constraints foreignKeyName="FK_restaurant_restaurant_category"
+                             referencedTableName="restaurant_category"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_restaurant_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="restaurant_pictures">
+            <column name="restaurant_id" type="int">
+                <constraints foreignKeyName="FK_restaurant_pictures_restaurant" referencedTableName="restaurant"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="pictures" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="product_category">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="product">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="price" type="double"/>
+            <column name="product_category_id" type="int">
+                <constraints foreignKeyName="FK_product_product_category" referencedTableName="product_category"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="restaurant_id" type="int">
+                <constraints foreignKeyName="FK_product_restaurant" referencedTableName="restaurant"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_product_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="product_pictures">
+            <column name="product_id" type="int">
+                <constraints foreignKeyName="FK_product_pictures_product" referencedTableName="product"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="pictures" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="event">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="price" type="double"/>
+            <column name="event_date_time" type="timestamp"/>
+            <column name="restaurant_id" type="int">
+                <constraints foreignKeyName="FK_event_restaurant" referencedTableName="restaurant"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="event_pictures">
+            <column name="event_id" type="int">
+                <constraints foreignKeyName="FK_event_pictures_event" referencedTableName="event"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="pictures" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="reserve">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="phone_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="people_count" type="int"/>
+            <column name="reserved_at" type="timestamp"/>
+            <column name="reserved_date" type="date"/>
+            <column name="reserved_time" type="time"/>
+            <column name="status" type="enum('PENDING','APPROVED','CANCELLED')"/>
+            <column name="restaurant_id" type="int">
+                <constraints foreignKeyName="FK_reserve_restaurant" referencedTableName="restaurant"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_reserve_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="orders">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="additional_phone" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="additional_address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_at" type="timestamp"/>
+            <column name="is_paid" type="tinyint" defaultValue="0"/>
+            <column name="status" type="enum('NEW','IN_PROGRESS','DELIVERED','CANCELLED')"/>
+            <column name="payment_option" type="enum('CASH','CREDIT_CARD')"/>
+            <column name="total_price" type="double"/>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_order_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="orders_products">
+            <column name="order_id" type="int">
+                <constraints foreignKeyName="FK_orders_products_order" referencedTableName="orders"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="products_id" type="int">
+                <constraints foreignKeyName="FK_orders_products_product" referencedTableName="product"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="payment">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="payment_create_date" type="timestamp"/>
+            <column name="paid_at" type="timestamp"/>
+            <column name="status" type="enum('UNPAID','PROCESSING','PAID','FAILED')"/>
+            <column name="total_amount" type="double"/>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_payment_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="order_id" type="int">
+                <constraints foreignKeyName="FK_payment_order" referencedTableName="orders"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="basket">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="quantity" type="double"/>
+            <column name="product_id" type="int">
+                <constraints foreignKeyName="FK_basket_product" referencedTableName="product"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_basket_user" referencedTableName="user"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="credit_card">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="card_expires_at" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_holder" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cvv" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints foreignKeyName="FK_credit_card_user"
+                             referencedTableName="user" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>
