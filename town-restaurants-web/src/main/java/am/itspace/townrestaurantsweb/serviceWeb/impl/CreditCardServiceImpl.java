@@ -5,7 +5,6 @@ import am.itspace.townrestaurantscommon.dto.creditCard.CreditCardOverview;
 import am.itspace.townrestaurantscommon.entity.CreditCard;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.CreditCardMapper;
-import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.CreditCardRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.CreditCardService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,13 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     private final CreditCardRepository creditCardRepository;
     private final CreditCardMapper creditCardMapper;
-    private final UserMapper userMapper;
+
 
     @Override
     public Page<CreditCardOverview> getCreditCards(Pageable pageable, User user) {
         List<CreditCard> creditCardByUser = creditCardRepository.findCreditCardByUserId(user.getId());
         if (creditCardByUser.isEmpty()) {
-            throw new IllegalStateException("You don't have a basket");
+            throw new IllegalStateException("You don't have a card");
         }
         List<CreditCardOverview> creditCardOverviews = creditCardMapper.mapToDto(creditCardByUser);
         return new PageImpl<>(creditCardOverviews);

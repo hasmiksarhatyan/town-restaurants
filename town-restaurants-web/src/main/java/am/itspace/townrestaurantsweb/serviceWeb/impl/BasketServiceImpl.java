@@ -6,7 +6,6 @@ import am.itspace.townrestaurantscommon.entity.Basket;
 import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.BasketMapper;
-import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantsweb.serviceWeb.BasketService;
@@ -27,7 +26,6 @@ public class BasketServiceImpl implements BasketService {
 
     private final BasketRepository basketRepository;
     private final BasketMapper basketMapper;
-    private final UserMapper userMapper;
     private final ProductRepository productRepository;
 
     @Override
@@ -42,33 +40,28 @@ public class BasketServiceImpl implements BasketService {
         return basketMapper.mapToDtoList(basketRepository.findBasketByUser(user));
     }
 
-    @Override
     public void addProductToBasket(int id, User user) {
-
+        if (user == null) {
+            throw new IllegalStateException();
+        }
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        Product product = productOptional.get();
+        if (!basketRepository.existsByProductAndUser(product, user)) {
+            CreateBasketDto basketDto = new CreateBasketDto();
+            basketDto.setProductId(id);
+            basketDto.setQuantity(1);
+            Basket basket = basketMapper.mapToEntity(basketDto);
+            basket.setUser(user);
+            basketRepository.save(basket);
+        } else {
+            Basket basket = basketRepository.findByProductAndUser(product, user);
+            basket.setQuantity(basket.getQuantity() + 1);
+            basketRepository.save(basket);
+        }
     }
-
-//    public void addProductToBasket(int id, User user) {
-//        if (user == null) {
-//            throw new IllegalStateException();
-//        }
-//        Optional<Product> productOptional = productRepository.findById(id);
-//        if (productOptional.isEmpty()) {
-//            throw new IllegalStateException();
-//        }
-//        Product product = productOptional.get();
-//        if (!basketRepository.existsByProductAndUser(product, user)) {
-//            CreateBasketDto basketDto = new CreateBasketDto();
-//            basketDto.setProductId(id);
-//            basketDto.setQuantity(1);
-//            basketDto.setUserOverview(userMapper.mapToResponseDto(user));
-//            Basket basket = basketMapper.mapToEntity(basketDto);
-//            basketRepository.save(basket);
-//        } else {
-//            Basket basket = basketRepository.findByProductAndUser(product, user);
-//            basket.setQuantity(basket.getQuantity() + 1);
-//            basketRepository.save(basket);
-//        }
-//    }
 
     public double totalPrice(User user) {
         double totalPrice = 0;
@@ -82,7 +75,7 @@ public class BasketServiceImpl implements BasketService {
         return totalPrice;
     }
 
-    @Override
+
     public void delete(int id, User user) {
         if (!basketRepository.existsByProductAndUser(productRepository.getReferenceById(id), user)) {
             throw new IllegalStateException();

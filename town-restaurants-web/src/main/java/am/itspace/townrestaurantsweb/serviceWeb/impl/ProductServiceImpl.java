@@ -7,13 +7,11 @@ import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
-import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
-import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
+import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,8 +31,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final FileUtil fileUtil;
     private final ProductMapper productMapper;
-    private final UserMapper userMapper;
-    private final RestaurantMapper restaurantMapper;
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final ProductCategoryRepository productCategoryRepository;
