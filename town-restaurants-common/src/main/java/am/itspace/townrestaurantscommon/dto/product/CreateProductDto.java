@@ -41,5 +41,7 @@ public class CreateProductDto {
     private Integer restaurantId;
 
     private List<String> pictures;
+
+    private UserOverview userOverview;
 }
 

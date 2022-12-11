@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,12 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateOrderDto {
 
-    private Integer id;
     private String additionalAddress;
     private String additionalPhone;
     private double totalPrice;
-    private String status;
     private String paymentOption;
     private List<ProductOverview> productOverviews;
-    private boolean isPaid;
+
 }

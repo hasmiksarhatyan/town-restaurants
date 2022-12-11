@@ -8,41 +8,31 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders")
-public class Order {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    private String additionalAddress;
+    private double totalAmount;
 
-    private String additionalPhone;
+    private LocalDateTime paidAt;
 
     @CreationTimestamp
-    private LocalDateTime orderAt;
-
-    private double totalPrice;
+    private LocalDateTime paymentCreateDate;
 
     @Enumerated(value = EnumType.STRING)
-    private OrderStatus status=OrderStatus.NEW;
+    private PaymentStatus paymentStatus;
 
-    @Enumerated(value = EnumType.STRING)
-    private PaymentOption paymentOption;
-
-    @OneToMany
-    private List<Product> products;
+    @OneToOne
+    private Order order;
 
     @ManyToOne
     private User user;
-
-    private boolean isPaid;
-
 }
