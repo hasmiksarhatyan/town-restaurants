@@ -6,8 +6,6 @@ import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
-import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.*;
 import am.itspace.townrestaurantscommon.mapper.OrderMapper;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
@@ -52,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         List<Product> products = productMapper.mapToEntity(createOrderDto.getProductOverviews());
         if (orderRepository.existsByAdditionalAddressAndProducts(createOrderDto.getAdditionalAddress(), products)) {
             log.info("Order already exists {}", products);
-            throw new EntityAlreadyExistsException(Error.RESTAURANT_CATEGORY_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException(Error.RESTAURANT_NOT_FOUND);
         }
         User user = securityContextService.getUserDetails().getUser();
         createOrderDto.setTotalPrice(basketService.totalPrice(user));
@@ -100,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders = orderRepository.findByAdditionalAddress(dto.getInstance(), pageReq);
         if (orders.isEmpty()) {
             log.info("Order not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
         return orders.getContent();
     }
