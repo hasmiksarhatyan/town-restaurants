@@ -1,21 +1,20 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
+import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
-import am.itspace.townrestaurantscommon.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import am.itspace.townrestaurantscommon.entity.Basket;
 
 import java.util.List;
 
 public interface BasketService {
 
-    double totalPrice(User user);
+    void delete(int id);
 
-    void delete(int id, User user);
+    double getTotalPrice();
 
-    List<BasketOverview> getBaskets(User user);
+    List<BasketOverview> getAll();
 
-    void addProductToBasket(int id, User user);
+    void addProductToBasket(int id);
 
-    Page<BasketOverview> getBaskets(Pageable pageable, User user);
+    List<Basket> getBasketsList(FetchRequestDto fetchRequestDto);
 }

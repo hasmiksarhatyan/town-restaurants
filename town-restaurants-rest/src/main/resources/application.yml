@@ -6,8 +6,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username:
-    password:
+    username: femioilinfo@gmail.com
+    password: cvrlaujayhojtrff
     properties:
       mail:
         smtp:
@@ -21,6 +21,9 @@ server:
 jwt:
   secret: k2y75xxx
   expiration: 330000
+  jpa:
+    hibernate:
+      ddl-auto: create
 
 logging:
   logback:
@@ -33,7 +36,9 @@ logging:
   level:
     root: info
     am.itspace: info
-
+project:
+  images:
+    folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-common/src/main/resources/static/image
 #  liquibase:
 #    change-log: classpath:db/changelog/migration.xml
 

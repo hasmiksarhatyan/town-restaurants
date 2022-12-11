@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Integer>, PagingAndSortingRepository<Order, Integer> {
 
-    boolean existsByAdditionalAddressAndProducts(String additionalAddress, List<Product> products);
+   // boolean existsByAdditionalAddressAndProducts(String additionalAddress, List<Product> products);
 
     @Query("select additionalAddress from Order additionalAddress where additionalAddress=:additionalAddress")
     Page<Order> findByAdditionalAddress(@Param("additionalAddress") String additionalAddress, Pageable pageReq);

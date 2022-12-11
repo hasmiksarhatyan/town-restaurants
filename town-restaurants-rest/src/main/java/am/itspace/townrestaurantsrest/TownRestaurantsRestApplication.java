@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest;
 
+
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;

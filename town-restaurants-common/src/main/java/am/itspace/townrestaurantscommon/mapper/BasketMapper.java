@@ -21,6 +21,5 @@ public interface BasketMapper {
     BasketOverview mapToDto(Basket basket);
 
     List<BasketOverview> mapToDtoList(List<Basket> baskets);
-
 }
 

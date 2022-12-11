@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -12,10 +12,9 @@ import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
-import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.exception.Error;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.serviceRest.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final FileUtil fileUtil;
     private final ProductMapper productMapper;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final SecurityContextServiceImpl securityContextService;
@@ -57,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
             for (MultipartFile file : files) {
                 if (!file.isEmpty() && file.getSize() > 0) {
                     if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                        log.info("File not found");
                         throw new MyFileNotFoundException(FILE_NOT_FOUND);
                     }
                 }
@@ -89,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
             }
             if (user.getRole() == Role.MANAGER) {
-                log.info("Products successfully detected");
+                log.info("Products successfully found");
                 return productMapper.mapToOverviewList(products);
             } else {
                 List<Product> productsByUser = productRepository.findProductByUser(user);
@@ -97,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
                     log.info("Product not found");
                     throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
                 } else {
-                    log.info("Products successfully detected");
+                    log.info("Products successfully found");
                     return productMapper.mapToOverviewList(productsByUser);
                 }
             }
@@ -111,12 +110,15 @@ public class ProductServiceImpl implements ProductService {
         try {
             User user = securityContextService.getUserDetails().getUser();
             if (user.getRole() != Role.RESTAURANT_OWNER) {
+                log.info("The user is not the owner of the restaurant");
                 throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
             }
             List<Product> productByUser = productRepository.findProductByUser(user);
             if (productByUser.isEmpty()) {
+                log.info("Product not found");
                 throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
             }
+            log.info("Products successfully found");
             return productMapper.mapToOverviewList(productByUser);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
