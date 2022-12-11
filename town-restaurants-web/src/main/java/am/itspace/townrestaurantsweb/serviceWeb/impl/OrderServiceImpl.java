@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void addOrder(CreateOrderDto orderDto, Payment payment, User user) {
+    public void addOrder(CreateOrderDto orderDto, User user) {
         orderDto.setTotalPrice(basketService.totalPrice(user));
         addProductToOrder(orderDto, user);
         Order order = orderMapper.mapToEntity(orderDto);

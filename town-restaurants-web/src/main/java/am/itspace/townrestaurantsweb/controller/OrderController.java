@@ -51,10 +51,10 @@ public class OrderController {
 
 
     @PostMapping("/add")
-    public String addOrder(@ModelAttribute CreateOrderDto orderDto, Payment payment,
+    public String addOrder(@ModelAttribute CreateOrderDto orderDto,
                            @AuthenticationPrincipal CurrentUser currentUser) {
 
-        orderService.addOrder(orderDto, payment, currentUser.getUser());
+        orderService.addOrder(orderDto, currentUser.getUser());
         return "confirmOrder";
     }
 

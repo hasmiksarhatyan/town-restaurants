@@ -11,7 +11,7 @@ public interface OrderService {
 
     Page<OrderOverview> getOrders(Pageable pageable);
 
-    void addOrder(CreateOrderDto orderDto, Payment payment, User user);
+    void addOrder(CreateOrderDto orderDto, User user);
 
     void delete(int id);
 }
