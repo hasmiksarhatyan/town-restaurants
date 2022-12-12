@@ -55,7 +55,7 @@ public interface OrderApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<OrderOverview> create(OrderCreditCardDto orderCreditCardDto);
+    ResponseEntity<OrderOverview> create(CreateOrderDto createOrderDto);
 
     @Operation(
             summary = "Get all orders",

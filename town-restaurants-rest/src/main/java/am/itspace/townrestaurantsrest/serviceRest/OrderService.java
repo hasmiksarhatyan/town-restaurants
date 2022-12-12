@@ -1,8 +1,8 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
 import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
-import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.entity.Order;
 
@@ -16,7 +16,7 @@ public interface OrderService {
 
     OrderOverview getById(int id);
 
-    OrderOverview save(OrderCreditCardDto dto);
+    OrderOverview save(CreateOrderDto dto);
 
     OrderOverview update(int id, EditOrderDto editOrderDto);
 

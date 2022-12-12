@@ -46,9 +46,9 @@ public class OrderServiceImpl implements OrderService {
     private final CreditCardRepository creditCardRepository;
     private final SecurityContextService securityContextService;
 
-    public OrderOverview save(OrderCreditCardDto dto) {
-        CreateOrderDto createOrderDto = dto.getCreateOrderDto();
-        CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
+    @Override
+    public OrderOverview save(CreateOrderDto createOrderDto) {
+//        CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
         List<Product> products = productMapper.mapToEntity(createOrderDto.getProductOverviews());
         try {
             User user = securityContextService.getUserDetails().getUser();
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
             order.setStatus(OrderStatus.NEW);
             order.setPaid(false);
             orderRepository.save(order);
-            paymentService.addPayment(order);
+//            paymentService.addPayment(order);
 //            if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
 //                if (creditCardRepository.existsByCardNumber(creditCardDto.getCardNumber())) {
 //                    creditCardService.save(creditCardDto);
