@@ -36,7 +36,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         List<ProductCategory> categories = productCategoryRepository.findAll();
         if (categories.isEmpty()) {
             log.info("Category not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Category not found!");
         }
         log.info("Category successfully found");
         return productCategoryMapper.mapToOverviewList(categories);
@@ -55,7 +55,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         Optional<ProductCategory> productCategoryOptional = productCategoryRepository.findById(id);
         if (productCategoryOptional.isEmpty()) {
             log.info("Category not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Category not found!");
         }
         ProductCategory productCategory = productCategoryOptional.get();
         String name = dto.getName();
@@ -73,13 +73,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             log.info("The category has been successfully deleted");
         } else {
             log.info("Category not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
     }
 
     @Override
     public ProductCategoryOverview findById(int id) {
-        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(IllegalStateException::new);
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new IllegalStateException("Category not found!"));
         log.info("Category successfully found");
         return productCategoryMapper.mapToOverview(productCategory);
     }

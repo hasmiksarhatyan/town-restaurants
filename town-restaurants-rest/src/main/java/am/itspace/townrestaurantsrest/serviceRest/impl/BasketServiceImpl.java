@@ -101,7 +101,7 @@ public class BasketServiceImpl implements BasketService {
             } else {
                 throw new EntityNotFoundException(BASKET_NOT_FOUND);
             }
-            log.info("There is the total price");
+            log.info("The total price is calculated");
             return totalPrice;
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);

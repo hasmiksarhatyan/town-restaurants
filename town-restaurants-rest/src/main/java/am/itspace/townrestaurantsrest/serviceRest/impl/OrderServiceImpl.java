@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.entity.*;
@@ -13,7 +14,6 @@ import am.itspace.townrestaurantscommon.repository.BasketRepository;
 import am.itspace.townrestaurantscommon.repository.CreditCardRepository;
 import am.itspace.townrestaurantscommon.repository.OrderRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
-import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.serviceRest.BasketService;
 import am.itspace.townrestaurantsrest.serviceRest.CreditCardService;
@@ -48,7 +48,9 @@ public class OrderServiceImpl implements OrderService {
     private final CreditCardRepository creditCardRepository;
     private final SecurityContextService securityContextService;
 
-    public OrderOverview save(CreateOrderDto createOrderDto, CreateCreditCardDto creditCardDto) {
+    public OrderOverview save(OrderCreditCardDto dto) {
+        CreateOrderDto createOrderDto = dto.getCreateOrderDto();
+        CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
         List<Product> products = productMapper.mapToEntity(createOrderDto.getProductOverviews());
         try {
             User user = securityContextService.getUserDetails().getUser();

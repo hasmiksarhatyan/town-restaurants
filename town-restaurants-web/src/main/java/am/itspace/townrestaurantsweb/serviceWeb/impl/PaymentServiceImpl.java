@@ -23,16 +23,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final PaymentRepository paymentRepository;
-    private final CreditCardRepository creditCardRepository;
-    private final CreditCardService creditCardService;
     private final PaymentMapper paymentMapper;
-
+    private final PaymentRepository paymentRepository;
+    private final CreditCardService creditCardService;
+    private final CreditCardRepository creditCardRepository;
 
     @Override
     public Page<PaymentOverview> getPayments(Pageable pageable) {
         List<Payment> payments = paymentRepository.findAll();
+        if (payments.isEmpty()) {
+            throw new IllegalStateException("Payment not found!");
+        }
         List<PaymentOverview> paymentOverviews = paymentMapper.mapToDto(payments);
+        log.info("Payments successfully found");
         return new PageImpl<>(paymentOverviews);
     }
 
@@ -54,14 +57,15 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setPaymentStatus(PaymentStatus.UNPAID);
         }
         paymentRepository.save(payment);
+        log.info("The payment was successfully stored in the database {}", payment.getTotalAmount());
     }
-
 
     @Override
     public void delete(int id) {
         if (!paymentRepository.existsById(id)) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Payment not found!");
         }
         paymentRepository.deleteById(id);
+        log.info("The payment has been successfully deleted");
     }
 }

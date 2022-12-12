@@ -68,24 +68,28 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public byte[] getRestaurantImage(String fileName) throws IOException {
-        log.info("Images successfully found");
-        return fileUtil.getImage(fileName);
+    public byte[] getRestaurantImage(String fileName) {
+        try {
+            log.info("Images successfully found");
+            return fileUtil.getImage(fileName);
+        } catch (IOException ex) {
+            log.info("Images not found");
+            throw new IllegalStateException("Something went wrong, try again!");
+        }
     }
 
     @Override
     public Restaurant findRestaurant(int id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new IllegalStateException("Restaurant not found!"));
         log.info("Restaurant successfully found {}", restaurant.getName());
         return restaurant;
     }
 
     @Override
-
     public void deleteRestaurant(int id) {
         if (!restaurantRepository.existsById(id)) {
             log.info("Restaurant not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         log.info("The restaurant has been successfully deleted");
         restaurantRepository.deleteById(id);
@@ -93,7 +97,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public void editRestaurant(EditRestaurantDto dto, int id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         String name = dto.getName();
         if (StringUtils.hasText(name)) {
             restaurant.setName(name);
@@ -124,7 +128,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantOverview getRestaurant(int id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new IllegalStateException("Restaurant not found!"));
         log.info("Restaurant successfully found {}", restaurant.getName());
         return restaurantMapper.mapToResponseDto(restaurant);
     }

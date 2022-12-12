@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
+    void delete(int id);
+
     Page<OrderOverview> getOrders(Pageable pageable);
 
     void addOrder(CreateOrderDto orderDto, User user);
-
-    void delete(int id);
 }
 
 

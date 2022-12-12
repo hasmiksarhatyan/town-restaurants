@@ -61,21 +61,31 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void save(CreateEventDto dto, MultipartFile[] files) throws IOException {
-        dto.setPictures(fileUtil.uploadImages(files));
-        eventRepository.save(eventMapper.mapToEntity(dto));
-        log.info("The event was successfully stored in the database {}", dto.getName());
+    public void save(CreateEventDto dto, MultipartFile[] files){
+        try {
+            dto.setPictures(fileUtil.uploadImages(files));
+            eventRepository.save(eventMapper.mapToEntity(dto));
+            log.info("The event was successfully stored in the database {}", dto.getName());
+        } catch (IOException ex) {
+            log.info("Images not found");
+            throw new IllegalStateException("Something went wrong, try again!");
+        }
     }
 
     @Override
-    public byte[] getEventImage(String fileName) throws IOException {
-        log.info("Images successfully found");
-        return fileUtil.getImage(fileName);
+    public byte[] getEventImage(String fileName) {
+        try {
+            log.info("Images successfully found");
+            return fileUtil.getImage(fileName);
+        } catch (IOException ex) {
+            log.info("Images not found");
+            throw new IllegalStateException("Something went wrong, try again!");
+        }
     }
 
     @Override
     public void editEvent(EditEventDto dto, int id, MultipartFile[] files) throws IOException {
-        Event event = eventRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Event event = eventRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         String name = dto.getName();
         if (StringUtils.hasText(name)) {
             event.setName(name);
@@ -108,7 +118,7 @@ public class EventServiceImpl implements EventService {
     public void deleteEvent(int id) {
         if (!eventRepository.existsById(id)) {
             log.info("Event not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         log.info("The event has been successfully deleted");
         eventRepository.deleteById(id);
@@ -116,7 +126,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventOverview findById(int id) {
-        Event event = eventRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Event event = eventRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         log.info("Event successfully found");
         return eventMapper.mapToOverview(event);
     }

@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +55,7 @@ public interface OrderApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<OrderOverview> create(CreateOrderDto createOrderDto, CreateCreditCardDto creditCardDto);
+    ResponseEntity<OrderOverview> create(OrderCreditCardDto orderCreditCardDto);
 
     @Operation(
             summary = "Get all orders",

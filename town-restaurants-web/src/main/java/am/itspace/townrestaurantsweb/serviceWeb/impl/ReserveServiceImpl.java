@@ -72,7 +72,7 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Override
     public ReserveOverview getById(int id) {
-        Reserve reserve = reserveRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Reserve reserve = reserveRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         log.info("Reserve successfully found");
         return reserveMapper.mapToOverview(reserve);
     }
@@ -84,13 +84,13 @@ public class ReserveServiceImpl implements ReserveService {
             log.info("The reserve has been successfully deleted");
         } else {
             log.info("Reserve not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Reserve not found!");
         }
     }
 
     @Override
     public void editReserve(EditReserveDto dto, int id) {
-        Reserve reserve = reserveRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Reserve reserve = reserveRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         String reservedDate = dto.getReservedDate();
         if (reservedDate != null) {
             reserve.setReservedDate(LocalDate.parse(reservedDate));

@@ -24,29 +24,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BasketServiceImpl implements BasketService {
 
-    private final BasketRepository basketRepository;
     private final BasketMapper basketMapper;
+    private final BasketRepository basketRepository;
     private final ProductRepository productRepository;
 
     @Override
     public Page<BasketOverview> getBaskets(Pageable pageable, User user) {
         List<Basket> basketByUser = basketRepository.findBasketByUser(user);
         Page<Basket> basketPage = new PageImpl<>(basketByUser);
+        log.info("Baskets successfully found");
         return basketPage.map(basketMapper::mapToDto);
     }
 
     @Override
     public List<BasketOverview> getBaskets(User user) {
+        log.info("Baskets successfully found");
         return basketMapper.mapToDtoList(basketRepository.findBasketByUser(user));
     }
 
     public void addProductToBasket(int id, User user) {
         if (user == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         Product product = productOptional.get();
         if (!basketRepository.existsByProductAndUser(product, user)) {
@@ -56,10 +58,12 @@ public class BasketServiceImpl implements BasketService {
             Basket basket = basketMapper.mapToEntity(basketDto);
             basket.setUser(user);
             basketRepository.save(basket);
+            log.info("Product successfully added to basket");
         } else {
             Basket basket = basketRepository.findByProductAndUser(product, user);
             basket.setQuantity(basket.getQuantity() + 1);
             basketRepository.save(basket);
+            log.info("Product successfully added to basket");
         }
     }
 
@@ -72,23 +76,26 @@ public class BasketServiceImpl implements BasketService {
                 totalPrice += product.getPrice() * basket.getQuantity();
             }
         }
+        log.info("The total price is calculated");
         return totalPrice;
     }
 
 
     public void delete(int id, User user) {
         if (!basketRepository.existsByProductAndUser(productRepository.getReferenceById(id), user)) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         Basket basket = basketRepository.findByProductAndUser(productRepository.getReferenceById(id), user);
         double quantity = basket.getQuantity();
         if (quantity == 1) {
             basket.setQuantity(0);
             basketRepository.delete(basket);
+            log.info("The product has been successfully deleted from basket");
         } else {
             quantity = quantity - 1;
             basket.setQuantity(quantity);
             basketRepository.save(basket);
+            log.info("The product has been successfully deleted from basket");
         }
     }
 }

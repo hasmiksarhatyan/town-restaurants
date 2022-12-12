@@ -2,11 +2,14 @@ package am.itspace.townrestaurantscommon.mapper;
 
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
+import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
+import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.Basket;
+import am.itspace.townrestaurantscommon.entity.Product;
+import am.itspace.townrestaurantscommon.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Generated(
@@ -17,12 +20,15 @@ import org.springframework.stereotype.Component;
 public class BasketMapperImpl implements BasketMapper {
 
     @Override
-    public Basket mapToEntity(CreateBasketDto createBasketDto) {
-        if ( createBasketDto == null ) {
+    public Basket mapToEntity(CreateBasketDto dto) {
+        if ( dto == null ) {
             return null;
         }
 
         Basket.BasketBuilder basket = Basket.builder();
+
+        basket.product( createBasketDtoToProduct( dto ) );
+        basket.quantity( dto.getQuantity() );
 
         return basket.build();
     }
@@ -35,16 +41,16 @@ public class BasketMapperImpl implements BasketMapper {
 
         BasketOverview.BasketOverviewBuilder basketOverview = BasketOverview.builder();
 
+        basketOverview.productOverview( productToProductOverview( basket.getProduct() ) );
+        basketOverview.userOverview( userToUserOverview( basket.getUser() ) );
         basketOverview.id( basket.getId() );
         basketOverview.quantity( basket.getQuantity() );
-        basketOverview.product( basket.getProduct() );
-        basketOverview.user( basket.getUser() );
 
         return basketOverview.build();
     }
 
     @Override
-    public List<BasketOverview> mapToDto(List<Basket> baskets) {
+    public List<BasketOverview> mapToDtoList(List<Basket> baskets) {
         if ( baskets == null ) {
             return null;
         }
@@ -57,17 +63,52 @@ public class BasketMapperImpl implements BasketMapper {
         return list;
     }
 
-    @Override
-    public List<BasketOverview> mapToDto(Page<Basket> baskets) {
-        if ( baskets == null ) {
+    protected Product createBasketDtoToProduct(CreateBasketDto createBasketDto) {
+        if ( createBasketDto == null ) {
             return null;
         }
 
-        List<BasketOverview> list = new ArrayList<BasketOverview>();
-        for ( Basket basket : baskets ) {
-            list.add( mapToDto( basket ) );
+        Product.ProductBuilder product = Product.builder();
+
+        if ( createBasketDto.getProductId() != null ) {
+            product.id( createBasketDto.getProductId() );
         }
 
-        return list;
+        return product.build();
+    }
+
+    protected ProductOverview productToProductOverview(Product product) {
+        if ( product == null ) {
+            return null;
+        }
+
+        ProductOverview.ProductOverviewBuilder productOverview = ProductOverview.builder();
+
+        productOverview.id( product.getId() );
+        productOverview.name( product.getName() );
+        productOverview.description( product.getDescription() );
+        productOverview.price( product.getPrice() );
+        List<String> list = product.getPictures();
+        if ( list != null ) {
+            productOverview.pictures( new ArrayList<String>( list ) );
+        }
+
+        return productOverview.build();
+    }
+
+    protected UserOverview userToUserOverview(User user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        UserOverview.UserOverviewBuilder userOverview = UserOverview.builder();
+
+        userOverview.id( user.getId() );
+        userOverview.firstName( user.getFirstName() );
+        userOverview.lastName( user.getLastName() );
+        userOverview.email( user.getEmail() );
+        userOverview.role( user.getRole() );
+
+        return userOverview.build();
     }
 }

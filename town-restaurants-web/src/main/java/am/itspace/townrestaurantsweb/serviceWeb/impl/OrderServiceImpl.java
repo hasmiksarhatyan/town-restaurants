@@ -26,17 +26,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
-    private final BasketRepository basketRepository;
-    private final BasketService basketService;
-    private final PaymentService paymentService;
     private final OrderMapper orderMapper;
     private final ProductMapper productMapper;
+    private final BasketService basketService;
+    private final PaymentService paymentService;
+    private final OrderRepository orderRepository;
+    private final BasketRepository basketRepository;
 
     @Override
     public Page<OrderOverview> getOrders(Pageable pageable) {
-        List<Order> all = orderRepository.findAll();
-        List<OrderOverview> orderOverviews = orderMapper.mapToDto(all);
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) {
+            throw new IllegalStateException("Order not found!");
+        }
+        List<OrderOverview> orderOverviews = orderMapper.mapToDto(orders);
+        log.info("Order successfully found");
         return new PageImpl<>(orderOverviews);
     }
 
@@ -50,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         order.setPaid(false);
         orderRepository.save(order);
         paymentService.addPayment(order, user);
-
+        log.info("The order was successfully stored in the database");
     }
 
     private void addProductToOrder(CreateOrderDto orderDto, User user) {
@@ -71,8 +75,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(int id) {
         if (!orderRepository.existsById(id)) {
-            throw new IllegalStateException();
+            log.info("Order not found");
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         orderRepository.deleteById(id);
+        log.info("The order has been successfully deleted");
     }
 }

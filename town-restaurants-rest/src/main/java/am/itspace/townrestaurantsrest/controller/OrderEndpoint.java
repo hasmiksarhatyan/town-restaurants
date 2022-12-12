@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
 import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
@@ -25,10 +26,16 @@ public class OrderEndpoint implements OrderApi {
     private final ModelMapper modelMapper;
     private final OrderService orderService;
 
+
+//    @PostMapping
+//    public ResponseEntity<OrderOverview> create(@RequestBody OrderCreditCardDto dto) {
+//        return ResponseEntity.ok(orderService.save1(order));
+//    }
+
     @Override
     @PostMapping
-    public ResponseEntity<OrderOverview> create(@Valid @RequestBody CreateOrderDto createOrderDto, CreateCreditCardDto creditCardDto) {
-        return ResponseEntity.ok(orderService.save(createOrderDto, creditCardDto));
+    public ResponseEntity<OrderOverview> create(@Valid @RequestBody OrderCreditCardDto dto) {
+        return ResponseEntity.ok(orderService.save(dto));
     }
 
     @Override

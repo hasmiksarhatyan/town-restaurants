@@ -7,8 +7,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: femioilinfo@gmail.com
-    password: cvrlaujayhojtrff
+    username:
+    password:
     properties:
        mail:
          smtp:
@@ -17,7 +17,6 @@ spring:
             enable: true
   liquibase:
     change-log: classpath:db/liquibase-changelog.xml
-
 
 #  jpa:
 #    hibernate:
@@ -39,5 +38,10 @@ logging:
 project:
   images:
     folder: C://Users//User//IdeaProjects//town-restaurants-parent-new//images
+#project:
+#  images:
+#    folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-web/src/main/resources/static/image
+
+
 #http://localhost:8080/api/v1/swagger-ui/index:
 #  html:

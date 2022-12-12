@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
         if (id != null) {
             products = productRepository.findProductsByProductCategory_Id(id, pageable);
             if (products.isEmpty()) {
-                throw new IllegalStateException();
+                throw new IllegalStateException("Product not found!");
             }
             return products.map(productMapper::mapToResponseDto);
         }
@@ -69,20 +69,24 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOverview> findAllById(int id) {
         List<Product> products = productRepository.findAllById(id);
         if (products.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Product not found!");
         }
         log.info("Products successfully detected");
         return productMapper.mapToOverviewList(products);
     }
 
     @Override
-    public void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException {
-        if (StringUtils.hasText(dto.getName()) && dto.getPrice() >= 0) {
-            Product product = productMapper.mapToEntity(dto);
-            product.setUser(user);
-            product.setPictures(fileUtil.uploadImages(files));
-            productRepository.save(product);
-            log.info("The product was successfully stored in the database {}", dto.getName());
+    public void addProduct(CreateProductDto dto, MultipartFile[] files, User user) {
+        try {
+            if (StringUtils.hasText(dto.getName()) && dto.getPrice() >= 0) {
+                Product product = productMapper.mapToEntity(dto);
+                product.setUser(user);
+                product.setPictures(fileUtil.uploadImages(files));
+                productRepository.save(product);
+                log.info("The product was successfully stored in the database {}", dto.getName());
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException("Something went wrong, try again!");
         }
     }
 
@@ -91,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             log.info("Product not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Product not found!");
         }
         Product product = productOptional.get();
         String name = dto.getName();
@@ -123,9 +127,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public byte[] getProductImage(String fileName) throws IOException {
-        log.info("Image successfully found");
-        return fileUtil.getImage(fileName);
+    public byte[] getProductImage(String fileName) {
+        try {
+            log.info("Image successfully found");
+            return fileUtil.getImage(fileName);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Something went wrong, try again!");
+        }
     }
 
     @Override
@@ -133,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             log.info("Product not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Product not found!");
         }
         if ((user.getRole() == Role.MANAGER) || (user.getId().equals(productOptional.get().getUser().getId()))) {
             productRepository.deleteById(id);
@@ -143,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductOverview findById(int id) {
-        Product product = productRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         log.info("Product successfully found");
         return productMapper.mapToResponseDto(product);
     }
@@ -159,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findProductsByRestaurant_Id(id);
         if (products.isEmpty()) {
             log.info("Product not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Product not found!");
         }
         log.info("Product successfully found");
         return productMapper.mapToOverviewList(products);

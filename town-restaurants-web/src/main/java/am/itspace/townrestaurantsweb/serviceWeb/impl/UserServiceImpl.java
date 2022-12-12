@@ -46,12 +46,11 @@ public class UserServiceImpl implements UserService {
         log.info("New request to get registered. Email {}", dto.getEmail());
         if (userRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             log.info("There is already a user with email {}", dto.getEmail());
-            throw new IllegalStateException();
+            throw new IllegalStateException("That email already in use");
         }
         User user = userMapper.mapToEntity(dto);
         userRepository.save(user);
         log.info("User {} has successfully registered", user.getEmail());
-
         VerificationToken token = tokenService.createToken(user);
         mailService.sendEmail(dto.getEmail(), "Welcome", "Hi, " + dto.getFirstName() + dto.getLastName() + "\n" +
                 "please, verify your account by clicking on this link <a href=\"http://localhost:8080/users/verify?token=" + token.getPlainToken() + "\">Active</a>");
@@ -76,7 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(int id) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         userRepository.deleteById(id);
     }
@@ -110,7 +109,7 @@ public class UserServiceImpl implements UserService {
     public void editUser(EditUserDto dto, int userId) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) {
-            throw new IllegalStateException("User not found");
+            throw new IllegalStateException("Something went wrong, try again!");
         }
         User user = optional.get();
         String firstName = dto.getFirstName();

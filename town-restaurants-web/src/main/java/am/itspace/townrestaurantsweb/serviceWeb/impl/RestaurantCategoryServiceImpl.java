@@ -48,7 +48,7 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
             log.info("The category has been successfully deleted");
         } else {
             log.info("Category not found");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Something went wrong, try again!");
         }
     }
 }
