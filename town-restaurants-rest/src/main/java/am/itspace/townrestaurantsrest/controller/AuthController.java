@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthEndpoint implements AuthApi {
+public class AuthController implements AuthApi {
 
     private final UserService userService;
 

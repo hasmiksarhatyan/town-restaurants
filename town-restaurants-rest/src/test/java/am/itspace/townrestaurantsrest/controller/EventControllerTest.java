@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.entity.Reserve;
-import am.itspace.townrestaurantscommon.repository.ReserveRepository;
+import am.itspace.townrestaurantscommon.entity.Event;
+import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReserveEndpointTest {
+class EventControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -42,63 +42,70 @@ class ReserveEndpointTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private EventRepository eventRepository;
 
     @Autowired
-    private ReserveRepository reserveRepository;
+    private RestaurantRepository restaurantRepository;
 
     @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
 
-    Reserve reserve;
+    Event event;
 
     @BeforeEach
     void setUp() {
         userRepository.save(getUser());
         restaurantCategoryRepository.save(getRestaurantCategory());
         restaurantRepository.save(getRestaurant());
-        reserve = reserveRepository.save(getReserve());
+        event = eventRepository.save(getEvent());
     }
 
     @AfterEach
     public void tearDown() {
-        reserveRepository.deleteAll();
+        eventRepository.deleteAll();
     }
 
     @Test
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("reservedDate", "2022-12-09");
-        objectNode.put("phoneNumber", "099223399");
-        objectNode.put("reservedTime", "01:01:00");
-        mvc.perform(post("/reservations")
+        objectNode.put("name", "Ital");
+        objectNode.put("restaurantId", "1");
+        mvc.perform(post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/reservations")
+        mvc.perform(get("/events")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
+    void getById() throws Exception {
+        mvc.perform(get("/events/{id}", event.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", hasToString(event.getName())));
+    }
+
+    @Test
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("phoneNumber", "099223399");
-        mvc.perform(put("/reservations/{id}", reserve.getId())
+        objectNode.put("name", "Limone");
+        mvc.perform(put("/events/{id}", event.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.phoneNumber", hasToString("099223399")));
+                .andExpect(jsonPath("$.name", hasToString("Limone")));
     }
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/reservations/{id}", reserve.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/events/{id}", event.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

@@ -2,8 +2,6 @@ package am.itspace.townrestaurantsrest.controller;
 
 import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
-import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
-import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.entity.Order;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
-public class OrderEndpoint implements OrderApi {
+public class OrderController implements OrderApi {
 
     private final ModelMapper modelMapper;
     private final OrderService orderService;

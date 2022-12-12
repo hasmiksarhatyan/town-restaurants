@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.entity.User;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
+import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
+import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterEach;
@@ -18,11 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static am.itspace.townrestaurantsrest.parameters.MockData.getUser;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getRestaurantCategory;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,29 +30,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserEndpointTest {
+class RestaurantCategoryControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private UserRepository userRepository;
+    private RestaurantCategoryRepository restaurantCategoryRepository;
 
-    private User user;
+    private RestaurantCategory restaurantCategory;
 
     @BeforeEach
     void setUp() {
-        user = userRepository.save(getUser());
+        restaurantCategory = getRestaurantCategory();
+        restaurantCategoryRepository.save(restaurantCategory);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
+        restaurantCategoryRepository.deleteAll();
+    }
+
+    @Test
+    void create() throws Exception {
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("name", "mexican");
+        mvc.perform(post("/restaurantsCategories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectNode.toString()))
+                .andExpect(status().isOk());
     }
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/users")
+        mvc.perform(get("/restaurantsCategories")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -61,38 +71,26 @@ class UserEndpointTest {
 
     @Test
     void getById() throws Exception {
-        mvc.perform(get("/users/{id}", user.getId())
+        mvc.perform(get("/restaurantsCategories/{id}", restaurantCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", hasToString(user.getFirstName())));
+                .andExpect(jsonPath("$.name", hasToString(restaurantCategory.getName())));
     }
 
     @Test
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("firstName", "poxos");
-        mvc.perform(put("/users/{id}", user.getId())
+        objectNode.put("name", "mexican");
+        mvc.perform(put("/restaurantsCategories/{id}", restaurantCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", hasToString("poxos")));
+                .andExpect(jsonPath("$.name", hasToString("mexican")));
     }
-
-    @Test
-    void changePassword() throws Exception {
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("oldPassword", "12345678");
-        objectNode.put("newPassword1", "87654321");
-        mvc.perform(put("/users/password/change")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/users/{id}", user.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/restaurantsCategories/{id}", restaurantCategory.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

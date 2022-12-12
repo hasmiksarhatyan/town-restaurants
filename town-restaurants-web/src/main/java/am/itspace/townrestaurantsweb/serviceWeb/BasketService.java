@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface BasketService {
 
-    Page<BasketOverview> getBaskets(Pageable pageable, User user);
+    double totalPrice(User user);
+
+    void delete(int id, User user);
 
     List<BasketOverview> getBaskets(User user);
 
     void addProductToBasket(int id, User user);
 
-    double totalPrice(User user);
-
-    void delete(int id, User user);
+    Page<BasketOverview> getBaskets(Pageable pageable, User user);
 }
 
 

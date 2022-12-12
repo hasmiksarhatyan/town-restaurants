@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservations")
-public class ReserveEndpoint implements ReserveApi {
+public class ReserveController implements ReserveApi {
 
     private final ModelMapper modelMapper;
     private final ReserveService reserveService;

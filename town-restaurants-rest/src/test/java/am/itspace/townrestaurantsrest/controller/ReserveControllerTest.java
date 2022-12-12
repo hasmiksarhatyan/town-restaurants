@@ -1,7 +1,10 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.entity.ProductCategory;
-import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
+import am.itspace.townrestaurantscommon.entity.Reserve;
+import am.itspace.townrestaurantscommon.repository.ReserveRepository;
+import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
+import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
+import am.itspace.townrestaurantscommon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static am.itspace.townrestaurantsrest.parameters.MockData.getProductCategory;
+import static am.itspace.townrestaurantsrest.parameters.MockData.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,67 +33,72 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductCategoryEndpointTest {
+class ReserveControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    private UserRepository userRepository;
 
-    private ProductCategory productCategory;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private ReserveRepository reserveRepository;
+
+    @Autowired
+    private RestaurantCategoryRepository restaurantCategoryRepository;
+
+    Reserve reserve;
 
     @BeforeEach
     void setUp() {
-        productCategory = getProductCategory();
-        productCategoryRepository.save(productCategory);
+        userRepository.save(getUser());
+        restaurantCategoryRepository.save(getRestaurantCategory());
+        restaurantRepository.save(getRestaurant());
+        reserve = reserveRepository.save(getReserve());
     }
 
     @AfterEach
-    void tearDown() {
-        productCategoryRepository.deleteAll();
+    public void tearDown() {
+        reserveRepository.deleteAll();
     }
 
     @Test
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("name", "mexican");
-        mvc.perform(post("/productCategories")
+        objectNode.put("reservedDate", "2022-12-09");
+        objectNode.put("phoneNumber", "099223399");
+        objectNode.put("reservedTime", "01:01:00");
+        mvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/productCategories")
+        mvc.perform(get("/reservations")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
-    void getById() throws Exception {
-        mvc.perform(get("/productCategories/{id}", productCategory.getId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", hasToString(productCategory.getName())));
-    }
-
-    @Test
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("name", "mexican");
-        mvc.perform(put("/productCategories/{id}", productCategory.getId())
+        objectNode.put("phoneNumber", "099223399");
+        mvc.perform(put("/reservations/{id}", reserve.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", hasToString("mexican")));
+                .andExpect(jsonPath("$.phoneNumber", hasToString("099223399")));
     }
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/productCategories/{id}", productCategory.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/reservations/{id}", reserve.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

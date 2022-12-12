@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserEndpoint implements UserApi {
+public class UserController implements UserApi {
 
     private final ModelMapper modelMapper;
     private final UserService userService;

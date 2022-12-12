@@ -1,7 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
-import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
+import am.itspace.townrestaurantscommon.entity.ProductCategory;
+import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static am.itspace.townrestaurantsrest.parameters.MockData.getRestaurantCategory;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getProductCategory;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,32 +30,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RestaurantCategoryEndpointTest {
+class ProductCategoryControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private RestaurantCategoryRepository restaurantCategoryRepository;
+    private ProductCategoryRepository productCategoryRepository;
 
-    private RestaurantCategory restaurantCategory;
+    private ProductCategory productCategory;
 
     @BeforeEach
     void setUp() {
-        restaurantCategory = getRestaurantCategory();
-        restaurantCategoryRepository.save(restaurantCategory);
+        productCategory = getProductCategory();
+        productCategoryRepository.save(productCategory);
     }
 
     @AfterEach
     void tearDown() {
-        restaurantCategoryRepository.deleteAll();
+        productCategoryRepository.deleteAll();
     }
 
     @Test
     void create() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "mexican");
-        mvc.perform(post("/restaurantsCategories")
+        mvc.perform(post("/productCategories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk());
@@ -63,7 +63,7 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/restaurantsCategories")
+        mvc.perform(get("/productCategories")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -71,17 +71,17 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void getById() throws Exception {
-        mvc.perform(get("/restaurantsCategories/{id}", restaurantCategory.getId())
+        mvc.perform(get("/productCategories/{id}", productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", hasToString(restaurantCategory.getName())));
+                .andExpect(jsonPath("$.name", hasToString(productCategory.getName())));
     }
 
     @Test
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "mexican");
-        mvc.perform(put("/restaurantsCategories/{id}", restaurantCategory.getId())
+        mvc.perform(put("/productCategories/{id}", productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class RestaurantCategoryEndpointTest {
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/restaurantsCategories/{id}", restaurantCategory.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/productCategories/{id}", productCategory.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

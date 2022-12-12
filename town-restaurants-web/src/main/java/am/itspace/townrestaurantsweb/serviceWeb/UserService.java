@@ -11,15 +11,16 @@ import javax.mail.MessagingException;
 
 public interface UserService {
 
-    Page<UserOverview> getUsers(Pageable pageable);
-
-    void saveUser(CreateUserDto dto) throws MessagingException;
-
-    void verifyUser(String token) throws Exception;
 
     void delete(int id);
 
+    void editUser(EditUserDto dto, int userId);
+
+    void verifyUser(String token);
+
+    Page<UserOverview> getUsers(Pageable pageable);
+
     void changePassword(Integer id, ChangePasswordDto dto);
 
-    void editUser(EditUserDto dto, int userId);
+    void saveUser(CreateUserDto dto) throws MessagingException;
 }

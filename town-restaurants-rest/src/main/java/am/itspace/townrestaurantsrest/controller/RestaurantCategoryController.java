@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurantsCategories")
-public class RestaurantCategoryEndpoint implements RestaurantCategoryApi {
+public class RestaurantCategoryController implements RestaurantCategoryApi {
 
     private final ModelMapper modelMapper;
     private final RestaurantCategoryService restaurantCategoryService;

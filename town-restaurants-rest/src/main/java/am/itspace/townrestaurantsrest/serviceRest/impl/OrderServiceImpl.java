@@ -15,10 +15,7 @@ import am.itspace.townrestaurantscommon.repository.CreditCardRepository;
 import am.itspace.townrestaurantscommon.repository.OrderRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
-import am.itspace.townrestaurantsrest.serviceRest.BasketService;
-import am.itspace.townrestaurantsrest.serviceRest.CreditCardService;
-import am.itspace.townrestaurantsrest.serviceRest.OrderService;
-import am.itspace.townrestaurantsrest.serviceRest.SecurityContextService;
+import am.itspace.townrestaurantsrest.serviceRest.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final ProductMapper productMapper;
     private final BasketService basketService;
+    private final PaymentService paymentService;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
     private final CreditCardService creditCardService;
@@ -57,14 +55,18 @@ public class OrderServiceImpl implements OrderService {
             createOrderDto.setTotalPrice(basketService.getTotalPrice());
             addProductToOrder(createOrderDto, user);
             Order order = orderMapper.mapToEntity(createOrderDto);
+            order.setUser(user);
+            order.setStatus(OrderStatus.NEW);
+            order.setPaid(false);
             orderRepository.save(order);
-            if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
-                if (creditCardRepository.existsByCardNumber(creditCardDto.getCardNumber())) {
-                    creditCardService.save(creditCardDto);
-                } else {
-                    throw new EntityNotFoundException(WRONG_CREDIT_CARD_NUMBER);
-                }
-            }
+            paymentService.addPayment(order);
+//            if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
+//                if (creditCardRepository.existsByCardNumber(creditCardDto.getCardNumber())) {
+//                    creditCardService.save(creditCardDto);
+//                } else {
+//                    throw new EntityNotFoundException(WRONG_CREDIT_CARD_NUMBER);
+//                }
+//            }
             log.info("The order was successfully stored in the database {}", products);
             return orderMapper.mapToDto(order);
         } catch (ClassCastException e) {

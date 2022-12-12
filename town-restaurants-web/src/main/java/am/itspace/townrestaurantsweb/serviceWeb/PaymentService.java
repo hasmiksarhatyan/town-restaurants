@@ -8,11 +8,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface PaymentService {
 
-    Page<PaymentOverview> getPayments(Pageable pageable);
+    void delete(int id);
 
     void addPayment(Order order, User user);
 
-    void delete(int id);
+    Page<PaymentOverview> getPayments(Pageable pageable);
 }
 
 

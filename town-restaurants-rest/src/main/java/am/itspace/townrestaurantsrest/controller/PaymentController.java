@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
-public class PaymentEndpoint implements PaymentApi {
+public class PaymentController implements PaymentApi {
 
     private final UserMapper userMapper;
     private final ModelMapper modelMapper;

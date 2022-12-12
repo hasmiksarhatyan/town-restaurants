@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/baskets")
-public class BasketEndpoint implements BasketApi {
+public class BasketController implements BasketApi {
 
     private final UserMapper userMapper;
     private final ModelMapper modelMapper;

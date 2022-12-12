@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/productCategories")
-public class ProductCategoryEndpoint implements ProductCategoryApi {
+public class ProductCategoryController implements ProductCategoryApi {
 
     private final ModelMapper modelMapper;
     private final ProductCategoryService productCategoryService;

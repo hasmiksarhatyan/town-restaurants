@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
-public class EventEndpoint implements EventApi {
+public class EventController implements EventApi {
 
     private final ModelMapper modelMapper;
     private final EventService eventService;

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/creditCard")
-public class CreditCardEndpoint implements CreditCardApi {
+public class CreditCardController implements CreditCardApi {
 
     private final ModelMapper modelMapper;
     private final CreditCardService creditCardService;
