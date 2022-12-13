@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
@@ -55,7 +54,7 @@ public interface UserApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<UserOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<UserOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get user",

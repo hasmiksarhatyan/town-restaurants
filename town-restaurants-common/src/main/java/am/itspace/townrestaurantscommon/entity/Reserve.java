@@ -41,5 +41,4 @@ public class Reserve {
 
     @ManyToOne
     private User user;
-
 }

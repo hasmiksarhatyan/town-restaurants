@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,13 +20,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateReserveDto {
 
-    @NotBlank
+//    @NotBlank
     private String reservedDate;
 
-    @NotBlank
+//    @NotBlank
     private String reservedTime;
 
-    @NotBlank
+    @NotNull
     private int peopleCount;
 
     @Schema(example = "+37499112233",

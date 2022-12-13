@@ -1,8 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
-import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
-import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
@@ -55,7 +52,7 @@ public interface OrderApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<OrderOverview> create(CreateOrderDto createOrderDto);
+    ResponseEntity<OrderOverview> create(OrderCreditCardDto orderCreditCardDto);
 
     @Operation(
             summary = "Get all orders",
@@ -93,7 +90,7 @@ public interface OrderApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<OrderOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<OrderOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get order.",

@@ -4,12 +4,10 @@ import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
-import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantsrest.api.EventApi;
 import am.itspace.townrestaurantsrest.serviceRest.EventService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class EventController implements EventApi {
 
-    private final ModelMapper modelMapper;
     private final EventService eventService;
 
 //    @Override
@@ -60,11 +56,11 @@ public class EventController implements EventApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<EventOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<Event> events = eventService.getEventsList(fetchRequestDto);
-        return ResponseEntity.ok(events.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<EventOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                      @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                      @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                      @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(eventService.getAllEvents(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -85,12 +81,6 @@ public class EventController implements EventApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         eventService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private EventOverview convertToDto(Event event) {
-        EventOverview eventOverview = modelMapper.map(event, EventOverview.class);
-        eventOverview.setName(eventOverview.getName());
-        return eventOverview;
     }
 }
 

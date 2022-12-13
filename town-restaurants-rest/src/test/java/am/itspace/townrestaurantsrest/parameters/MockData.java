@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.parameters;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
@@ -307,16 +307,16 @@ public class MockData {
     }
 
     //fetch
-    public static FetchRequestDto getFetchRequestDto() {
-        return FetchRequestDto
-                .builder()
-                .page(1)
-                .size(1)
-                .sortDir("desc")
-                .sort("1")
-                .instance("1")
-                .build();
-    }
+//    public static AppConstants getFetchRequestDto() {
+//        return AppConstants
+//                .builder()
+//                .page(1)
+//                .size(1)
+//                .sortDir("desc")
+//                .sort("1")
+//                .instance("1")
+//                .build();
+//    }
 
     //file
 

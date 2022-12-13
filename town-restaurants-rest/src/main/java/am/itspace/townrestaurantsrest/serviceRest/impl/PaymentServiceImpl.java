@@ -1,11 +1,8 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
-import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
 import am.itspace.townrestaurantscommon.entity.*;
 import am.itspace.townrestaurantscommon.mapper.PaymentMapper;
-import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.CreditCardRepository;
 import am.itspace.townrestaurantscommon.repository.PaymentRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
@@ -17,11 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static am.itspace.townrestaurantsrest.exception.Error.NEEDS_AUTHENTICATION;
@@ -32,7 +31,6 @@ import static am.itspace.townrestaurantsrest.exception.Error.NEEDS_AUTHENTICATIO
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final UserMapper userMapper;
     private final PaymentMapper paymentMapper;
     private final PaymentRepository paymentRepository;
     private final CreditCardService creditCardService;
@@ -40,35 +38,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final SecurityContextServiceImpl securityContextService;
 
     @Override
-    public List<PaymentOverview> getAll() {
-        List<Payment> payments = paymentRepository.findAll();
-        if (payments.isEmpty()) {
-            log.info("Payment not found");
-            throw new EntityNotFoundException(Error.PAYMENT_NOT_FOUND);
-        }
-        log.info("Payments successfully found");
-        return paymentMapper.mapToDto(payments);
-    }
-
-    @Override
-    public List<Payment> getPaymentsList(FetchRequestDto dto) {
-        try {
-            User user = securityContextService.getUserDetails().getUser();
-            PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-            Page<Payment> payments = paymentRepository.findByUser(userMapper.mapToResponseDto(user), pageReq);
-            if (payments.isEmpty()) {
-                log.info("Payment not found");
-                throw new EntityNotFoundException(Error.PAYMENT_NOT_FOUND);
-            }
-            log.info("Payments successfully found");
-            return payments.getContent();
-        } catch (ClassCastException e) {
-            throw new AuthenticationException(NEEDS_AUTHENTICATION);
-        }
-    }
-
-    @Override
-    public void addPayment(Order order) {
+    public void addPayment(Order order, CreditCard creditCard) {
         try {
             User user = securityContextService.getUserDetails().getUser();
             Payment payment = Payment.builder()
@@ -78,16 +48,46 @@ public class PaymentServiceImpl implements PaymentService {
                     .totalAmount(order.getTotalPrice())
                     .build();
             if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
-                CreateCreditCardDto cardDto = new CreateCreditCardDto();
-                if (!creditCardRepository.existsByCardNumber(cardDto.getCardNumber())) {
-                    creditCardService.save(cardDto);
-                    payment.setPaymentStatus(PaymentStatus.PROCESSING);
+                if (!creditCardRepository.existsByCardNumber(creditCard.getCardNumber())) {
+                    creditCardService.save(creditCard);
+                    payment.setStatus(PaymentStatus.PROCESSING);
                 }
             } else {
-                payment.setPaymentStatus(PaymentStatus.UNPAID);
+                payment.setStatus(PaymentStatus.UNPAID);
             }
             paymentRepository.save(payment);
             log.info("The payment was successfully stored in the database {}", payment.getTotalAmount());
+        } catch (ClassCastException e) {
+            throw new AuthenticationException(NEEDS_AUTHENTICATION);
+        }
+    }
+
+    @Override
+    public List<PaymentOverview> getAllPayments(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Payment> payments = paymentRepository.findAll(pageable);
+        if (payments.isEmpty()) {
+            log.info("Payment not found");
+            throw new EntityNotFoundException(Error.PAYMENT_NOT_FOUND);
+        }
+        List<Payment> listOfPayments = payments.getContent();
+        log.info("Payments successfully found");
+        return new ArrayList<>(paymentMapper.mapToDto(listOfPayments));
+    }
+
+    @Override
+    public List<PaymentOverview> getAllByUser() {
+        try {
+            User user = securityContextService.getUserDetails().getUser();
+            List<Payment> payments = paymentRepository.findAllByUser(user);
+            if (payments.isEmpty()) {
+                log.info("Payment not found");
+                throw new EntityNotFoundException(Error.PAYMENT_NOT_FOUND);
+            }
+            log.info("Payments successfully found");
+            return paymentMapper.mapToDto(payments);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }

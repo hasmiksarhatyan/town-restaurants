@@ -19,6 +19,5 @@ public interface RestaurantMapper {
     RestaurantOverview mapToResponseDto(Restaurant restaurant);
 
     List<RestaurantOverview> mapToResponseDtoList(List<Restaurant> restaurants);
-
 }
 

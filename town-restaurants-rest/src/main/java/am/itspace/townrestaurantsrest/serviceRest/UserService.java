@@ -1,6 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.User;
@@ -26,5 +26,5 @@ public interface UserService {
 
     UserOverview save(CreateUserDto createUserDto);
 
-    List<User> getUsersList(FetchRequestDto fetchRequestDto);
+    List<UserOverview> getAllUsers(int pageNo, int pageSize, String sortBy, String sortDir);
 }

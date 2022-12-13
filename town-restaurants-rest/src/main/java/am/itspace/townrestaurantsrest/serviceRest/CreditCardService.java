@@ -1,7 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreditCardOverview;
 import am.itspace.townrestaurantscommon.entity.CreditCard;
@@ -12,7 +11,7 @@ public interface CreditCardService {
 
     List<CreditCardOverview> getAllByUser();
 
-    void save(CreateCreditCardDto createCreditCardDto);
+    void save(CreditCard creditCard);
 
-    List<CreditCard> getCardsList(FetchRequestDto fetchRequestDto);
+    List<CreditCardOverview> getAllCreditCards(int pageNo, int pageSize, String sortBy, String sortDir);
 }

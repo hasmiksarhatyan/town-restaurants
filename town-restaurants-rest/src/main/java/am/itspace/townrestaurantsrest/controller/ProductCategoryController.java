@@ -1,12 +1,11 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
-import am.itspace.townrestaurantscommon.entity.ProductCategory;
 import am.itspace.townrestaurantsrest.api.ProductCategoryApi;
 import am.itspace.townrestaurantsrest.serviceRest.ProductCategoryService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,11 +36,11 @@ public class ProductCategoryController implements ProductCategoryApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<ProductCategoryOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<ProductCategory> categories = productCategoryService.getCategoriesList(fetchRequestDto);
-        return ResponseEntity.ok(categories.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<ProductCategoryOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                                @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                                @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                                @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(productCategoryService.getAllCategories(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -63,12 +61,6 @@ public class ProductCategoryController implements ProductCategoryApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         productCategoryService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private ProductCategoryOverview convertToDto(ProductCategory productCategory) {
-        ProductCategoryOverview productCategoryOverview = modelMapper.map(productCategory, ProductCategoryOverview.class);
-        productCategoryOverview.setName(productCategory.getName());
-        return productCategoryOverview;
     }
 }
 

@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
@@ -15,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,6 +42,21 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
+    public List<ProductCategoryOverview> getAllCategories(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<ProductCategory> categories = productCategoryRepository.findAll(pageable);
+        if (categories.isEmpty()) {
+            log.info("Category not found");
+            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
+        }
+        List<ProductCategory> listOfCategories = categories.getContent();
+        log.info("Category successfully found");
+        return new ArrayList<>(productCategoryMapper.mapToOverviewList(listOfCategories));
+    }
+
+    @Override
     public List<ProductCategoryOverview> getAll() {
         List<ProductCategory> categories = productCategoryRepository.findAll();
         if (categories.isEmpty()) {
@@ -49,17 +65,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         log.info("Category successfully found");
         return productCategoryMapper.mapToOverviewList(categories);
-    }
-
-    @Override
-    public List<ProductCategory> getCategoriesList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<ProductCategory> categories = productCategoryRepository.findByProductCategoryName(dto.getInstance(), pageReq);
-        if (categories.isEmpty()) {
-            log.info("Category not found");
-            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
-        }
-        return categories.getContent();
     }
 
     @Override

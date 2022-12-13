@@ -1,10 +1,8 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
-import am.itspace.townrestaurantscommon.entity.Reserve;
 
 import java.util.List;
 
@@ -18,6 +16,6 @@ public interface ReserveService {
 
     ReserveOverview update(int id, EditReserveDto editReserveDto);
 
-    List<Reserve> getReservesList(FetchRequestDto fetchRequestDto);
+    List<ReserveOverview> getAllReserves(int pageNo, int pageSize, String sortBy, String sortDir);
 }
 

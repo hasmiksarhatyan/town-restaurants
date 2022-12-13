@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +32,12 @@ public interface PaymentApi {
                             description = "Payment not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(
+                            responseCode = "4094",
+                            description = "Needs to authenticate.",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
     ResponseEntity<List<PaymentOverview>> getAll();
 
@@ -52,14 +57,8 @@ public interface PaymentApi {
                             description = "Payment not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(
-                            responseCode = "4094",
-                            description = "Needs to authenticate.",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<PaymentOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<PaymentOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Delete payment",

@@ -1,8 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
-import am.itspace.townrestaurantscommon.entity.Basket;
 
 import java.util.List;
 
@@ -16,5 +14,5 @@ public interface BasketService {
 
     void addProductToBasket(int id);
 
-    List<Basket> getBasketsList(FetchRequestDto fetchRequestDto);
+    List<BasketOverview> getAllBaskets(int pageNo, int pageSize, String sortBy, String sortDir);
 }

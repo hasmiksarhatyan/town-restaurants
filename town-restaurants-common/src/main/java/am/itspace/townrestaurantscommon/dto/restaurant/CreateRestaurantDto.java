@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class CreateRestaurantDto {
     @Size(min = 12, max = 12, message = "Phone number should start with '+' character and have 11 numbers after it.")
     private String phone;
 
-    @NotBlank(message = "Category is mandatory")
+    @NotNull(message = "Category is mandatory")
     private Integer restaurantCategoryId;
 
 //    @NotBlank(message = "Price is mandatory")

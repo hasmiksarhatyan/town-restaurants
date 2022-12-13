@@ -1,39 +1,29 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
-import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
-import am.itspace.townrestaurantscommon.entity.Order;
 import am.itspace.townrestaurantsrest.api.OrderApi;
 import am.itspace.townrestaurantsrest.serviceRest.OrderService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController implements OrderApi {
 
-    private final ModelMapper modelMapper;
     private final OrderService orderService;
-
-
-//    @PostMapping
-//    public ResponseEntity<OrderOverview> create(@RequestBody OrderCreditCardDto dto) {
-//        return ResponseEntity.ok(orderService.save1(order));
-//    }
 
     @Override
     @PostMapping
-    public ResponseEntity<OrderOverview> create(@Valid @RequestBody CreateOrderDto createOrderDto) {
-        return ResponseEntity.ok(orderService.save(createOrderDto));
+    public ResponseEntity<OrderOverview> create(@Valid @RequestBody OrderCreditCardDto orderCreditCardDto) {
+        return ResponseEntity.ok(orderService.save(orderCreditCardDto));
     }
 
     @Override
@@ -44,11 +34,11 @@ public class OrderController implements OrderApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<OrderOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<Order> orders = orderService.getOrdersList(fetchRequestDto);
-        return ResponseEntity.ok(orders.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<OrderOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                      @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                      @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                      @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -69,12 +59,6 @@ public class OrderController implements OrderApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         orderService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private OrderOverview convertToDto(Order order) {
-        OrderOverview orderOverview = modelMapper.map(order, OrderOverview.class);
-        orderOverview.setAdditionalAddress(order.getAdditionalAddress());
-        return orderOverview;
     }
 }
 

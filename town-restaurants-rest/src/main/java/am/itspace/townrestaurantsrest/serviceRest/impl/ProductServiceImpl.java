@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
@@ -20,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static am.itspace.townrestaurantsrest.exception.Error.*;
@@ -79,6 +80,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductOverview> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Product> products = productRepository.findAll(pageable);
+        if (products.isEmpty()) {
+            log.info("Product not found");
+            throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
+        }
+        List<Product> listOfProducts = products.getContent();
+        log.info("Products successfully found");
+        return new ArrayList<>(productMapper.mapToOverviewList(listOfProducts));
+    }
+
+    @Override
     public List<ProductOverview> getAll() {
         try {
             User user = securityContextService.getUserDetails().getUser();
@@ -123,17 +139,6 @@ public class ProductServiceImpl implements ProductService {
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
-    }
-
-    @Override
-    public List<Product> getProductsList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<Product> products = productRepository.findByProductName(dto.getInstance(), pageReq);
-        if (products.isEmpty()) {
-            log.info("Product not found");
-            throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
-        }
-        return products.getContent();
     }
 
     @Override
