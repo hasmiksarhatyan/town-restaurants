@@ -1,20 +1,13 @@
 package am.itspace.townrestaurantscommon.repository;
 
-import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
-import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.Payment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import am.itspace.townrestaurantscommon.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+import java.util.List;
 
-    @Query("select user from Basket user where user=:userOverview")
-    Page<Payment> findByUser(@Param("userOverview") UserOverview userOverview, Pageable pageReq);
+public interface PaymentRepository extends JpaRepository<Payment, Integer>, PagingAndSortingRepository<Payment, Integer> {
 
-    default Page<Payment> findByUser(PaymentOverview paymentOverview, Pageable pageReq) {
-        return findByUser(paymentOverview.getUserOverview(), pageReq);
-    }
+    List<Payment> findAllByUser(User user);
 }

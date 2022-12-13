@@ -1,11 +1,9 @@
 package am.itspace.townrestaurantsrest.serviceRest;
 
 import am.itspace.townrestaurantscommon.dto.FileDto;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 
 import java.util.List;
@@ -22,12 +20,12 @@ public interface ProductService {
 
     List<ProductOverview> findProductsByRestaurant(int id);
 
-    ProductOverview save(CreateProductDto createProductDto, FileDto fileDto);
-
     ProductOverview update(int id, EditProductDto editProductDto);
 
     ProductOverview getById(int id) throws EntityNotFoundException;
 
-    List<Product> getProductsList(FetchRequestDto fetchRequestDto);
+    ProductOverview save(CreateProductDto createProductDto, FileDto fileDto);
+
+    List<ProductOverview> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir);
 }
 

@@ -44,5 +44,4 @@ public class Order {
     private User user;
 
     private boolean isPaid;
-
 }

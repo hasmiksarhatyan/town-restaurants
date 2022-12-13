@@ -1,27 +1,23 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
-import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import am.itspace.townrestaurantsrest.api.RestaurantCategoryApi;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantCategoryService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurantsCategories")
 public class RestaurantCategoryController implements RestaurantCategoryApi {
 
-    private final ModelMapper modelMapper;
     private final RestaurantCategoryService restaurantCategoryService;
 
     @Override
@@ -38,11 +34,11 @@ public class RestaurantCategoryController implements RestaurantCategoryApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<RestaurantCategoryOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<RestaurantCategory> restaurantCategories = restaurantCategoryService.getCategoriesList(fetchRequestDto);
-        return ResponseEntity.ok(restaurantCategories.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<RestaurantCategoryOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                                   @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                                   @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                                   @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(restaurantCategoryService.getAllCategories(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -63,12 +59,6 @@ public class RestaurantCategoryController implements RestaurantCategoryApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         restaurantCategoryService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private RestaurantCategoryOverview convertToDto(RestaurantCategory restaurantCategory) {
-        RestaurantCategoryOverview restaurantCategoryOverview = modelMapper.map(restaurantCategory, RestaurantCategoryOverview.class);
-        restaurantCategoryOverview.setName(restaurantCategory.getName());
-        return restaurantCategoryOverview;
     }
 }
 

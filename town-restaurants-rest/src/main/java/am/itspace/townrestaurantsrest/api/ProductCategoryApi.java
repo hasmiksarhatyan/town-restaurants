@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
@@ -75,7 +74,7 @@ public interface ProductCategoryApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<ProductCategoryOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<ProductCategoryOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get product category",

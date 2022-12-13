@@ -1,29 +1,25 @@
 package am.itspace.townrestaurantsrest.controller;
 
 import am.itspace.townrestaurantscommon.dto.FileDto;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantsrest.api.ProductApi;
 import am.itspace.townrestaurantsrest.serviceRest.ProductService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController implements ProductApi {
 
-    private final ModelMapper modelMapper;
     private final ProductService productService;
 
     @Override
@@ -47,11 +43,11 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<ProductOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<Product> products = productService.getProductsList(fetchRequestDto);
-        return ResponseEntity.ok(products.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<ProductOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                        @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                        @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                        @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(productService.getAllProducts(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -78,12 +74,6 @@ public class ProductController implements ProductApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         productService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private ProductOverview convertToDto(Product product) {
-        ProductOverview productOverview = modelMapper.map(product, ProductOverview.class);
-        productOverview.setName(product.getName());
-        return productOverview;
     }
 }
 

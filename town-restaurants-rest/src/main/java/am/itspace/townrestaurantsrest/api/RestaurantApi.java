@@ -2,7 +2,6 @@ package am.itspace.townrestaurantsrest.api;
 
 import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
@@ -14,9 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -106,7 +103,7 @@ public interface RestaurantApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<RestaurantOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<RestaurantOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get all restaurants by user",
@@ -131,7 +128,7 @@ public interface RestaurantApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<RestaurantOverview>> getAllByUser(@Valid @RequestBody FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<RestaurantOverview>> getAllByUser(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get restaurant",

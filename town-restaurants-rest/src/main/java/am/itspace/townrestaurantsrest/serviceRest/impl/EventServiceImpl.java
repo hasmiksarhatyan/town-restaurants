@@ -4,20 +4,20 @@ import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
-import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.exception.Error;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.serviceRest.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,14 +90,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getEventsList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<Event> events = eventRepository.findByEventName(dto.getInstance(), pageReq);
+    public List<EventOverview> getAllEvents(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Event> events = eventRepository.findAll(pageable);
         if (events.isEmpty()) {
             log.info("Event not found");
             throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
         }
-        return events.getContent();
+        List<Event> listOfEvents = events.getContent();
+        log.info("Event successfully found");
+        return new ArrayList<>(eventMapper.mapToOverviewList(listOfEvents));
     }
 
     @Override

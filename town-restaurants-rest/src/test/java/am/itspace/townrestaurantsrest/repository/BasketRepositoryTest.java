@@ -88,20 +88,20 @@ class BasketRepositoryTest {
         assertNotNull(basketByProductId);
     }
 
-    @Test
-    void findAllByProductId() {
-        Product product = Product.builder()
-                .name("Pizza")
-                .price(2000.0)
-                .build();
-        productRepository.save(product);
-        Basket basket = Basket.builder()
-                .product(product)
-                .build();
-        basketRepository.save(basket);
-        List<Product> products = basketRepository.findAllByProductId(product.getId());
-        assertNotNull(products);
-    }
+//    @Test
+//    void findAllByProductId() {
+//        Product product = Product.builder()
+//                .name("Pizza")
+//                .price(2000.0)
+//                .build();
+//        productRepository.save(product);
+//        Basket basket = Basket.builder()
+//                .product(product)
+//                .build();
+//        basketRepository.save(basket);
+//        List<Product> products = basketRepository.findAllByProductId(product.getId());
+//        assertNotNull(products);
+//    }
 
     @Test
     void findBasketByUser() {

@@ -1,7 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.FileDto;
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
@@ -11,13 +10,14 @@ import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
-import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.exception.Error;
+import am.itspace.townrestaurantsrest.exception.*;
 import am.itspace.townrestaurantsrest.serviceRest.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static am.itspace.townrestaurantsrest.exception.Error.*;
 
@@ -75,6 +77,21 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    public List<RestaurantOverview> getAllRestaurants(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
+        if (restaurants.isEmpty()) {
+            log.info("Restaurant not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        }
+        List<Restaurant> listOfRestaurants = restaurants.getContent();
+        log.info("Restaurant successfully found");
+        return restaurantMapper.mapToResponseDtoList(listOfRestaurants).stream().collect(Collectors.toList());
+    }
+
+    @Override
     public List<RestaurantOverview> getAll() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         if (restaurants.isEmpty()) {
@@ -87,46 +104,19 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<Restaurant> getRestaurantsList(FetchRequestDto dto) {
-        PageRequest pageReq
-                = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(dto.getInstance(), pageReq);
-        if (restaurants.isEmpty()) {
-            log.info("Restaurant not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
-        }
-        return restaurants.getContent();
-    }
-
-//    @Override
-//    public List<Restaurant> getRestaurantsByUser(FetchRequestDto dto) {
-//        Map<Object, Object> r = new HashMap<>();
-//        try {
-//            List<Restaurant> restaurantsByUser = restaurantRepository.findRestaurantsByUserId(securityContextService.getUserDetails().getUser().getId());
-//            if (!restaurantsByUser.isEmpty()) {
-//                for (Restaurant restaurant : restaurantsByUser) {
-//                    PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-//                    Page<Restaurant> restaurants = restaurantRepository.findByRestaurantEmail(restaurant.getEmail(), pageReq);
-//                    return restaurants.getContent();
-//                }
-//            }
-//            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
-//        } catch (ClassCastException e) {
-//            throw new AuthenticationException(NEEDS_AUTHENTICATION);
-//        }
-//    }
-
-    @Override
-    public List<Restaurant> getRestaurantsByUser(FetchRequestDto dto) {
+    public List<RestaurantOverview> getRestaurantsByUser(int pageNo, int pageSize, String sortBy, String sortDir) {
         try {
             User user = securityContextService.getUserDetails().getUser();
-            PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-            Page<Restaurant> restaurants = restaurantRepository.findRestaurantByUser(user, pageReq);
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            Page<Restaurant> restaurants = restaurantRepository.findRestaurantsByUser(user, pageable);
             if (restaurants.isEmpty()) {
                 log.info("Restaurant not found");
                 throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
             }
-            return restaurants.getContent();
+            List<Restaurant> listOfRestaurants = restaurants.getContent();
+            return new ArrayList<>(restaurantMapper.mapToResponseDtoList(listOfRestaurants));
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }

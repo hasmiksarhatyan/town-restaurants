@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.Role;
@@ -18,12 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static am.itspace.townrestaurantsrest.exception.Error.*;
@@ -126,6 +127,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserOverview> getAllUsers(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<User> users = userRepository.findAll(pageable);
+        if (users.isEmpty()) {
+            log.info("User not found");
+            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
+        }
+        List<User> listOfUsers = users.getContent();
+        log.info("User successfully found");
+        return new ArrayList<>(userMapper.mapToResponseDtoList(listOfUsers));
+    }
+
+    @Override
     public List<UserOverview> getAll() {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
@@ -135,18 +152,6 @@ public class UserServiceImpl implements UserService {
             log.info("User successfully found");
             return userMapper.mapToResponseDtoList(users);
         }
-    }
-
-    @Override
-    public List<User> getUsersList(FetchRequestDto dto) {
-        PageRequest pageReq
-                = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<User> users = userRepository.findByEmail(dto.getInstance(), pageReq);
-        if (users.isEmpty()) {
-            log.info("User not found");
-            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
-        }
-        return users.getContent();
     }
 
     @Override

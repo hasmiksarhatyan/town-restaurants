@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,7 +79,7 @@ public interface BasketApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<BasketOverview>> getAll(FetchRequestDto fetchRequestDto);
+    ResponseEntity<List<BasketOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get total price of products",

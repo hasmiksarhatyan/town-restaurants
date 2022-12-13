@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,15 +42,30 @@ public class ReserveServiceImpl implements ReserveService {
 
     @Override
     public ReserveOverview save(CreateReserveDto createReserveDto) {
-        if (reserveRepository.existsByPhoneNumberAndReservedTimeAndReservedDate(createReserveDto.getPhoneNumber(), createReserveDto.getReservedTime(), createReserveDto.getReservedDate())) {
+        if (reserveRepository.existsByPhoneNumber(createReserveDto.getPhoneNumber())) {
             log.info("Reserve already exists {}", createReserveDto.getPhoneNumber());
             throw new EntityAlreadyExistsException(Error.RESERVE_ALREADY_EXISTS);
         } else {
-            log.info("The reserve was successfully stored in the database {}", createReserveDto.getPhoneNumber());
             Reserve reserve = reserveMapper.mapToEntity(createReserveDto);
             reserve.setStatus(ReserveStatus.PENDING);
+            log.info("The reserve was successfully stored in the database {}", createReserveDto.getPhoneNumber());
             return reserveMapper.mapToOverview(reserveRepository.save(reserve));
         }
+    }
+
+    @Override
+    public List<ReserveOverview> getAllReserves(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Reserve> reserves = reserveRepository.findAll(pageable);
+        if (reserves.isEmpty()) {
+            log.info("Reserve not found");
+            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+        }
+        List<Reserve> listOfReserves = reserves.getContent();
+        log.info("Reserve successfully found");
+        return new ArrayList<>(reserveMapper.mapToOverviewList(listOfReserves));
     }
 
     @Override
@@ -81,17 +96,6 @@ public class ReserveServiceImpl implements ReserveService {
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
-    }
-
-    @Override
-    public List<Reserve> getReservesList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<Reserve> reserves = reserveRepository.findByReservePhoneNumber(dto.getInstance(), pageReq);
-        if (reserves.isEmpty()) {
-            log.info("Reserve not found");
-            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
-        }
-        return reserves.getContent();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
@@ -15,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,25 +42,29 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
     }
 
     @Override
+    public List<RestaurantCategoryOverview> getAllCategories(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<RestaurantCategory> categories = restaurantCategoryRepository.findAll(pageable);
+        if (categories.isEmpty()) {
+            log.info("Category not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
+        }
+        List<RestaurantCategory> listOfCategories = categories.getContent();
+        log.info("Category successfully found");
+        return new ArrayList<>(restaurantCategoryMapper.mapToOverviewList(listOfCategories));
+    }
+
+    @Override
     public List<RestaurantCategoryOverview> getAll() {
         List<RestaurantCategory> categories = restaurantCategoryRepository.findAll();
         if (categories.isEmpty()) {
             log.info("Category not found");
             throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
         }
-        log.info("Category successfully detected");
+        log.info("Category successfully found");
         return restaurantCategoryMapper.mapToOverviewList(categories);
-    }
-
-    @Override
-    public List<RestaurantCategory> getCategoriesList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<RestaurantCategory> categories = restaurantCategoryRepository.findByName(dto.getInstance(), pageReq);
-        if (categories.isEmpty()) {
-            log.info("Category not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
-        }
-        return categories.getContent();
     }
 
     @Override

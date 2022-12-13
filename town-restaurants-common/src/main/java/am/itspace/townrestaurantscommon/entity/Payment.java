@@ -28,7 +28,7 @@ public class Payment {
     private LocalDateTime paymentCreateDate;
 
     @Enumerated(value = EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    private PaymentStatus status;
 
     @OneToOne
     private Order order;

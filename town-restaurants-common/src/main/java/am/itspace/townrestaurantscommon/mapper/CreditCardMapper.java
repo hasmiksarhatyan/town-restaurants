@@ -19,6 +19,5 @@ public interface CreditCardMapper {
     CreditCardOverview mapToDto(CreditCard creditCard);
 
     List<CreditCardOverview> mapToDto(List<CreditCard> creditCard);
-
 }
 

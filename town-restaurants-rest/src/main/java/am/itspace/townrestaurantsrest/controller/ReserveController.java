@@ -1,27 +1,23 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
-import am.itspace.townrestaurantscommon.entity.Reserve;
 import am.itspace.townrestaurantsrest.api.ReserveApi;
 import am.itspace.townrestaurantsrest.serviceRest.ReserveService;
+import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservations")
 public class ReserveController implements ReserveApi {
 
-    private final ModelMapper modelMapper;
     private final ReserveService reserveService;
 
     @Override
@@ -38,11 +34,11 @@ public class ReserveController implements ReserveApi {
 
     @Override
     @GetMapping("/pages")
-    public ResponseEntity<List<ReserveOverview>> getAll(@Valid @RequestBody FetchRequestDto fetchRequestDto) {
-        List<Reserve> reserves = reserveService.getReservesList(fetchRequestDto);
-        return ResponseEntity.ok(reserves.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<List<ReserveOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                        @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                        @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                        @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(reserveService.getAllReserves(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
@@ -57,12 +53,6 @@ public class ReserveController implements ReserveApi {
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
         reserveService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    private ReserveOverview convertToDto(Reserve reserve) {
-        ReserveOverview reserveOverview = modelMapper.map(reserve, ReserveOverview.class);
-        reserveOverview.setPhoneNumber(reserve.getPhoneNumber());
-        return reserveOverview;
     }
 }
 

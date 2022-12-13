@@ -1,13 +1,12 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.FetchRequestDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
-import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.entity.*;
+import am.itspace.townrestaurantscommon.mapper.CreditCardMapper;
 import am.itspace.townrestaurantscommon.mapper.OrderMapper;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
@@ -20,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,31 +42,26 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
+    private final CreditCardMapper creditCardMapper;
     private final CreditCardService creditCardService;
     private final CreditCardRepository creditCardRepository;
     private final SecurityContextService securityContextService;
 
     @Override
-    public OrderOverview save(CreateOrderDto createOrderDto) {
-//        CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
+    public OrderOverview save(OrderCreditCardDto dto) {
+        CreateOrderDto createOrderDto = dto.getCreateOrderDto();
+        CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
         List<Product> products = productMapper.mapToEntity(createOrderDto.getProductOverviews());
         try {
             User user = securityContextService.getUserDetails().getUser();
             createOrderDto.setTotalPrice(basketService.getTotalPrice());
-            addProductToOrder(createOrderDto, user);
             Order order = orderMapper.mapToEntity(createOrderDto);
+            addProductToOrder(order, user);
             order.setUser(user);
             order.setStatus(OrderStatus.NEW);
             order.setPaid(false);
             orderRepository.save(order);
-//            paymentService.addPayment(order);
-//            if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
-//                if (creditCardRepository.existsByCardNumber(creditCardDto.getCardNumber())) {
-//                    creditCardService.save(creditCardDto);
-//                } else {
-//                    throw new EntityNotFoundException(WRONG_CREDIT_CARD_NUMBER);
-//                }
-//            }
+            paymentService.addPayment(order, creditCardMapper.mapToEntity(creditCardDto));
             log.info("The order was successfully stored in the database {}", products);
             return orderMapper.mapToDto(order);
         } catch (ClassCastException e) {
@@ -74,17 +69,17 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void addProductToOrder(CreateOrderDto orderDto, User user) {
-        List<ProductOverview> ordersProducts = new ArrayList<>();
+    private void addProductToOrder(Order order, User user) {
+        List<Product> ordersProducts = new ArrayList<>();
         List<Basket> basketByUser = basketRepository.findBasketByUser(user);
         if (!basketByUser.isEmpty()) {
             for (Basket basket : basketByUser) {
                 Product product = basket.getProduct();
                 while (basket.getQuantity() != 0) {
-                    ordersProducts.add(productMapper.mapToResponseDto(product));
+                    ordersProducts.add(product);
                     basketService.delete(product.getId());
                 }
-                orderDto.setProductOverviews(ordersProducts);
+                order.setProducts(ordersProducts);
             }
         } else {
             throw new EntityNotFoundException(BASKET_NOT_FOUND);
@@ -103,14 +98,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersList(FetchRequestDto dto) {
-        PageRequest pageReq = PageRequest.of(dto.getPage(), dto.getSize(), Sort.Direction.fromString(dto.getSortDir()), dto.getSort());
-        Page<Order> orders = orderRepository.findByAdditionalAddress(dto.getInstance(), pageReq);
+    public List<OrderOverview> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Order> orders = orderRepository.findAll(pageable);
         if (orders.isEmpty()) {
             log.info("Order not found");
             throw new EntityNotFoundException(ORDER_NOT_FOUND);
         }
-        return orders.getContent();
+        List<Order> listOfOrders = orders.getContent();
+        log.info("Order successfully found");
+        return new ArrayList<>(orderMapper.mapToDto(listOfOrders));
     }
 
     @Override
