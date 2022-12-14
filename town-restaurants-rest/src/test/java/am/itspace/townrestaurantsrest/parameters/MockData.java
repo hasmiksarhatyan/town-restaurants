@@ -1,5 +1,7 @@
 package am.itspace.townrestaurantsrest.parameters;
 
+import am.itspace.townrestaurantscommon.dto.event.EventRequestDto;
+import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
 import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
@@ -57,6 +59,32 @@ public class MockData {
                 .enabled(true)
                 .build();
     }
+
+    public static User getOwnerUser() {
+        return User.builder()
+                .id(1)
+                .firstName("Hayk")
+                .lastName("Yan")
+                .email("hayk@mail.com")
+                .password("hayk00")
+                .createdAt(LocalDateTime.now())
+                .role(Role.RESTAURANT_OWNER)
+                .enabled(true)
+                .build();
+    }
+
+//    public static User getManagerUser() {
+//        return User.builder()
+//                .id(1)
+//                .firstName("Hayk")
+//                .lastName("Yan")
+//                .email("hayk@mail.com")
+//                .password("hayk00")
+//                .createdAt(LocalDateTime.now())
+//                .role(Role.MANAGER)
+//                .enabled(true)
+//                .build();
+//    }
 
     public static User getUserOwner() {
         return User.builder()
@@ -242,13 +270,13 @@ public class MockData {
     }
 
     //event
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-    public static LocalDateTime getStartDate(LocalDateTime startDate) {
-        return startDate;
-    }
-
-    LocalDateTime startDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+//    public static LocalDateTime getStartDate(LocalDateTime startDate) {
+//        return startDate;
+//    }
+//
+//    LocalDateTime startDate;
 
     public static Event getEvent() {
         return Event.builder()
@@ -288,7 +316,13 @@ public class MockData {
                 .restaurantId(getRestaurant().getId())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
-//                .eventDateTime("2022-12-10")
+                .build();
+    }
+
+    public static EventRequestDto getEventRequestDto(){
+        return EventRequestDto.builder()
+                .fileDto(getFileDto())
+                .createEventDto(getCreateEventDto())
                 .build();
     }
 
@@ -328,7 +362,7 @@ public class MockData {
                 .build();
     }
 
-    public static FileDto getFileDto() {
+    public static FileDto getFileDto22() {
         Path path = Paths.get("/Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-common/src/main/resources/static/image/1666283155713_3219866.png");
         String name = "1666283155713_3219866.png";
         String originalName = "1666283155713_3219866.png";
@@ -339,11 +373,17 @@ public class MockData {
         } catch (IOException e) {
         }
         MultipartFile result = new MockMultipartFile(name, originalName, contentType, content);
-
         return FileDto.builder()
                 .files(new MultipartFile[]{result})
                 .build();
     }
+
+    public static FileDto getFileDto() {
+        return FileDto.builder()
+                .files(null)
+                .build();
+    }
+
 
     public static byte[] getBytes() {
         return new byte[]{1};
@@ -432,8 +472,12 @@ public class MockData {
         return new PageImpl<>(List.of(getProduct(), getProduct()));
     }
 
-    public static Page<Product> getNullPageProducts() {
-        return new PageImpl<>(List.of());
+
+    public static ProductRequestDto getProductRequestDto(){
+        return ProductRequestDto.builder()
+                .fileDto(getFileDto())
+                .createProductDto(getCreateProductDto())
+                .build();
     }
 
     //reserve

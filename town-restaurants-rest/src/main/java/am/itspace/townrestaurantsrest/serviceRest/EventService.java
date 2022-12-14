@@ -23,6 +23,6 @@ public interface EventService {
 
     List<EventOverview> getAllEvents(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    List<EventOverview> findEventsByRestaurantId(int id,int pageNo, int pageSize, String sortBy, String sortDir);
+    List<EventOverview> getEventsByRestaurantId(int id,int pageNo, int pageSize, String sortBy, String sortDir);
 }
 

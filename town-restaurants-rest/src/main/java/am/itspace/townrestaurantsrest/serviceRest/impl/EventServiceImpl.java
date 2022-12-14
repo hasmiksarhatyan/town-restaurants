@@ -90,7 +90,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventOverview> findEventsByRestaurantId(int id, int pageNo, int pageSize, String sortBy, String sortDir) {
+    public List<EventOverview> getEventsByRestaurantId(int id, int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
