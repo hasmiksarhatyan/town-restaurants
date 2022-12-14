@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreditCardOverview;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantsrest.exception.ApiError;
@@ -17,37 +16,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public interface CreditCardApi {
 
-//    @Operation(
-//            summary = "Add new credit card",
-//            description = "Possible error codes: 4094, 4095, 4096")
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(
-//                            responseCode = "200",
-//                            description = "Credit card has been added"),
-//                    @ApiResponse(
-//                            responseCode = "4094",
-//                            description = "Needs to authenticate",
-//                            content = @Content(
-//                                    mediaType = APPLICATION_JSON_VALUE,
-//                                    schema = @Schema(implementation = ApiError.class))),
-//                    @ApiResponse(
-//                            responseCode = "4095",
-//                            description = "Credit card number is wrong.",
-//                            content = @Content(
-//                                    mediaType = APPLICATION_JSON_VALUE,
-//                                    schema = @Schema(implementation = ApiError.class))),
-//                    @ApiResponse(
-//                            responseCode = "4096",
-//                            description = "Credit card has expired",
-//                            content = @Content(
-//                                    mediaType = APPLICATION_JSON_VALUE,
-//                                    schema = @Schema(implementation = ApiError.class)))})
-//    ResponseEntity<?> create(CreateCreditCardDto createCreditCardDto);
-
     @Operation(
             summary = "Get all credit cards",
-            description = "Possible error codes: 4052")
+            description = "Possible error code: 4052")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -87,5 +58,5 @@ public interface CreditCardApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<CreditCardOverview>> getAllByUser();
+    ResponseEntity<List<CreditCardOverview>> getByUser(int pageNo, int pageSize, String sortBy, String sortDir);
 }

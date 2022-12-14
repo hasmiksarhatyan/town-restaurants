@@ -20,26 +20,7 @@ public interface UserApi {
 
     @Operation(
             summary = "Get all users",
-            description = "Possible error codes: 4046")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched users from DB",
-                            content = @Content(
-                                    schema = @Schema(implementation = UserOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4046",
-                            description = "User not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<UserOverview>> getAll();
-
-    @Operation(
-            summary = "Get all users",
-            description = "Possible error codes: 4046")
+            description = "Possible error code: 4046")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -58,7 +39,7 @@ public interface UserApi {
 
     @Operation(
             summary = "Get user",
-            description = "Possible error codes: 4046")
+            description = "Possible error code: 4046")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -77,7 +58,7 @@ public interface UserApi {
 
     @Operation(
             summary = "Change password",
-            description = "Possible error codes: 4046, 4094")
+            description = "Possible error code: 4046, 4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -102,7 +83,7 @@ public interface UserApi {
 
     @Operation(
             summary = "Update user",
-            description = "Possible error codes: 4046")
+            description = "Possible error code: 4046")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -121,7 +102,7 @@ public interface UserApi {
 
     @Operation(
             summary = "Delete user",
-            description = "Possible error codes: 4046")
+            description = "Possible error code: 4046")
     @ApiResponses(
             value = {
                     @ApiResponse(

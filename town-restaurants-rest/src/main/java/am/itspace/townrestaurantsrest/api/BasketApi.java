@@ -39,7 +39,7 @@ public interface BasketApi {
 
     @Operation(
             summary = "Get all baskets",
-            description = "Possible error codes: 4048")
+            description = "Possible error code: 4048")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -54,7 +54,7 @@ public interface BasketApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<BasketOverview>> getAll();
+    ResponseEntity<List<BasketOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get all baskets",
@@ -79,29 +79,7 @@ public interface BasketApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<BasketOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
-
-    @Operation(
-            summary = "Get total price of products",
-            description = "Possible error codes: 4048, 4094")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched baskets from DB"),
-                    @ApiResponse(
-                            responseCode = "4048",
-                            description = "Basket not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(
-                            responseCode = "4094",
-                            description = "Needs to authenticate",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<Double> getTotalPrice();
+    ResponseEntity<List<BasketOverview>> getByUser(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Remove product from basket",

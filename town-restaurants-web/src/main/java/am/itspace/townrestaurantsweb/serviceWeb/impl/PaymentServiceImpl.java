@@ -51,10 +51,10 @@ public class PaymentServiceImpl implements PaymentService {
             CreateCreditCardDto cardDto = new CreateCreditCardDto();
             if (!creditCardRepository.existsByCardNumber(cardDto.getCardNumber())) {
                 creditCardService.addCreditCard(cardDto, user);
-                payment.setPaymentStatus(PaymentStatus.PROCESSING);
+                payment.setStatus(PaymentStatus.PROCESSING);
             }
         } else {
-            payment.setPaymentStatus(PaymentStatus.UNPAID);
+            payment.setStatus(PaymentStatus.UNPAID);
         }
         paymentRepository.save(payment);
         log.info("The payment was successfully stored in the database {}", payment.getTotalAmount());

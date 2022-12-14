@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.reserve.EditReserveDto;
@@ -28,17 +28,17 @@ public class ReserveController implements ReserveApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ReserveOverview>> getAll() {
-        return ResponseEntity.ok(reserveService.getAll());
-    }
-
-    @Override
-    @GetMapping("/pages")
     public ResponseEntity<List<ReserveOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                         @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                         @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
                                                         @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
         return ResponseEntity.ok(reserveService.getAllReserves(pageNo, pageSize, sortBy, sortDir));
+    }
+
+    @Override
+    @GetMapping("/byUser")
+    public ResponseEntity<List<ReserveOverview>> getByRole() {
+        return ResponseEntity.ok(reserveService.getByRole());
     }
 
     @Override

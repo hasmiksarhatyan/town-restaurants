@@ -21,5 +21,4 @@ public class CreateOrderDto {
     private double totalPrice;
     private String paymentOption;
     private List<ProductOverview> productOverviews;
-
 }

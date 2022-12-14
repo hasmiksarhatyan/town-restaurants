@@ -1,9 +1,8 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FileDto;
-import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
+import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,11 +47,11 @@ public interface ProductApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<ProductOverview> create(CreateProductDto createProductDto, FileDto fileDto);
+    ResponseEntity<ProductOverview> create(ProductRequestDto productRequestDto);
 
     @Operation(
             summary = "Get image",
-            description = "Possible error codes: 4050")
+            description = "Possible error code: 4050")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -68,7 +67,7 @@ public interface ProductApi {
 
     @Operation(
             summary = "Get all products",
-            description = "Possible error codes: 4043,4094")
+            description = "Possible error codes: 4043, 4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -89,11 +88,11 @@ public interface ProductApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<ProductOverview>> getAll();
+    ResponseEntity<List<ProductOverview>> getByRole(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get all products",
-            description = "Possible error codes: 4043")
+            description = "Possible error code: 4043")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -111,8 +110,30 @@ public interface ProductApi {
     ResponseEntity<List<ProductOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
+            summary = "Get products by restaurantId",
+            description = "Possible error code: 4043")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Fetched products from DB",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ProductOverview.class),
+                                    mediaType = APPLICATION_JSON_VALUE)),
+                    @ApiResponse(
+                            responseCode = "4043",
+                            description = "Product not found",
+                            content =
+                            @Content(
+                                    schema = @Schema(implementation = ApiError.class),
+                                    mediaType = APPLICATION_JSON_VALUE))
+            })
+    ResponseEntity<List<ProductOverview>> getByRestaurant(int id, int pageNo, int pageSize, String sortBy, String sortDir);
+
+    @Operation(
             summary = "Get product",
-            description = "Possible error codes: 4043,4094")
+            description = "Possible error codes: 4043, 4094")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -135,11 +156,11 @@ public interface ProductApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<ProductOverview>> getByUser();
+    ResponseEntity<List<ProductOverview>> getByOwner(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get product",
-            description = "Possible error codes: 4043")
+            description = "Possible error code: 4043")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -161,7 +182,7 @@ public interface ProductApi {
 
     @Operation(
             summary = "Update product",
-            description = "Possible error codes: 4043")
+            description = "Possible error code: 4043")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -183,7 +204,7 @@ public interface ProductApi {
 
     @Operation(
             summary = "Delete product",
-            description = "Possible error codes: 4043")
+            description = "Possible error code: 4043")
     @ApiResponses(
             value = {
                     @ApiResponse(

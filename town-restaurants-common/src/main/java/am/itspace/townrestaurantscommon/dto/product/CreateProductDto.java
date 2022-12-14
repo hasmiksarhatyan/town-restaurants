@@ -19,7 +19,7 @@ import java.util.List;
 public class CreateProductDto {
 
     @NotBlank(message = "Name is mandatory")
-    @Schema(description = "Name's length should be between 2 and 15.",
+    @Schema(description = "The length of name should be between 2 and 15.",
             example = "Pizza",
             minLength = 2,
             maxLength = 15,
@@ -27,9 +27,9 @@ public class CreateProductDto {
     private String name;
 
     @NotBlank(message = "Description is mandatory")
-    @Schema(description = "Description length must be between 10 and 20 characters",
+    @Schema(description = "Description length must be between 10 and 30 characters",
             minLength = 10,
-            maxLength = 20)
+            maxLength = 30)
     private String description;
 
     @NotBlank(message = "Price is mandatory")
@@ -41,7 +41,5 @@ public class CreateProductDto {
     private Integer restaurantId;
 
     private List<String> pictures;
-
-    private UserOverview userOverview;
 }
 

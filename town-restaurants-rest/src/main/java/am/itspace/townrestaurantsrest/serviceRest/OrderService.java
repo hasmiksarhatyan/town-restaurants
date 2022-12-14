@@ -10,8 +10,6 @@ public interface OrderService {
 
     void delete(int id);
 
-    List<OrderOverview> getAll();
-
     OrderOverview getById(int id);
 
     OrderOverview update(int id, EditOrderDto editOrderDto);

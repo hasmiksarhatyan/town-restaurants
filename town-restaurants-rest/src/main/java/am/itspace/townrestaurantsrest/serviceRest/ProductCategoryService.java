@@ -10,8 +10,6 @@ public interface ProductCategoryService {
 
     void delete(int id);
 
-    List<ProductCategoryOverview> getAll();
-
     ProductCategoryOverview getById(int id);
 
     ProductCategoryOverview save(CreateProductCategoryDto createProductCategoryDto);

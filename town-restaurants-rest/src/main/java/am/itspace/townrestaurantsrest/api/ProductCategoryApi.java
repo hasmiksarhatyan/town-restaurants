@@ -20,7 +20,7 @@ public interface ProductCategoryApi {
 
     @Operation(
             summary = "Add new product category",
-            description = "Possible error codes: 4005")
+            description = "Possible error code: 4005")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -40,26 +40,7 @@ public interface ProductCategoryApi {
 
     @Operation(
             summary = "Get all product categories",
-            description = "Possible error codes: 4045")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched product categories from DB",
-                            content = @Content(
-                                    schema = @Schema(implementation = ProductCategoryOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4045",
-                            description = "Product category not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<ProductCategoryOverview>> getAll();
-
-    @Operation(
-            summary = "Get all product categories",
-            description = "Possible error codes: 4045")
+            description = "Possible error code: 4045")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -78,7 +59,7 @@ public interface ProductCategoryApi {
 
     @Operation(
             summary = "Get product category",
-            description = "Possible error codes: 4045")
+            description = "Possible error code: 4045")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -100,7 +81,7 @@ public interface ProductCategoryApi {
 
     @Operation(
             summary = "Update product category",
-            description = "Possible error codes: 4045")
+            description = "Possible error code: 4045")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -122,7 +103,7 @@ public interface ProductCategoryApi {
 
     @Operation(
             summary = "Delete product category",
-            description = "Possible error codes: 4045")
+            description = "Possible error code: 4045")
     @ApiResponses(
             value = {
                     @ApiResponse(

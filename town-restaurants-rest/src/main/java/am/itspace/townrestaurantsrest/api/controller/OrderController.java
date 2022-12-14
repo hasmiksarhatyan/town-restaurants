@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
@@ -28,12 +28,6 @@ public class OrderController implements OrderApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<OrderOverview>> getAll() {
-        return ResponseEntity.ok(orderService.getAll());
-    }
-
-    @Override
-    @GetMapping("/pages")
     public ResponseEntity<List<OrderOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                       @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                       @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,

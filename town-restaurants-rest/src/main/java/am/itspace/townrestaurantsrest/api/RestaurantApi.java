@@ -1,11 +1,8 @@
 package am.itspace.townrestaurantsrest.api;
 
-import am.itspace.townrestaurantscommon.dto.FileDto;
-import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
+import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantRequestDto;
 import am.itspace.townrestaurantsrest.exception.ApiError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,42 +46,7 @@ public interface RestaurantApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<RestaurantOverview> create(CreateRestaurantDto createRestaurantDto, FileDto fileDto);
-
-    @Operation(
-            summary = "Get image",
-            description = "Possible error codes: 4050")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched image from DB"),
-                    @ApiResponse(
-                            responseCode = "4050",
-                            description = "File not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    byte[] getImage(String fileName);
-
-    @Operation(
-            summary = "Get all restaurants",
-            description = "Possible error codes: 4041")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched restaurants from DB",
-                            content = @Content(
-                                    schema = @Schema(implementation = RestaurantOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4041",
-                            description = "Restaurant not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<RestaurantOverview>> getAll();
+    ResponseEntity<RestaurantOverview> create(RestaurantRequestDto restaurantRequestDto);
 
     @Operation(
             summary = "Get all restaurants",
@@ -153,48 +115,20 @@ public interface RestaurantApi {
     ResponseEntity<RestaurantOverview> getById(int id);
 
     @Operation(
-            summary = "Get events by restaurantId",
-            description = "Possible error codes: 4044")
+            summary = "Get image",
+            description = "Possible error codes: 4050")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Fetched events from DB",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = EventOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
+                            description = "Fetched image from DB"),
                     @ApiResponse(
-                            responseCode = "4044",
-                            description = "Event not found",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
-    ResponseEntity<List<EventOverview>> findEventsByRestaurantId(int id);
-
-    @Operation(
-            summary = "Get products by restaurantId",
-            description = "Possible error codes: 4043")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched products from DB",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = ProductOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4043",
-                            description = "Product not found",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = ApiError.class),
-                                    mediaType = APPLICATION_JSON_VALUE))
-            })
-    ResponseEntity<List<ProductOverview>> findProductsByRestaurantId(int id);
+                            responseCode = "4050",
+                            description = "File not found",
+                            content = @Content(
+                                    mediaType = APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)))})
+    byte[] getImage(String fileName);
 
     @Operation(
             summary = "Update restaurant",

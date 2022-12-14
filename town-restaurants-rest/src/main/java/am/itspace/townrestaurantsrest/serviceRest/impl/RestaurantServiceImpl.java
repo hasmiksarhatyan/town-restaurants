@@ -4,7 +4,9 @@ import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
+import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantRequestDto;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
+import am.itspace.townrestaurantscommon.entity.RestaurantCategory;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.mapper.RestaurantMapper;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
@@ -27,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static am.itspace.townrestaurantsrest.exception.Error.*;
 
@@ -39,68 +41,44 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final FileUtil fileUtil;
     private final RestaurantMapper restaurantMapper;
-    private final RestaurantCategoryRepository restaurantCategoryRepository;
     private final RestaurantRepository restaurantRepository;
     private final SecurityContextServiceImpl securityContextService;
+    private final RestaurantCategoryRepository restaurantCategoryRepository;
 
     @Override
-    public RestaurantOverview save(CreateRestaurantDto createRestaurantDto, FileDto fileDto) {
+    public RestaurantOverview save(RestaurantRequestDto dto) {
+        CreateRestaurantDto createRestaurantDto = dto.getCreateRestaurantDto();
+        FileDto fileDto = dto.getFileDto();
         if (restaurantRepository.existsByName(createRestaurantDto.getName())) {
             log.info("Restaurant with that name already exists {}", createRestaurantDto.getName());
             throw new EntityAlreadyExistsException(Error.RESTAURANT_ALREADY_EXISTS);
         }
-        try {
-            MultipartFile[] files = fileDto.getFiles();
-            for (MultipartFile file : files) {
-                if (!file.isEmpty() && file.getSize() > 0) {
-                    if (file.getContentType() != null && !file.getContentType().contains("image")) {
-                        throw new MyFileNotFoundException(FILE_NOT_FOUND);
+        if (fileDto.getFiles() != null) {
+            try {
+                MultipartFile[] files = fileDto.getFiles();
+                for (MultipartFile file : files) {
+                    if (!file.isEmpty() && file.getSize() > 0) {
+                        if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                            throw new MyFileNotFoundException(FILE_NOT_FOUND);
+                        }
                     }
                 }
+                createRestaurantDto.setPictures(fileUtil.uploadImages(files));
+            } catch (IOException e) {
+                throw new FileStorageException(FILE_UPLOAD_FAILED);
             }
-            createRestaurantDto.setPictures(fileUtil.uploadImages(files));
-        } catch (IOException e) {
-            throw new FileStorageException(FILE_UPLOAD_FAILED);
         }
         log.info("The restaurant was successfully stored in the database {}", createRestaurantDto.getName());
         return restaurantMapper.mapToResponseDto(restaurantRepository.save(restaurantMapper.mapToEntity(createRestaurantDto)));
     }
 
     @Override
-    public byte[] getRestaurantImage(String fileName) {
-        try {
-            log.info("Images successfully found");
-            return fileUtil.getImage(fileName);
-        } catch (IOException e) {
-            throw new MyFileNotFoundException(FILE_NOT_FOUND);
-        }
-    }
-
-    @Override
-    public List<RestaurantOverview> getAllRestaurants(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public List<RestaurantOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
-        if (restaurants.isEmpty()) {
-            log.info("Restaurant not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
-        }
-        List<Restaurant> listOfRestaurants = restaurants.getContent();
-        log.info("Restaurant successfully found");
-        return restaurantMapper.mapToResponseDtoList(listOfRestaurants).stream().collect(Collectors.toList());
-    }
-
-    @Override
-    public List<RestaurantOverview> getAll() {
-        List<Restaurant> restaurants = restaurantRepository.findAll();
-        if (restaurants.isEmpty()) {
-            log.info("Restaurant not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
-        } else {
-            log.info("Restaurant successfully found");
-            return restaurantMapper.mapToResponseDtoList(restaurants);
-        }
+        return findRestaurant(restaurants);
     }
 
     @Override
@@ -111,12 +89,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                     : Sort.by(sortBy).descending();
             Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
             Page<Restaurant> restaurants = restaurantRepository.findRestaurantsByUser(user, pageable);
-            if (restaurants.isEmpty()) {
-                log.info("Restaurant not found");
-                throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
-            }
-            List<Restaurant> listOfRestaurants = restaurants.getContent();
-            return new ArrayList<>(restaurantMapper.mapToResponseDtoList(listOfRestaurants));
+            return findRestaurant(restaurants);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
@@ -153,13 +126,24 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (deliveryPrice != null) {
             restaurant.setDeliveryPrice(deliveryPrice);
         }
-        Integer restaurantCategoryId = editRestaurantDto.getRestaurantCategoryId();
-        if (restaurantCategoryId != null) {
-            restaurant.setRestaurantCategory(restaurantCategoryRepository.getReferenceById(restaurantCategoryId));
+        Integer categoryId = editRestaurantDto.getRestaurantCategoryId();
+        if (categoryId != null) {
+            Optional<RestaurantCategory> categoryOptional = restaurantCategoryRepository.findById(categoryId);
+            categoryOptional.ifPresent(restaurant::setRestaurantCategory);
         }
         restaurantRepository.save(restaurant);
         log.info("The restaurant was successfully stored in the database {}", restaurant.getName());
         return restaurantMapper.mapToResponseDto(restaurant);
+    }
+
+    @Override
+    public byte[] getRestaurantImage(String fileName) {
+        try {
+            log.info("Images successfully found");
+            return fileUtil.getImage(fileName);
+        } catch (IOException e) {
+            throw new MyFileNotFoundException(FILE_NOT_FOUND);
+        }
     }
 
     @Override
@@ -171,5 +155,15 @@ public class RestaurantServiceImpl implements RestaurantService {
             log.info("Restaurant not found");
             throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
         }
+    }
+
+    private List<RestaurantOverview> findRestaurant(Page<Restaurant> restaurants) {
+        if (restaurants.isEmpty()) {
+            log.info("Restaurant not found");
+            throw new EntityNotFoundException(Error.RESTAURANT_NOT_FOUND);
+        }
+        List<Restaurant> listOfRestaurants = restaurants.getContent();
+        log.info("Restaurant successfully found");
+        return new ArrayList<>(restaurantMapper.mapToResponseDtoList(listOfRestaurants));
     }
 }

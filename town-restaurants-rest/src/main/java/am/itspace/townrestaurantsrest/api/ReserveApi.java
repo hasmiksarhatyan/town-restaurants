@@ -19,7 +19,7 @@ public interface ReserveApi {
 
     @Operation(
             summary = "Add new reserve",
-            description = "Possible error codes: 4007")
+            description = "Possible error code: 4007")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -60,11 +60,11 @@ public interface ReserveApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<ReserveOverview>> getAll();
+    ResponseEntity<List<ReserveOverview>> getByRole();
 
     @Operation(
             summary = "Get all reserves",
-            description = "Possible error codes: 4047")
+            description = "Possible error code: 4047")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -83,7 +83,7 @@ public interface ReserveApi {
 
     @Operation(
             summary = "Update reserve",
-            description = "Possible error codes: 4047")
+            description = "Possible error code: 4047")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -105,7 +105,7 @@ public interface ReserveApi {
 
     @Operation(
             summary = "Delete reserve",
-            description = "Possible error codes: 4047")
+            description = "Possible error code: 4047")
     @ApiResponses(
             value = {
                     @ApiResponse(

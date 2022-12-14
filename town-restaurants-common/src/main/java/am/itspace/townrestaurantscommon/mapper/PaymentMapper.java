@@ -16,6 +16,5 @@ public interface PaymentMapper {
     PaymentOverview mapToDto(Payment payment);
 
     List<PaymentOverview> mapToDto(List<Payment> payments);
-
 }
 

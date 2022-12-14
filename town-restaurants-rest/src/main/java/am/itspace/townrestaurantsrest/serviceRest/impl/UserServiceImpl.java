@@ -34,8 +34,8 @@ import static am.itspace.townrestaurantsrest.exception.Error.*;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final MailService mailService;
     private final UserMapper userMapper;
+    private final MailService mailService;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -131,7 +131,6 @@ public class UserServiceImpl implements UserService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-
         Page<User> users = userRepository.findAll(pageable);
         if (users.isEmpty()) {
             log.info("User not found");
@@ -140,18 +139,6 @@ public class UserServiceImpl implements UserService {
         List<User> listOfUsers = users.getContent();
         log.info("User successfully found");
         return new ArrayList<>(userMapper.mapToResponseDtoList(listOfUsers));
-    }
-
-    @Override
-    public List<UserOverview> getAll() {
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            log.info("User not found");
-            throw new EntityNotFoundException(Error.USER_NOT_FOUND);
-        } else {
-            log.info("User successfully found");
-            return userMapper.mapToResponseDtoList(users);
-        }
     }
 
     @Override

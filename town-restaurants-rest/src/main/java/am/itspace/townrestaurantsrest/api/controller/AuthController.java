@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.CreateUserDto;
@@ -27,7 +27,7 @@ public class AuthController implements AuthApi {
 
     @Override
     @PostMapping("/activation")
-    public ResponseEntity<?> auth(@Valid @RequestBody UserAuthDto userAuthDto) {
+    public ResponseEntity<?> authentication(@Valid @RequestBody UserAuthDto userAuthDto) {
         return ResponseEntity.ok(userService.authentication(userAuthDto));
     }
 

@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
@@ -22,13 +22,7 @@ public class UserController implements UserApi {
 
     private final UserService userService;
 
-    @Override
     @GetMapping
-    public ResponseEntity<List<UserOverview>> getAll() {
-        return ResponseEntity.ok(userService.getAll());
-    }
-
-    @GetMapping("/pages")
     public ResponseEntity<List<UserOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                      @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                      @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,

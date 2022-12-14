@@ -57,17 +57,6 @@ public class RestaurantCategoryServiceImpl implements RestaurantCategoryService 
     }
 
     @Override
-    public List<RestaurantCategoryOverview> getAll() {
-        List<RestaurantCategory> categories = restaurantCategoryRepository.findAll();
-        if (categories.isEmpty()) {
-            log.info("Category not found");
-            throw new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND);
-        }
-        log.info("Category successfully found");
-        return restaurantCategoryMapper.mapToOverviewList(categories);
-    }
-
-    @Override
     public RestaurantCategoryOverview getById(int id) {
         RestaurantCategory restaurantCategory = restaurantCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.RESTAURANT_CATEGORY_NOT_FOUND));
         log.info("Category successfully found {}", restaurantCategory.getName());

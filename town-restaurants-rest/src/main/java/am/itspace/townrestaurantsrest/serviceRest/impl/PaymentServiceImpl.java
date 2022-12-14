@@ -49,6 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
                     .build();
             if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
                 if (!creditCardRepository.existsByCardNumber(creditCard.getCardNumber())) {
+                    creditCard.setUser(user);
                     creditCardService.save(creditCard);
                     payment.setStatus(PaymentStatus.PROCESSING);
                 }
@@ -63,7 +64,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentOverview> getAllPayments(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public List<PaymentOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -75,22 +76,6 @@ public class PaymentServiceImpl implements PaymentService {
         List<Payment> listOfPayments = payments.getContent();
         log.info("Payments successfully found");
         return new ArrayList<>(paymentMapper.mapToDto(listOfPayments));
-    }
-
-    @Override
-    public List<PaymentOverview> getAllByUser() {
-        try {
-            User user = securityContextService.getUserDetails().getUser();
-            List<Payment> payments = paymentRepository.findAllByUser(user);
-            if (payments.isEmpty()) {
-                log.info("Payment not found");
-                throw new EntityNotFoundException(Error.PAYMENT_NOT_FOUND);
-            }
-            log.info("Payments successfully found");
-            return paymentMapper.mapToDto(payments);
-        } catch (ClassCastException e) {
-            throw new AuthenticationException(NEEDS_AUTHENTICATION);
-        }
     }
 
     @Override

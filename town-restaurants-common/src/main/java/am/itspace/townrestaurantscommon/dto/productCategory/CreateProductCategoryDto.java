@@ -15,8 +15,8 @@ import javax.validation.constraints.NotBlank;
 public class CreateProductCategoryDto {
 
     @NotBlank(message = "Name is mandatory")
-    @Schema(description = "Name's length should be between 2 and 15.",
-            example = "HotDish",
+    @Schema(description = "The length of name should be between 2 and 15.",
+            example = "Snacks",
             minLength = 2,
             maxLength = 15,
             pattern = "^[A-Za-z]{2,15}$")

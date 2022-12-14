@@ -12,9 +12,7 @@ public interface PaymentService {
 
     void addPayment(Order order, CreditCard creditCard);
 
-    List<PaymentOverview> getAllByUser();
-
-    List<PaymentOverview> getAllPayments(int pageNo, int pageSize, String sortBy, String sortDir);
+    List<PaymentOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 }
 
 
