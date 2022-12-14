@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.event.EventRequestDto;
 import am.itspace.townrestaurantscommon.entity.Event;
 import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
@@ -26,10 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static am.itspace.townrestaurantsrest.exception.Error.FILE_NOT_FOUND;
 import static am.itspace.townrestaurantsrest.exception.Error.FILE_UPLOAD_FAILED;
@@ -46,23 +44,27 @@ public class EventServiceImpl implements EventService {
     private final RestaurantRepository restaurantRepository;
 
     @Override
-    public EventOverview save(CreateEventDto createEventDto, FileDto fileDto) {
+    public EventOverview save(EventRequestDto dto) {
+        CreateEventDto createEventDto = dto.getCreateEventDto();
+        FileDto fileDto = dto.getFileDto();
         if (eventRepository.existsByName(createEventDto.getName())) {
             log.info("Event with that name already exists {}", createEventDto.getName());
             throw new EntityAlreadyExistsException(Error.EVENT_ALREADY_EXISTS);
         }
-        try {
-            MultipartFile[] files = fileDto.getFiles();
-            for (MultipartFile file : files) {
-                if (!file.isEmpty() && file.getSize() > 0) {
-                    if (file.getContentType() != null && !file.getContentType().contains("image")) {
-                        throw new MyFileNotFoundException(FILE_NOT_FOUND);
+        if (fileDto.getFiles() != null) {
+            try {
+                MultipartFile[] files = fileDto.getFiles();
+                for (MultipartFile file : files) {
+                    if (!file.isEmpty() && file.getSize() > 0) {
+                        if (file.getContentType() != null && !file.getContentType().contains("image")) {
+                            throw new MyFileNotFoundException(FILE_NOT_FOUND);
+                        }
                     }
                 }
+                createEventDto.setPictures(fileUtil.uploadImages(files));
+            } catch (IOException e) {
+                throw new FileStorageException(FILE_UPLOAD_FAILED);
             }
-            createEventDto.setPictures(fileUtil.uploadImages(files));
-        } catch (IOException e) {
-            throw new FileStorageException(FILE_UPLOAD_FAILED);
         }
         log.info("The event was successfully stored in the database {}", createEventDto.getName());
         return eventMapper.mapToOverview(eventRepository.save(eventMapper.mapToEntity(createEventDto)));
@@ -79,29 +81,21 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventOverview> getAll() {
-        List<Event> events = eventRepository.findAll();
-        if (events.isEmpty()) {
-            log.info("Event not found");
-            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
-        }
-        log.info("Event successfully detected");
-        return eventMapper.mapToOverviewList(events);
-    }
-
-    @Override
     public List<EventOverview> getAllEvents(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Event> events = eventRepository.findAll(pageable);
-        if (events.isEmpty()) {
-            log.info("Event not found");
-            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
-        }
-        List<Event> listOfEvents = events.getContent();
-        log.info("Event successfully found");
-        return new ArrayList<>(eventMapper.mapToOverviewList(listOfEvents));
+        return findEvent(events);
+    }
+
+    @Override
+    public List<EventOverview> findEventsByRestaurantId(int id, int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Event> events = eventRepository.findEventsByRestaurantId(id, pageable);
+        return findEvent(events);
     }
 
     @Override
@@ -109,18 +103,6 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.EVENT_NOT_FOUND));
         log.info("Event successfully found {}", event.getName());
         return eventMapper.mapToOverview(event);
-    }
-
-    @Override
-    public List<EventOverview> findEventsByRestaurantId(int id) {
-        List<Event> events = eventRepository.findEventsByRestaurant_Id(id);
-        if (events.isEmpty()) {
-            log.info("Event not found");
-            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
-        } else {
-            log.info("Event successfully detected");
-            return eventMapper.mapToOverviewList(events);
-        }
     }
 
     @Override
@@ -167,7 +149,8 @@ public class EventServiceImpl implements EventService {
         }
         Integer restaurantId = editEventDto.getRestaurantId();
         if (restaurantId != null) {
-            event.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+            Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+            restaurantOptional.ifPresent(event::setRestaurant);
         }
         eventRepository.save(event);
         log.info("The event was successfully stored in the database {}", event.getName());
@@ -183,5 +166,15 @@ public class EventServiceImpl implements EventService {
             log.info("Event not found");
             throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
         }
+    }
+
+    private List<EventOverview> findEvent(Page<Event> events) {
+        if (events.isEmpty()) {
+            log.info("Event not found");
+            throw new EntityNotFoundException(Error.EVENT_NOT_FOUND);
+        }
+        List<Event> listOfEvents = events.getContent();
+        log.info("Event successfully found");
+        return new ArrayList<>(eventMapper.mapToOverviewList(listOfEvents));
     }
 }

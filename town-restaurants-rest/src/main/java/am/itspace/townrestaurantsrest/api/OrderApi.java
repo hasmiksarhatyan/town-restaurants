@@ -19,7 +19,7 @@ public interface OrderApi {
 
     @Operation(
             summary = "Add new Order",
-            description = "Possible error codes: 4011, 4048, 4094, 4095")
+            description = "Possible error codes: 4048, 4094, 4095, 4096")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -29,14 +29,14 @@ public interface OrderApi {
                                     schema = @Schema(implementation = OrderOverview.class),
                                     mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
-                            responseCode = "4011",
-                            description = "Order already exists.",
+                            responseCode = "4048",
+                            description = "Basket not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class))),
                     @ApiResponse(
-                            responseCode = "4048",
-                            description = "Basket not found.",
+                            responseCode = "4094",
+                            description = "Needs to authenticate.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class))),
@@ -47,8 +47,8 @@ public interface OrderApi {
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class))),
                     @ApiResponse(
-                            responseCode = "4094",
-                            description = "Needs to authenticate.",
+                            responseCode = "4096",
+                            description = "Credit card has expired.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
@@ -71,30 +71,11 @@ public interface OrderApi {
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<OrderOverview>> getAll();
-
-    @Operation(
-            summary = "Get all orders",
-            description = "Possible error code: 4051")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched orders from DB.",
-                            content = @Content(
-                                    schema = @Schema(implementation = OrderOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4051",
-                            description = "Order not found.",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
     ResponseEntity<List<OrderOverview>> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
 
     @Operation(
             summary = "Get order.",
-            description = "Possible error codes: 4051")
+            description = "Possible error code: 4051")
     @ApiResponses(
             value = {
                     @ApiResponse(

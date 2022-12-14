@@ -20,6 +20,5 @@ public interface OrderMapper {
     OrderOverview mapToDto(Order order);
 
     List<OrderOverview> mapToDto(List<Order> orders);
-
 }
 

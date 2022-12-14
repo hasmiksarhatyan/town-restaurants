@@ -80,34 +80,26 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public List<BasketOverview> getAllBaskets(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public List<BasketOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Basket> baskets = basketRepository.findAll(pageable);
+        return findBasket(baskets);
+    }
+
+    @Override
+    public List<BasketOverview> getAllByUser(int pageNo, int pageSize, String sortBy, String sortDir) {
         try {
             User user = securityContextService.getUserDetails().getUser();
             Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                     : Sort.by(sortBy).descending();
             Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
             Page<Basket> baskets = basketRepository.findAllByUser(user, pageable);
-            if (baskets.isEmpty()) {
-                log.info("Basket not found");
-                throw new EntityNotFoundException(Error.BASKET_NOT_FOUND);
-            }
-            List<Basket> listOfBaskets = baskets.getContent();
-            log.info("Baskets successfully found");
-            return new ArrayList<>(basketMapper.mapToDtoList(listOfBaskets));
+            return findBasket(baskets);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
-    }
-
-    @Override
-    public List<BasketOverview> getAll() {
-        List<Basket> baskets = basketRepository.findAll();
-        if (baskets.isEmpty()) {
-            log.info("Basket not found");
-            throw new EntityNotFoundException(Error.BASKET_NOT_FOUND);
-        }
-        log.info("Basket successfully found");
-        return basketMapper.mapToDtoList(baskets);
     }
 
     @Override
@@ -132,5 +124,15 @@ public class BasketServiceImpl implements BasketService {
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
+    }
+
+    private List<BasketOverview> findBasket(Page<Basket> baskets) {
+        if (baskets.isEmpty()) {
+            log.info("Basket not found");
+            throw new EntityNotFoundException(Error.BASKET_NOT_FOUND);
+        }
+        List<Basket> listOfBaskets = baskets.getContent();
+        log.info("Baskets successfully found");
+        return new ArrayList<>(basketMapper.mapToDtoList(listOfBaskets));
     }
 }

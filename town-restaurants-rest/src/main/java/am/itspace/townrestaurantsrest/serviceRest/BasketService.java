@@ -10,9 +10,9 @@ public interface BasketService {
 
     double getTotalPrice();
 
-    List<BasketOverview> getAll();
-
     void addProductToBasket(int id);
 
-    List<BasketOverview> getAllBaskets(int pageNo, int pageSize, String sortBy, String sortDir);
+    List<BasketOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir);
+
+    List<BasketOverview> getAllByUser(int pageNo, int pageSize, String sortBy, String sortDir);
 }

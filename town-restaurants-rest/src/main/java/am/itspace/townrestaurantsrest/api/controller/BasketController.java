@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantsrest.api.BasketApi;
@@ -26,23 +26,20 @@ public class BasketController implements BasketApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<BasketOverview>> getAll() {
-        return ResponseEntity.ok(basketService.getAll());
-    }
-
-    @Override
-    @GetMapping("/pages")
     public ResponseEntity<List<BasketOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                        @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                        @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
                                                        @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
-        return ResponseEntity.ok(basketService.getAllBaskets(pageNo, pageSize, sortBy, sortDir));
+        return ResponseEntity.ok(basketService.getAll(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override
-    @GetMapping("/totalPrice")
-    public ResponseEntity<Double> getTotalPrice() {
-        return ResponseEntity.ok(basketService.getTotalPrice());
+    @GetMapping("/byUser")
+    public ResponseEntity<List<BasketOverview>> getByUser(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                          @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                          @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return ResponseEntity.ok(basketService.getAllByUser(pageNo, pageSize, sortBy, sortDir));
     }
 
     @Override

@@ -28,7 +28,6 @@ import java.util.List;
 
 import static am.itspace.townrestaurantsrest.exception.Error.NEEDS_AUTHENTICATION;
 
-
 @Slf4j
 @Service
 @Transactional
@@ -69,7 +68,7 @@ public class ReserveServiceImpl implements ReserveService {
     }
 
     @Override
-    public List<ReserveOverview> getAll() {
+    public List<ReserveOverview> getByRole() {
         try {
             User user = securityContextService.getUserDetails().getUser();
             List<Reserve> reserves = reserveRepository.findAll();

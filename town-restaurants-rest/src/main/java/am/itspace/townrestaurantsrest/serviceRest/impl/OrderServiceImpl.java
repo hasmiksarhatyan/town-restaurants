@@ -51,7 +51,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderOverview save(OrderCreditCardDto dto) {
         CreateOrderDto createOrderDto = dto.getCreateOrderDto();
         CreateCreditCardDto creditCardDto = dto.getCreditCardDto();
-        List<Product> products = productMapper.mapToEntity(createOrderDto.getProductOverviews());
         try {
             User user = securityContextService.getUserDetails().getUser();
             createOrderDto.setTotalPrice(basketService.getTotalPrice());
@@ -62,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
             order.setPaid(false);
             orderRepository.save(order);
             paymentService.addPayment(order, creditCardMapper.mapToEntity(creditCardDto));
-            log.info("The order was successfully stored in the database {}", products);
+            log.info("The order was successfully stored in the database");
             return orderMapper.mapToDto(order);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
@@ -84,17 +83,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new EntityNotFoundException(BASKET_NOT_FOUND);
         }
-    }
-
-    @Override
-    public List<OrderOverview> getAll() {
-        List<Order> orders = orderRepository.findAll();
-        if (orders.isEmpty()) {
-            log.info("Order not found");
-            throw new EntityNotFoundException(ORDER_NOT_FOUND);
-        }
-        log.info("Order successfully found");
-        return orderMapper.mapToDto(orders);
     }
 
     @Override

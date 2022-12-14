@@ -18,14 +18,14 @@ import javax.validation.constraints.Size;
 public class CreateUserDto {
 
     @NotBlank(message = "Name is mandatory")
-    @Schema(description = "Name's length should be between 3 and 15 and name should contain only letters.",
+    @Schema(description = "The length of name should be between 3 and 15 and name should contain only letters.",
             example = "Hayk",
             minLength = 3,
             maxLength = 15,
             pattern = "^[A-Za-z]{2,15}$")
     private String firstName;
 
-    @Schema(description = "Lastname's length should be between 3 and 15 and name should contain only letters.",
+    @Schema(description = "The length of last name should be between 3 and 15 and name should contain only letters.",
             example = "Sargsyan",
             minLength = 3,
             maxLength = 15,
@@ -39,7 +39,7 @@ public class CreateUserDto {
 
     @Schema(example = "Example1234$")
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, max = 20, message = "The length should be between 2 and 20 characters!")
+    @Size(min = 8, max = 20, message = "The length should be between 8 and 20 characters!")
     private String password;
 
     private String verifyToken;

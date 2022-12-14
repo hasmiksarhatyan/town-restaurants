@@ -57,17 +57,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategoryOverview> getAll() {
-        List<ProductCategory> categories = productCategoryRepository.findAll();
-        if (categories.isEmpty()) {
-            log.info("Category not found");
-            throw new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND);
-        }
-        log.info("Category successfully found");
-        return productCategoryMapper.mapToOverviewList(categories);
-    }
-
-    @Override
     public ProductCategoryOverview getById(int id) {
         ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Error.PRODUCT_CATEGORY_NOT_FOUND));
         log.info("Category successfully found {}", productCategory.getName());

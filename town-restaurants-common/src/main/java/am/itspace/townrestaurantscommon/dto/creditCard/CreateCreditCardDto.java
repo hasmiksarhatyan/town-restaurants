@@ -27,6 +27,4 @@ public class CreateCreditCardDto {
 
     @NotBlank(message = "CVV is mandatory")
     private String cvv;
-
-    private UserOverview userOverview;
 }

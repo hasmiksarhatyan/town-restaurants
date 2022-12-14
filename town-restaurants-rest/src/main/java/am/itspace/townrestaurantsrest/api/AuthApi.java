@@ -17,7 +17,7 @@ public interface AuthApi {
 
     @Operation(
             summary = "Register new user",
-            description = "Possible error code: 4006,5001")
+            description = "Possible error codes: 4006, 5001")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -42,7 +42,7 @@ public interface AuthApi {
 
     @Operation(
             summary = "Authentication for user",
-            description = "Possible error codes: 4011")
+            description = "Possible error code: 4011")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -51,17 +51,17 @@ public interface AuthApi {
                             content = @Content(mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
                             responseCode = "4011",
-                            description = "Wrong email or password.",
+                            description = "Wrong email or password, user not found.",
                             content =
                             @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class)))
             })
-    ResponseEntity<?> auth(UserAuthDto userAuthDto);
+    ResponseEntity<?> authentication(UserAuthDto userAuthDto);
 
     @Operation(
             summary = "Verification for user",
-            description = "Possible error codes: 4046,4049,4092,4093")
+            description = "Possible error codes: 4046, 4049, 4092, 4093")
     @ApiResponses(
             value = {
                     @ApiResponse(

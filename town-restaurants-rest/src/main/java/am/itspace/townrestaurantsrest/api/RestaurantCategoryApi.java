@@ -20,7 +20,7 @@ public interface RestaurantCategoryApi {
 
     @Operation(
             summary = "Add new restaurant category",
-            description = "Possible error codes: 4002")
+            description = "Possible error code: 4002")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -40,26 +40,7 @@ public interface RestaurantCategoryApi {
 
     @Operation(
             summary = "Get all restaurant categories",
-            description = "Possible error codes: 4042")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched restaurant categories from DB",
-                            content = @Content(
-                                    schema = @Schema(implementation = RestaurantCategoryOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4042",
-                            description = "Restaurant category not found",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<RestaurantCategoryOverview>> getAll();
-
-    @Operation(
-            summary = "Get all restaurant categories",
-            description = "Possible error codes: 4042")
+            description = "Possible error code: 4042")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -78,7 +59,7 @@ public interface RestaurantCategoryApi {
 
     @Operation(
             summary = "Get restaurant category",
-            description = "Possible error codes: 4042")
+            description = "Possible error code: 4042")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -100,7 +81,7 @@ public interface RestaurantCategoryApi {
 
     @Operation(
             summary = "Update restaurant category",
-            description = "Possible error codes: 4042")
+            description = "Possible error code: 4042")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -122,7 +103,7 @@ public interface RestaurantCategoryApi {
 
     @Operation(
             summary = "Delete restaurant category",
-            description = "Possible error codes: 4042")
+            description = "Possible error code: 4042")
     @ApiResponses(
             value = {
                     @ApiResponse(

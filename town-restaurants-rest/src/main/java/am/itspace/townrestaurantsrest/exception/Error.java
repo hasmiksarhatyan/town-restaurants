@@ -70,7 +70,7 @@ public enum Error {
 
     EXPIRED_CREDIT_CARD(4096, HttpStatus.CONFLICT, "Credit card has expired"),
 
-    PAYMENT_NOT_FOUND(4052, HttpStatus.NOT_FOUND, "Payment not found");
+    PAYMENT_NOT_FOUND(4053, HttpStatus.NOT_FOUND, "Payment not found");
 
     private final Integer code;
     private final HttpStatus httpStatus;

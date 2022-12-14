@@ -17,12 +17,12 @@ public class ChangePasswordDto {
 
     @Schema(example = "Example1234$")
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, max = 20, message = "The length should be between 2 and 20 characters!")
+    @Size(min = 8, max = 20, message = "The length should be between 8 and 20 characters!")
     private String oldPassword;
 
     @Schema(example = "Example1234$")
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, max = 20, message = "The length should be between 2 and 20 characters!")
+    @Size(min = 8, max = 20, message = "The length should be between 8 and 20 characters!")
     private String newPassword1;
     private String newPassword2;
 }

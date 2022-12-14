@@ -11,8 +11,6 @@ public interface RestaurantCategoryService {
 
     void delete(int id);
 
-    List<RestaurantCategoryOverview> getAll();
-
     RestaurantCategoryOverview getById(int id) throws EntityNotFoundException;
 
     RestaurantCategoryOverview save(CreateRestaurantCategoryDto createRestaurantCategoryDto);

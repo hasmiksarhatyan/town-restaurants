@@ -39,9 +39,5 @@ logging:
 project:
   images:
     folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-rest/src/main/resources/static/image
-#  liquibase:
-#    change-log: classpath:db/changelog/migration.xml
 
-
-#http://localhost:8081/api/v1/swagger-ui/index:
-#  html:
+#http://localhost:8081/api/v1/swagger-ui/index:html:

@@ -18,7 +18,7 @@ public interface PaymentApi {
 
     @Operation(
             summary = "Get all payments",
-            description = "Possible error code: 4052")
+            description = "Possible error code: 4053")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -28,32 +28,7 @@ public interface PaymentApi {
                                     schema = @Schema(implementation = PaymentOverview.class),
                                     mediaType = APPLICATION_JSON_VALUE)),
                     @ApiResponse(
-                            responseCode = "4052",
-                            description = "Payment not found.",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(
-                            responseCode = "4094",
-                            description = "Needs to authenticate.",
-                            content = @Content(
-                                    mediaType = APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class)))})
-    ResponseEntity<List<PaymentOverview>> getAll();
-
-    @Operation(
-            summary = "Get all payments",
-            description = "Possible error codes: 4052, 4094")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Fetched payments from DB.",
-                            content = @Content(
-                                    schema = @Schema(implementation = PaymentOverview.class),
-                                    mediaType = APPLICATION_JSON_VALUE)),
-                    @ApiResponse(
-                            responseCode = "4052",
+                            responseCode = "4053",
                             description = "Payment not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,
@@ -62,14 +37,14 @@ public interface PaymentApi {
 
     @Operation(
             summary = "Delete payment",
-            description = "Possible error code: 4042")
+            description = "Possible error code: 4053")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Deleted a payment from DB."),
+                            description = "Deleted payment from DB."),
                     @ApiResponse(
-                            responseCode = "4052",
+                            responseCode = "4053",
                             description = "Payment not found.",
                             content = @Content(
                                     mediaType = APPLICATION_JSON_VALUE,

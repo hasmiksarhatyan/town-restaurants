@@ -18,7 +18,7 @@ import java.util.List;
 public class EditEventDto {
 
     @NotBlank(message = "Name is mandatory")
-    @Schema(description = "Name's length should be between 4 and 20.",
+    @Schema(description = "The length of name should be between 3 and 15.",
             example = "Italian party",
             minLength = 3,
             maxLength = 15,
@@ -26,8 +26,8 @@ public class EditEventDto {
     private String name;
 
     @NotBlank(message = "Description is mandatory")
-    @Schema(description = "Description length must be between 50 and 70 characters",
-            minLength = 50,
+    @Schema(description = "Description length must be between 15 and 70 characters",
+            minLength = 15,
             maxLength = 70)
     private String description;
 

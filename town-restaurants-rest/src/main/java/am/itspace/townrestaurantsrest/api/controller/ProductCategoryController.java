@@ -1,4 +1,4 @@
-package am.itspace.townrestaurantsrest.controller;
+package am.itspace.townrestaurantsrest.api.controller;
 
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
@@ -7,7 +7,6 @@ import am.itspace.townrestaurantsrest.api.ProductCategoryApi;
 import am.itspace.townrestaurantsrest.serviceRest.ProductCategoryService;
 import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @RequestMapping("/productCategories")
 public class ProductCategoryController implements ProductCategoryApi {
 
-    private final ModelMapper modelMapper;
     private final ProductCategoryService productCategoryService;
 
     @Override
@@ -30,12 +28,6 @@ public class ProductCategoryController implements ProductCategoryApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ProductCategoryOverview>> getAll() {
-        return ResponseEntity.ok(productCategoryService.getAll());
-    }
-
-    @Override
-    @GetMapping("/pages")
     public ResponseEntity<List<ProductCategoryOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                                 @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                                 @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,

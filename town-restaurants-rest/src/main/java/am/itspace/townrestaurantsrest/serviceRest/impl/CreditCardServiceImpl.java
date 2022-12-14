@@ -61,11 +61,29 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public List<CreditCardOverview> getAllCreditCards(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public List<CreditCardOverview> getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<CreditCard> cards = creditCardRepository.findAll(pageable);
+        return findCards(cards);
+    }
+
+    @Override
+    public List<CreditCardOverview> getAllByUser(int pageNo, int pageSize, String sortBy, String sortDir) {
+        try {
+            User user = securityContextService.getUserDetails().getUser();
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            Page<CreditCard> cards = creditCardRepository.findAllByUser(user, pageable);
+            return findCards(cards);
+        } catch (ClassCastException e) {
+            throw new AuthenticationException(NEEDS_AUTHENTICATION);
+        }
+    }
+
+    private List<CreditCardOverview> findCards(Page<CreditCard> cards) {
         if (cards.isEmpty()) {
             log.info("Credit card not found");
             throw new EntityNotFoundException(CREDIT_CARD_NOT_FOUND);
@@ -73,21 +91,5 @@ public class CreditCardServiceImpl implements CreditCardService {
         List<CreditCard> listOfCards = cards.getContent();
         log.info("Credit card successfully found");
         return new ArrayList<>(creditCardMapper.mapToDto(listOfCards));
-    }
-
-    @Override
-    public List<CreditCardOverview> getAllByUser() {
-        try {
-            User user = securityContextService.getUserDetails().getUser();
-            List<CreditCard> creditCardByUser = creditCardRepository.findCreditCardByUserId(user.getId());
-            if (creditCardByUser.isEmpty()) {
-                log.info("Credit card not found");
-                throw new EntityNotFoundException(CREDIT_CARD_NOT_FOUND);
-            }
-            log.info("Credit card successfully found");
-            return creditCardMapper.mapToDto(creditCardByUser);
-        } catch (ClassCastException e) {
-            throw new AuthenticationException(NEEDS_AUTHENTICATION);
-        }
     }
 }

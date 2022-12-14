@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class CreateRestaurantCategoryDto {
 
     @NotBlank(message = "Name is mandatory")
-    @Schema(description = "Name's length should be between 2 and 15.",
+    @Schema(description = "The length of name should be between 2 and 15.",
             example = "Italian",
             minLength = 2,
             maxLength = 15,
