@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
+import am.itspace.townrestaurantscommon.dto.creditCard.CreditCardOverview;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
@@ -12,6 +13,7 @@ import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
+import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
@@ -563,6 +565,20 @@ public class MockData {
                 .build();
     }
 
+    public static Order getOrderForPayment() {
+        return Order.builder()
+                .id(1)
+                .additionalAddress("Tamanayan")
+                .status(OrderStatus.NEW)
+                .isPaid(true)
+                .additionalPhone("+37499999999")
+                .paymentOption(PaymentOption.CREDIT_CARD)
+                .products(List.of(getProduct(), getProduct()))
+                .totalPrice(20.0)
+                .user(getUser())
+                .build();
+    }
+
     public static EditOrderDto getEditOrderDto() {
         return EditOrderDto.builder()
                 .additionalAddress("Tamanayan")
@@ -616,13 +632,39 @@ public class MockData {
 /////CreditCard
 
 
+    public static CreditCard getCreditCard() {
+        return CreditCard.builder()
+                .id(1)
+                .user(getUser())
+                .cardHolder("Hayk Yan")
+                .cardNumber("123456789102")
+                .cardExpiresAt(LocalDate.now().plusDays(100))
+//                .cardExpiresAt(LocalDate.now().minusDays(100))
+                .cvv("1234")
+                .build();
+    }
+
     public static CreateCreditCardDto getCreateCreditCardDto() {
         return CreateCreditCardDto.builder()
-                .cardHolder("Hayk")
+                .cardHolder("Hayk Yan")
                 .cardNumber("123456789102")
                 .cardExpiresAt(LocalDate.EPOCH)
                 .cvv("1234")
                 .build();
+    }
+
+    public static CreditCardOverview getCreditCardOverview() {
+        return CreditCardOverview.builder()
+                .id(1)
+                .userOverview(getUserOverview())
+                .cardHolder("Hayk")
+                .cardNumber("123456789102")
+                .cardExpiresAt(LocalDate.EPOCH)
+                .build();
+    }
+
+    public static Page<CreditCard> getPageCreditCards() {
+        return new PageImpl<>(List.of(getCreditCard(), getCreditCard()));
     }
 
     ///basket
@@ -671,6 +713,31 @@ public class MockData {
 
     public static Page<Basket> getPageBaskets() {
         return new PageImpl<>(List.of(getBasket(), getBasket()));
+    }
+///
+
+    public static Payment getPayment() {
+        return Payment.builder()
+                .id(0)
+                .paymentCreateDate(LocalDateTime.now())
+                .user(getUser())
+                .status(PaymentStatus.PROCESSING)
+                .order(getOrderForPayment())
+                .totalAmount(getOrder().getTotalPrice())
+                .build();
+    }
+
+    public static PaymentOverview getPaymentOverview() {
+        return PaymentOverview.builder()
+                .id(1)
+                .userOverview(getUserOverview())
+                .orderOverview(getOrderOverview())
+                .paymentStatus("PROCESSING")
+                .build();
+    }
+
+    public static Page<Payment> getPagePayment() {
+        return new PageImpl<>(List.of(getPayment(), getPayment()));
     }
 
 }

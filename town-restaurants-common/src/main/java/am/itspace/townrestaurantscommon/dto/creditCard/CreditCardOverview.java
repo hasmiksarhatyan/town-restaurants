@@ -19,6 +19,6 @@ public class CreditCardOverview {
     private String cardNumber;
     private String cardHolder;
     private LocalDate cardExpiresAt;
-    private int cvv;
+    private String cvv;
     private UserOverview userOverview;
 }
