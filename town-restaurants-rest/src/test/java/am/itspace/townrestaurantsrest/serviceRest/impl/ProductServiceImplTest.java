@@ -463,7 +463,7 @@ class ProductServiceImplTest {
 
 
 //    @Test
-//    void shouldGetByRestaurantyy() {
+//    void shouldGetByRestaurant() {
 //        //given
 //        var products = List.of(getProduct(), getProduct(), getProduct());
 //        var expected = List.of(getProductOverview(), getProductOverview(), getProductOverview());
