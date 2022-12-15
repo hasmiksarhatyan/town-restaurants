@@ -2,6 +2,7 @@ package am.itspace.townrestaurantsrest.parameters;
 
 import am.itspace.townrestaurantscommon.dto.event.EventRequestDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
+import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantRequestDto;
 import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import am.itspace.townrestaurantscommon.dto.FileDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
@@ -213,9 +214,17 @@ public class MockData {
                 .build();
     }
 
+    public static RestaurantRequestDto getRestaurantRequestDto(){
+        return RestaurantRequestDto.builder()
+                .fileDto(getFileDto())
+                .createRestaurantDto(getCreateRestaurantDto())
+                .build();
+    }
+
     public static Page<Restaurant> getPageRestaurants() {
         return new PageImpl<>(List.of(getRestaurant(), getRestaurant()));
     }
+
 
     public static Page<Restaurant> getNullPageRestaurants() {
         return new PageImpl<>(List.of());
