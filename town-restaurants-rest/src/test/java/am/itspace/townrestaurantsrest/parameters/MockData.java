@@ -73,20 +73,7 @@ public class MockData {
                 .build();
     }
 
-//    public static User getManagerUser() {
-//        return User.builder()
-//                .id(1)
-//                .firstName("Hayk")
-//                .lastName("Yan")
-//                .email("hayk@mail.com")
-//                .password("hayk00")
-//                .createdAt(LocalDateTime.now())
-//                .role(Role.MANAGER)
-//                .enabled(true)
-//                .build();
-//    }
-
-    public static User getUserOwner() {
+    public static User getManagerUser() {
         return User.builder()
                 .id(1)
                 .firstName("Hayk")
@@ -94,7 +81,7 @@ public class MockData {
                 .email("hayk@mail.com")
                 .password("hayk00")
                 .createdAt(LocalDateTime.now())
-                .role(Role.RESTAURANT_OWNER)
+                .role(Role.MANAGER)
                 .enabled(true)
                 .build();
     }
@@ -471,7 +458,6 @@ public class MockData {
     public static Page<Product> getPageProducts() {
         return new PageImpl<>(List.of(getProduct(), getProduct()));
     }
-
 
     public static ProductRequestDto getProductRequestDto(){
         return ProductRequestDto.builder()

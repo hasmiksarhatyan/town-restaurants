@@ -175,7 +175,7 @@ class ProductServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> productService.getByRestaurant(1, 1, 1, "name", "DESC"));
     }
 
-/////
+    /////
     @Test
     void shouldGetAllByRole() {
         //given
@@ -252,7 +252,7 @@ class ProductServiceImplTest {
         assertThrows(AuthenticationException.class, () -> productService.getAllByRole(1, 1, "name", "DESC"));
     }
 
-//////////////////////////
+    //////////////////////////
     @Test
     void shouldGetByOwner() {
         //given

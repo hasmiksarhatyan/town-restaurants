@@ -72,26 +72,23 @@ public class ReserveServiceImpl implements ReserveService {
         try {
             User user = securityContextService.getUserDetails().getUser();
             List<Reserve> reserves = reserveRepository.findAll();
-            if (!reserves.isEmpty()) {
-                if (user.getRole() == Role.MANAGER) {
-                    log.info("Reserve successfully found");
-                    return reserveMapper.mapToOverviewList(reserves);
-                } else if (user.getRole() == Role.RESTAURANT_OWNER) {
-                    return reserveForOwner(user);
-                } else if (user.getRole() == Role.CUSTOMER) {
-                    List<Reserve> reserveByUser = reserveRepository.findByUser(user);
-                    if (!reserveByUser.isEmpty()) {
-                        log.info("Reserve not found");
-                        throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
-                    }
-                    return reserveMapper.mapToOverviewList(reserveByUser);
-                } else {
+            if (reserves.isEmpty()) {
+                log.info("Reserve not found");
+                throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
+            }
+            if (user.getRole() == Role.MANAGER) {
+                log.info("Reserve successfully found");
+                return reserveMapper.mapToOverviewList(reserves);
+            } else if (user.getRole() == Role.RESTAURANT_OWNER) {
+                return reserveForOwner(user);
+            } else {
+                List<Reserve> reserveByUser = reserveRepository.findByUser(user);
+                if (reserveByUser.isEmpty()) {
                     log.info("Reserve not found");
                     throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
                 }
+                return reserveMapper.mapToOverviewList(reserveByUser);
             }
-            log.info("Reserve not found");
-            throw new EntityNotFoundException(Error.RESERVE_NOT_FOUND);
         } catch (ClassCastException e) {
             throw new AuthenticationException(NEEDS_AUTHENTICATION);
         }
