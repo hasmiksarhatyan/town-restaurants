@@ -42,12 +42,16 @@
                                 </div>
                             </div>
                         </div>
+                        <span style="color: red" th:if="${orderErrors != null}"
+                              th:text="${orderErrors.get('additionalAddress') }"></span>
                         <div class="row">
                             <div>
                                 <div class="form-group">
                                     <label>Phone</label>
                                     <input class="form-control" name="additionalPhone" placeholder="Phone">
                                 </div>
+                                <span style="color: red" th:if="${orderErrors != null}"
+                                      th:text="${orderErrors.get('additionalPhone') }"></span>
                             </div>
                         </div>
                     </div>
@@ -73,11 +77,15 @@
                             <input type="text" class="form-control" id="name_card_order" name="cardHolder"
                                    placeholder="First and last name">
                         </div>
+                        <span style="color: red" th:if="${cardErrors != null}"
+                              th:text="${cardErrors.get('cardHolder') }"></span>
                         <div class="form-group">
                             <label>Card number</label>
-                            <input type="text" id="card_number" name="cardNumber" class="form-control"
+                            <input type="text" id="card_number" name="cardNumber" class="form-control "
                                    placeholder="Card number">
                         </div>
+                        <span style="color: red" th:if="${cardErrors != null}"
+                              th:text="${cardErrors.get('cardNumber') }"></span>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Expiration date</label>
@@ -87,6 +95,8 @@
                                             <input type="date" id="expire_month" name="cardExpiresAt"
                                                    class="form-control" placeholder="Expiration Date">
                                         </div>
+                                        <span style="color: red" th:if="${cardErrors != null}"
+                                              th:text="${cardErrors.get('cardExpiresAt') }"></span>
                                     </div>
                                 </div>
                             </div>
@@ -99,6 +109,8 @@
                                                 <input type="text" id="ccv" name="cvv" class="form-control"
                                                        placeholder="CVV">
                                             </div>
+                                            <span style="color: red" th:if="${cardErrors != null}"
+                                                  th:text="${cardErrors.get('cvv') }"></span>
                                         </div>
                                         <div class="col-md-8 col-6">
                                             <img src="/img/icon_ccv.gif" width="50" height="29" alt="ccv"><small>Last 3
@@ -111,15 +123,15 @@
                         <!--End row -->
                         <div class="payment_select">
                             <label class="container_radio">Pay with Cash
-                                <input type="radio" value="CASH"  name="paymentOption">
+                                <input type="radio" value="CASH" name="paymentOption">
                                 <span class="checkmark"></span>
                             </label>
                             <i class="icon_wallet"></i>
                         </div>
                     </div>
                 </div>
-                <!-- /box_booking -->
             </div>
+            <!-- /box_booking -->
             <!-- /col -->
             <div class="col-xl-4 col-lg-4" id="sidebar_fixed">
                 <div class="box_booking">

@@ -62,9 +62,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant restaurant = restaurantMapper.mapToEntity(dto);
         restaurant.setUser(user);
         restaurantRepository.save(restaurant);
-        restaurantRepository.save(restaurantMapper.mapToEntity(dto));
         log.info("The restaurant was successfully stored in the database {}", dto.getName());
-        restaurantRepository.save(restaurantMapper.mapToEntity(dto));
     }
 
     @Override

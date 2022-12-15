@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - payment</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Edit Payment</li>
+        </ol>
+        <div class="box_general pb-3">
+            <div class="header_box">
+                <h2 class="d-inline-block" th:text="'Edit Payment ID '+${payment.id}"></h2>
+            </div>
+            <div class="list_general order">
+                <ul>
+                    <li>
+                        <strong th:if="${payment.status=='UNPAID'}"><i class="pending">New</i></strong>
+                        <strong th:if="${payment.status=='PROCESSING'}"><i class="approved">In progress</i></strong>
+                        <strong th:if="${payment.status=='PAID'}"><i class="approved">Delivered</i></strong>
+                        <strong th:if="${payment.status=='FAILED'}"><i class="cancel">Cancelled</i></strong>
+                        <ul class="booking_list">
+                            <li><strong>Client</strong>
+                                <strong th:text="${payment.userOverview.firstName}+' '+${payment.userOverview.lastName}"></strong>
+                            </li>
+                            <li><strong>Date and time</strong>
+                                <strong th:text="${#temporals.format(payment.paymentCreateDate,'dd-MM-yyyy HH:mm')}"></strong>
+                            </li>
+                            <li><strong>Total amount</strong> <strong th:text="${payment.totalAmount}"></strong></li>
+                            <li><strong>Paid at</strong> <strong th:text="${#temporals.format(payment.paidAt, 'dd-MM-yyyy HH:mm')}"></strong></li>
+                        </ul>
+                        <p th:if="${currentUser.role.name == 'MANAGER'}">
+                            <a href="#0" class="btn_1" data-toggle="modal" data-target="#client_detail_modal">
+                                <i class="fa fa-fw fa-envelope"></i> Edit</a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <tbody >
+                    <!-- Client Detail Modal -->
+                    <div class="modal fade" id="client_detail_modal" tabindex="-1" role="dialog"
+                         aria-labelledby="client_detail_modalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form th:action="@{'/payments/edit/'+${payment.id}}" method="post">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="client_detail_modalLabel">Edit</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Paid at</label>
+                                            <input type="datetime-local" class="form-control" name="paidAt"
+                                                   th:value="${payment.paidAt}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Payment status</label>
+                                            <div class="styled-select">
+                                                <select class="custom-select" name="status" id="status">
+                                                    <option value="UNPAID">Unpaid</option>
+                                                    <option value="PROCESSING">Processing</option>
+                                                    <option value="PAID">Paid</option>
+                                                    <option value="FAILED">Failed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="submit" value="Save" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /box_general-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /container-wrapper-->
+
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

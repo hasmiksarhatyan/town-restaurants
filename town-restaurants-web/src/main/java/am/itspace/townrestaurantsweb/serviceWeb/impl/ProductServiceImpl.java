@@ -45,16 +45,11 @@ public class ProductServiceImpl implements ProductService {
             }
             return products.map(productMapper::mapToResponseDto);
         }
-        switch (sort) {
-            case "price_asc":
-                products = productRepository.findByOrderByPriceAsc(pageable);
-                break;
-            case "price_desc":
-                products = productRepository.findByOrderByPriceDesc(pageable);
-                break;
-            default:
-                products = productRepository.findAll(pageable);
-        }
+        products = switch (sort) {
+            case "price_asc" -> productRepository.findByOrderByPriceAsc(pageable);
+            case "price_desc" -> productRepository.findByOrderByPriceDesc(pageable);
+            default -> productRepository.findAll(pageable);
+        };
         log.info("Products successfully sorted");
         return products.map(productMapper::mapToResponseDto);
     }

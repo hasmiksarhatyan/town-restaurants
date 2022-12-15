@@ -42,7 +42,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <div th:each="basket: ${baskets}" th:with="id=${basket.productOverview.id}">
+                        <div th:each="basket: ${baskets}">
                             <div>
                                 <tr>
                                     <td th:text="${basket.productOverview.name}"></td>

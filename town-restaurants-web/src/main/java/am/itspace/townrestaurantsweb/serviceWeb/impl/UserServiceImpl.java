@@ -4,6 +4,7 @@ import am.itspace.townrestaurantscommon.dto.user.ChangePasswordDto;
 import am.itspace.townrestaurantscommon.dto.user.CreateUserDto;
 import am.itspace.townrestaurantscommon.dto.user.EditUserDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
+import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.entity.VerificationToken;
 import am.itspace.townrestaurantscommon.mapper.UserMapper;
@@ -49,6 +50,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("That email already in use");
         }
         User user = userMapper.mapToEntity(dto);
+        user.setRole(Role.CUSTOMER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         log.info("User {} has successfully registered", user.getEmail());
         VerificationToken token = tokenService.createToken(user);

@@ -1,13 +1,16 @@
 package am.itspace.townrestaurantscommon.dto.creditCard;
 
-import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.CreditCardNumber;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -15,16 +18,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateCreditCardDto {
-
-    @NotBlank(message = "Card number is mandatory")
+    @CreditCardNumber
     private String cardNumber;
-
     @NotBlank(message = "Name is mandatory")
     private String cardHolder;
-
+    @NotNull
+    @Future(message = "Expired Credit Card")
+//    @Pattern(regexp = "^(0[1-9]|1[0-2])([/])([1-9][0-9])$",message = "Must be formatted MM/YY")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate cardExpiresAt;
-
     @NotBlank(message = "CVV is mandatory")
+    @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
     private String cvv;
+
 }

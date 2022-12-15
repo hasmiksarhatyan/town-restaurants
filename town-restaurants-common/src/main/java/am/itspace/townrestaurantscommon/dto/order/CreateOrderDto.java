@@ -1,13 +1,12 @@
 package am.itspace.townrestaurantscommon.dto.order;
 
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -15,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateOrderDto {
-
+    @NotBlank(message = "Address is mandatory")
     private String additionalAddress;
     private String additionalPhone;
     private double totalPrice;
