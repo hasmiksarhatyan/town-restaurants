@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.lang.String.format;
-import static java.time.LocalDate.now;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -41,23 +38,10 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @Override
     public void addCreditCard(CreateCreditCardDto cardDto, User user) {
-        validateCreditCard(cardDto, user);
         CreditCard creditCard = creditCardMapper.mapToEntity(cardDto);
         creditCard.setUser(user);
         creditCardRepository.save(creditCard);
         log.info("The credit card was successfully stored in the database {}", creditCard.getCardHolder());
     }
 
-    private void validateCreditCard(CreateCreditCardDto creditCardDto, User user) {
-        String cardHolder = creditCardDto.getCardHolder();
-        String userName = format("%s %s", user.getFirstName(), user.getLastName());
-        if (!cardHolder.equalsIgnoreCase(userName)) {
-            log.info("Wrong Credit Card");
-            throw new IllegalStateException("Wrong Credit Card");
-        }
-        if (creditCardDto.getCardExpiresAt().isBefore(now())) {
-            log.info("Expired Credit Card");
-            throw new IllegalStateException("Expired Credit Card");
-        }
-    }
 }

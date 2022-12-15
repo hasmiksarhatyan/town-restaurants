@@ -29,5 +29,7 @@ public interface BasketRepository extends JpaRepository<Basket, Integer>, Paging
 
     Page<Basket> findAllByUser(User user, Pageable pageable);
 
+    Optional<Basket> findBasketByProductAndUser(Product product, User user);
+
     boolean existsByProductAndUser(Product product, User user);
 }

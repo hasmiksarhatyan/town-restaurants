@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>FOOGRA - payments</title>
+
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+
+</head>
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Payments</li>
+        </ol>
+        <h5 th:if="${payments.content.size==0}" th:text="${message}"></h5>
+        <!-- Example DataTables Card-->
+        <div class="card mb-3" th:if="${payments.content.size!=0}">
+            <div class="card-body">
+                <div class="table-responsive" >
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Payment create date</th>
+                            <th>User</th>
+<!--                            <th>Status</th>-->
+                            <th>Order ID</th>
+                            <th>Total amount</th>
+                            <th th:if="${currentUser.role.name == 'MANAGER'}">Edit</th>
+                            <th th:if="${currentUser.role.name != 'MANAGER'}">View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="payment:${payments}">
+                            <td th:text="${payment.id}"></td>
+                            <td th:text="${#temporals.format(payment.paymentCreateDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${payment.userOverview.firstName+' '+payment.userOverview.lastName}"></td>
+<!--                            <td th:if="${payment.status=='UNPAID'}"><i class="pending">Unpaid</i></td>-->
+<!--                            <td th:if="${payment.status=='PROCESSING'}"><i class="approved">In progress</i></td>-->
+<!--                            <td th:if="${payment.status=='PAID'}"><i class="approved">Delivered</i></td>-->
+<!--                            <td th:if="${payment.status=='FAILED'}"><i class="cancel">Cancelled</i></td>-->
+                            <td th:text="${payment.orderOverview.id}"></td>
+                            <td th:text="${payment.totalAmount}"></td>
+
+                            <td th:if="${currentUser.role.name == 'MANAGER'}">
+                                <a th:href="@{'/payments/edit/'+ ${payment.id}}"><strong>Edit</strong></a> |
+                                <a th:href="@{'/payments/delete/'+ ${payment.id}}"><strong>Delete</strong></a></td>
+                            <td th:if="${currentUser.role.name != 'MANAGER'}">
+                                <a th:href="@{'/payments/'+ ${payment.id}}"><strong>View</strong></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="pagination_fg">
+                        <tr class="page-item">
+                            <th th:if="${payments.totalPages > 0}"
+                                th:each="pageNumber : ${pageNumbers}">
+                                <a th:href="@{/payments(size=${payments.size}, page=${pageNumber})}"
+                                   th:text="${pageNumber}"
+                                   th:class="${pageNumber==payments.number + 1} ? active"></a>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /tables-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /container-wrapper-->
+
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

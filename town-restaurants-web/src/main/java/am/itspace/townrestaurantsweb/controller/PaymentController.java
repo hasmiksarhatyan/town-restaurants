@@ -1,18 +1,17 @@
 package am.itspace.townrestaurantsweb.controller;
 
+import am.itspace.townrestaurantscommon.dto.payment.EditPaymentDto;
 import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
+import am.itspace.townrestaurantscommon.entity.Role;
+import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 import static am.itspace.townrestaurantsweb.utilWeb.PageUtil.getTotalPages;
 
@@ -25,13 +24,42 @@ public class PaymentController {
 
     @GetMapping
     public String payments(@RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "size", defaultValue = "5") int size,
-                           ModelMap modelMap) {
-        Page<PaymentOverview> payments = paymentService.getPayments(PageRequest.of(page - 1, size));
-        modelMap.addAttribute("payments", payments);
-        List<Integer> pageNumbers = getTotalPages(payments);
-        modelMap.addAttribute("pageNumbers", pageNumbers);
+                           @RequestParam(value = "size", defaultValue = "10") int size,
+                           ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
+        if (currentUser.getUser().getRole() == Role.MANAGER) {
+            Page<PaymentOverview> payments = paymentService.getPayments(PageRequest.of(page - 1, size));
+            modelMap.addAttribute("payments", payments);
+            modelMap.addAttribute("pageNumbers", getTotalPages(payments));
+            if (payments.getContent().isEmpty()) {
+                modelMap.addAttribute("message", "You don't have any payments");
+            }
+        } else {
+            Page<PaymentOverview> paymentsByUser = paymentService.getPaymentsByUser(currentUser.getUser().getId(), PageRequest.of(page - 1, size));
+            modelMap.addAttribute("payments", paymentsByUser);
+            modelMap.addAttribute("pageNumbers", getTotalPages(paymentsByUser));
+            if (paymentsByUser.getContent().isEmpty()) {
+                modelMap.addAttribute("message", "You don't have any payments");
+            }
+        }
         return "payments";
+    }
+
+    @GetMapping("/{id}")
+    public String payment(@PathVariable("id") int id, ModelMap modelMap) {
+        modelMap.addAttribute("payment", paymentService.getById(id));
+        return "payment";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editPaymentPage(@PathVariable("id") int id, @ModelAttribute EditPaymentDto dto, ModelMap modelMap) {
+        modelMap.addAttribute("payment", paymentService.getById(id));
+        return "payment";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editPayment(@PathVariable("id") int id, @ModelAttribute EditPaymentDto dto) {
+        paymentService.editPayment(dto, id);
+        return "redirect:/payments";
     }
 
     @GetMapping("/delete/{id}")

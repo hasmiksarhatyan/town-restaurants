@@ -19,7 +19,7 @@ public class PaymentOverview {
     private double totalAmount;
     private LocalDateTime paidAt;
     private LocalDateTime paymentCreateDate;
-    private String paymentStatus;
+    private String status;
     private OrderOverview orderOverview;
     private UserOverview userOverview;
 }

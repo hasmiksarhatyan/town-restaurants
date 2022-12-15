@@ -1,6 +1,7 @@
 package am.itspace.townrestaurantsweb.serviceWeb.impl;
 
 import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
+import am.itspace.townrestaurantscommon.dto.payment.EditPaymentDto;
 import am.itspace.townrestaurantscommon.dto.payment.PaymentOverview;
 import am.itspace.townrestaurantscommon.entity.*;
 import am.itspace.townrestaurantscommon.mapper.PaymentMapper;
@@ -11,12 +12,10 @@ import am.itspace.townrestaurantsweb.serviceWeb.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -30,17 +29,21 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Page<PaymentOverview> getPayments(Pageable pageable) {
-        List<Payment> payments = paymentRepository.findAll();
+        Page<Payment> payments = paymentRepository.findAll(pageable);
         if (payments.isEmpty()) {
             throw new IllegalStateException("Payment not found!");
         }
-        List<PaymentOverview> paymentOverviews = paymentMapper.mapToDto(payments);
         log.info("Payments successfully found");
-        return new PageImpl<>(paymentOverviews);
+        return payments.map(paymentMapper::mapToDto);
+    }
+
+    public Page<PaymentOverview> getPaymentsByUser(int id, Pageable pageable) {
+        log.info("Payments successfully found");
+        return paymentRepository.findByUserId(id, pageable).map(paymentMapper::mapToDto);
     }
 
     @Override
-    public void addPayment(Order order, User user) {
+    public void addPayment(Order order, CreateCreditCardDto cardDto, User user) {
         Payment payment = Payment.builder()
                 .paymentCreateDate(LocalDateTime.now())
                 .user(user)
@@ -48,7 +51,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .totalAmount(order.getTotalPrice())
                 .build();
         if (order.getPaymentOption() == PaymentOption.CREDIT_CARD) {
-            CreateCreditCardDto cardDto = new CreateCreditCardDto();
             if (!creditCardRepository.existsByCardNumber(cardDto.getCardNumber())) {
                 creditCardService.addCreditCard(cardDto, user);
                 payment.setStatus(PaymentStatus.PROCESSING);
@@ -58,6 +60,27 @@ public class PaymentServiceImpl implements PaymentService {
         }
         paymentRepository.save(payment);
         log.info("The payment was successfully stored in the database {}", payment.getTotalAmount());
+    }
+
+    @Override
+    public PaymentOverview getById(int id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
+        log.info("Payment successfully found");
+        return paymentMapper.mapToDto(payment);
+    }
+
+    public void editPayment(EditPaymentDto dto, int id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
+        String status = dto.getStatus();
+        if (status != null) {
+            payment.setStatus(PaymentStatus.valueOf(status));
+        }
+        String paidAt = dto.getPaidAt();
+        if (paidAt != null) {
+            payment.setPaidAt(LocalDateTime.parse(paidAt));
+        }
+        log.info("The payment was successfully updated in the database {}", payment.getId());
+        paymentRepository.save(payment);
     }
 
     @Override

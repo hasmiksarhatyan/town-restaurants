@@ -22,6 +22,7 @@ public class OrderOverview {
     private LocalDateTime orderAt;
     private double totalPrice;
     private String status;
+    private String paymentOption;
     private List<ProductOverview> productOverviews;
     private UserOverview userOverview;
     private boolean isPaid;

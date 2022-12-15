@@ -1,7 +1,6 @@
 package am.itspace.townrestaurantsweb.serviceWeb.impl;
 
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
-import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
 import am.itspace.townrestaurantscommon.entity.Basket;
 import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.User;
@@ -51,16 +50,16 @@ public class BasketServiceImpl implements BasketService {
             throw new IllegalStateException("Something went wrong, try again!");
         }
         Product product = productOptional.get();
-        if (!basketRepository.existsByProductAndUser(product, user)) {
-            CreateBasketDto basketDto = new CreateBasketDto();
-            basketDto.setProductId(id);
-            basketDto.setQuantity(1);
-            Basket basket = basketMapper.mapToEntity(basketDto);
+        Optional<Basket> basketOptional = basketRepository.findBasketByProductAndUser(product, user);
+        if (basketOptional.isEmpty()) {
+            Basket basket = new Basket();
+            basket.setProduct(product);
+            basket.setQuantity(1);
             basket.setUser(user);
             basketRepository.save(basket);
             log.info("Product successfully added to basket");
         } else {
-            Basket basket = basketRepository.findByProductAndUser(product, user);
+            Basket basket = basketOptional.get();
             basket.setQuantity(basket.getQuantity() + 1);
             basketRepository.save(basket);
             log.info("Product successfully added to basket");
@@ -82,10 +81,8 @@ public class BasketServiceImpl implements BasketService {
 
 
     public void delete(int id, User user) {
-        if (!basketRepository.existsByProductAndUser(productRepository.getReferenceById(id), user)) {
-            throw new IllegalStateException("Something went wrong, try again!");
-        }
-        Basket basket = basketRepository.findByProductAndUser(productRepository.getReferenceById(id), user);
+        Product product = productRepository.findById(id).orElseThrow();
+        Basket basket = basketRepository.findBasketByProductAndUser(product, user).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         double quantity = basket.getQuantity();
         if (quantity == 1) {
             basket.setQuantity(0);

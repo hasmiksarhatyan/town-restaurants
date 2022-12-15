@@ -20,5 +20,5 @@ public class EditOrderDto {
     private String status;
     private String paymentOption;
     private List<ProductOverview> productOverviews;
-    private boolean isPaid;
+    private String isPaid;
 }
