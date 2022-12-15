@@ -105,7 +105,7 @@ class ReserveServiceImplTest {
     @Test
     void getAllReservesShouldThrowException() {
         //given
-        Page<Product> empty = Page.empty();
+        Page<Reserve> empty = Page.empty();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
         doReturn(empty).when(reserveRepository).findAll(pageable);

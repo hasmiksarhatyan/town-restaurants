@@ -10,11 +10,13 @@ import am.itspace.townrestaurantscommon.mapper.CreditCardMapper;
 import am.itspace.townrestaurantscommon.mapper.OrderMapper;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
-import am.itspace.townrestaurantscommon.repository.CreditCardRepository;
 import am.itspace.townrestaurantscommon.repository.OrderRepository;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
-import am.itspace.townrestaurantsrest.serviceRest.*;
+import am.itspace.townrestaurantsrest.serviceRest.BasketService;
+import am.itspace.townrestaurantsrest.serviceRest.OrderService;
+import am.itspace.townrestaurantsrest.serviceRest.PaymentService;
+import am.itspace.townrestaurantsrest.serviceRest.SecurityContextService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,8 +45,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
     private final CreditCardMapper creditCardMapper;
-    private final CreditCardService creditCardService;
-    private final CreditCardRepository creditCardRepository;
     private final SecurityContextService securityContextService;
 
     @Override

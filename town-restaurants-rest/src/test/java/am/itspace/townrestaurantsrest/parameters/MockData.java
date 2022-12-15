@@ -1,16 +1,21 @@
 package am.itspace.townrestaurantsrest.parameters;
 
-import am.itspace.townrestaurantscommon.dto.event.EventRequestDto;
-import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
-import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantRequestDto;
-import am.itspace.townrestaurantsrest.utilRest.AppConstants;
 import am.itspace.townrestaurantscommon.dto.FileDto;
+import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
+import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
+import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;
+import am.itspace.townrestaurantscommon.dto.event.EventRequestDto;
+import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
+import am.itspace.townrestaurantscommon.dto.order.EditOrderDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
+import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
+import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.CreateProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.EditProductCategoryDto;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
@@ -20,16 +25,15 @@ import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
+import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantRequestDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.EditRestaurantCategoryDto;
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -214,7 +218,7 @@ public class MockData {
                 .build();
     }
 
-    public static RestaurantRequestDto getRestaurantRequestDto(){
+    public static RestaurantRequestDto getRestaurantRequestDto() {
         return RestaurantRequestDto.builder()
                 .fileDto(getFileDto())
                 .createRestaurantDto(getCreateRestaurantDto())
@@ -315,7 +319,7 @@ public class MockData {
                 .build();
     }
 
-    public static EventRequestDto getEventRequestDto(){
+    public static EventRequestDto getEventRequestDto() {
         return EventRequestDto.builder()
                 .fileDto(getFileDto())
                 .createEventDto(getCreateEventDto())
@@ -433,6 +437,17 @@ public class MockData {
                 .build();
     }
 
+    public static Product getProductForBasket() {
+        return Product.builder()
+                .id(2)
+                .name("Fries")
+                .price(500.0)
+                .description("French dish")
+                .productCategory(getProductCategory())
+                .restaurant(getRestaurant())
+                .build();
+    }
+
     public static EditProductDto getEditProductDto() {
         return EditProductDto.builder()
                 .name("taco")
@@ -468,7 +483,7 @@ public class MockData {
         return new PageImpl<>(List.of(getProduct(), getProduct()));
     }
 
-    public static ProductRequestDto getProductRequestDto(){
+    public static ProductRequestDto getProductRequestDto() {
         return ProductRequestDto.builder()
                 .fileDto(getFileDto())
                 .createProductDto(getCreateProductDto())
@@ -530,6 +545,132 @@ public class MockData {
 
     public static Page<Reserve> getNullPageReserves() {
         return new PageImpl<>(List.of());
+    }
+
+    //Order
+
+    public static Order getOrder() {
+        return Order.builder()
+                .id(1)
+                .additionalAddress("Tamanayan")
+                .status(OrderStatus.NEW)
+                .isPaid(true)
+                .additionalPhone("+37499999999")
+                .paymentOption(PaymentOption.CASH)
+                .products(List.of(getProduct(), getProduct()))
+                .totalPrice(20.0)
+                .user(getUser())
+                .build();
+    }
+
+    public static EditOrderDto getEditOrderDto() {
+        return EditOrderDto.builder()
+                .additionalAddress("Tamanayan")
+                .status("NEW")
+                .isPaid(true)
+                .additionalPhone("+37499999999")
+                .paymentOption("CASH")
+                .productOverviews(List.of(getProductOverview(), getProductOverview()))
+                .totalPrice(20.0)
+                .build();
+    }
+
+    public static CreateOrderDto getCreateOrderDto() {
+        return CreateOrderDto.builder()
+                .additionalAddress("Tamanayan")
+                .additionalPhone("+37499999999")
+                .paymentOption("CASH")
+                .productOverviews(List.of(getProductOverview(), getProductOverview()))
+                .totalPrice(20.0)
+                .build();
+    }
+
+    public static OrderOverview getOrderOverview() {
+        return OrderOverview.builder()
+                .id(1)
+                .additionalAddress("Tamanayan")
+                .status("NEW")
+                .isPaid(true)
+                .additionalPhone("+37499999999")
+                .productOverviews(List.of(getProductOverview(), getProductOverview()))
+                .totalPrice(20.0)
+                .userOverview(getUserOverview())
+                .build();
+    }
+
+    public static OrderCreditCardDto getOrderCreditCardDto() {
+        return OrderCreditCardDto.builder()
+                .createOrderDto(getCreateOrderDto())
+                .creditCardDto(getCreateCreditCardDto())
+                .build();
+    }
+
+    public static Page<Order> getPageOrders() {
+        return new PageImpl<>(List.of(getOrder(), getOrder()));
+    }
+
+    public static Page<Order> getNullPageOrders() {
+        return new PageImpl<>(List.of());
+    }
+
+/////CreditCard
+
+
+    public static CreateCreditCardDto getCreateCreditCardDto() {
+        return CreateCreditCardDto.builder()
+                .cardHolder("Hayk")
+                .cardNumber("123456789102")
+                .cardExpiresAt(LocalDate.EPOCH)
+                .cvv("1234")
+                .build();
+    }
+
+    ///basket
+    public static Basket getBasket() {
+        return Basket.builder()
+                .id(1)
+                .user(getUser())
+                .product(getProduct())
+                .quantity(1)
+                .build();
+    }
+
+    public static Basket getBasketForDelete() {
+        return Basket.builder()
+                .id(1)
+                .user(getUser())
+                .product(getProduct())
+                .quantity(0)
+                .build();
+    }
+
+    public static Basket getBasket2() {
+        return Basket.builder()
+                .id(null)
+                .user(getUser())
+                .product(getProductForBasket())
+                .quantity(1)
+                .build();
+    }
+
+    public static BasketOverview getBasketOverview() {
+        return BasketOverview.builder()
+                .id(1)
+                .userOverview(getUserOverview())
+                .productOverview(getProductOverview())
+                .quantity(1)
+                .build();
+    }
+
+    public static CreateBasketDto getCreateBasketDto() {
+        return CreateBasketDto.builder()
+                .productId(getProduct().getId())
+                .quantity(1)
+                .build();
+    }
+
+    public static Page<Basket> getPageBaskets() {
+        return new PageImpl<>(List.of(getBasket(), getBasket()));
     }
 
 }
