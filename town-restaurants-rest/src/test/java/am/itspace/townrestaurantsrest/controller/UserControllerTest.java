@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static am.itspace.townrestaurantsrest.parameters.MockData.getUser;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getUserForToken;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,6 +44,9 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
     private User user;
 
     @BeforeEach
@@ -50,7 +58,7 @@ class UserControllerTest {
     void tearDown() {
         userRepository.deleteAll();
     }
-
+    //5,,4+
     @Test
     void getAll() throws Exception {
         mvc.perform(get("/users")
@@ -66,6 +74,21 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", hasToString(user.getFirstName())));
     }
+//
+    @Test
+    void changePassword() throws Exception {
+        userRepository.save(getUserForToken());
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUserForToken().getEmail());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("oldPassword", "password");
+        objectNode.put("newPassword1", "password1");
+        mvc.perform(put("/users/password/restore")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectNode.toString()))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void update() throws Exception {
@@ -77,18 +100,6 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", hasToString("poxos")));
     }
-
-    @Test
-    void changePassword() throws Exception {
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("oldPassword", "12345678");
-        objectNode.put("newPassword1", "87654321");
-        mvc.perform(put("/users/password/change")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     void delete() throws Exception {

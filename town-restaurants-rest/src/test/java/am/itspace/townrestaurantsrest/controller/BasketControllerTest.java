@@ -1,14 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.entity.Reserve;
-import am.itspace.townrestaurantscommon.entity.Role;
-import am.itspace.townrestaurantscommon.repository.ReserveRepository;
-import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
-import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantscommon.repository.UserRepository;
-import am.itspace.townrestaurantsrest.serviceRest.impl.SecurityContextServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import am.itspace.townrestaurantscommon.entity.Basket;
+import am.itspace.townrestaurantscommon.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,89 +31,84 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReserveControllerTest {
+class BasketControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    ProductRepository productRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private ReserveRepository reserveRepository;
+    UserDetailsService userDetailsService;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private BasketRepository basketRepository;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
-    private RestaurantCategoryRepository restaurantCategoryRepository;
+    ProductCategoryRepository productCategoryRepository;
 
-    Reserve reserve;
+    @Autowired
+    RestaurantCategoryRepository restaurantCategoryRepository;
+
+    private Basket basket;
 
     @BeforeEach
     void setUp() {
         userRepository.save(getUser());
+        restaurantCategoryRepository.save(getRestaurantCategory());
+        restaurantRepository.save(getRestaurant());
+        productCategoryRepository.save(getProductCategory());
+        productRepository.save(getProduct());
+        productRepository.save(getProductForBasket());
+        orderRepository.save(getOrder());
+        basket = getBasket();
+        basketRepository.save(basket);
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUser().getEmail());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        restaurantCategoryRepository.save(getRestaurantCategory());
-        restaurantRepository.save(getRestaurant());
-        reserve = reserveRepository.save(getReserve());
     }
 
     @AfterEach
-    public void tearDown() {
-        reserveRepository.deleteAll();
+    void tearDown() {
+        basketRepository.deleteAll();
     }
 
     @Test
     void create() throws Exception {
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("reservedDate", "2022-12-09");
-        objectNode.put("phoneNumber", "+37499223399");
-        objectNode.put("reservedTime", "01:01:00");
-        objectNode.put("restaurantId", "1");
-        mvc.perform(post("/reservations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
+        mvc.perform(get("/baskets/addTo/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void getAll() throws Exception {
-        mvc.perform(get("/reservations")
+        mvc.perform(get("/baskets")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
-    void getByRole() throws Exception {
-        mvc.perform(get("/reservations/byUser")
+    void getByUser() throws Exception {
+        mvc.perform(get("/baskets/byUser")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-    }
-
-    @Test
-    void update() throws Exception {
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("phoneNumber", "+37499223344");
-        objectNode.put("reservedTime", "20:00:00");
-        objectNode.put("reservedDate", "2022-12-10");
-        mvc.perform(put("/reservations/{id}", reserve.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.phoneNumber", hasToString("+37499223344")));
     }
 
     @Test
     void delete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/reservations/{id}", reserve.getId())).
+        mvc.perform(MockMvcRequestBuilders.delete("/baskets/{id}", basket.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

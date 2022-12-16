@@ -34,9 +34,9 @@ spring:
 #  servlet:
 #    context-path: /api/v1
 #    port: 8080
-jwt:
-  secret: k2y75xxx
-  expiration: 330000
+#jwt:
+#  secret: k2y75xxx
+#  expiration: 330000
 
 logging:
   logback:
@@ -49,10 +49,3 @@ logging:
   level:
     root: info
     am.itspace: info
-
-#  liquibase:
-#    change-log: classpath:db/changelog/migration.xml
-
-
-#http://localhost:8081/api/v1/swagger-ui/index:
-#  html:

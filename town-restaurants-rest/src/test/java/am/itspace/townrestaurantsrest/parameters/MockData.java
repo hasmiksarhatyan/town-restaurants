@@ -52,11 +52,24 @@ public class MockData {
                 .id(1)
                 .firstName("Hayk")
                 .lastName("Yan")
-                .email("hayk@mail.com")
+                .email("hayk@gmail.com")
                 .password("hayk00")
                 .createdAt(LocalDateTime.now())
                 .role(Role.CUSTOMER)
                 .enabled(true)
+                .build();
+    }
+
+    public static User getUserForToken() {
+        return User.builder()
+                .id(1)
+                .firstName("Hayk")
+                .lastName("Yan")
+                .email("hayk@gmail.com")
+                .password("password")
+                .createdAt(LocalDateTime.now())
+                .role(Role.CUSTOMER)
+                .enabled(false)
                 .build();
     }
 
@@ -158,6 +171,15 @@ public class MockData {
                 .build();
     }
 
+    public static VerificationToken getVToken() {
+        return VerificationToken.builder()
+                .id(1)
+                .user(getUserForToken())
+                .expiresAt(LocalDateTime.now().plusDays(1))
+                .plainToken("123456789")
+                .build();
+    }
+
     public static VerificationToken getToken() {
         return VerificationToken.builder()
                 .plainToken(UUID.randomUUID().toString())
@@ -171,6 +193,19 @@ public class MockData {
         return Restaurant.builder()
                 .id(1)
                 .user(getUser())
+                .name("Limone")
+                .phone("099112233")
+                .address("Tamanyan")
+                .deliveryPrice(2000.0)
+                .email("limone@gmail.com")
+                .restaurantCategory(getRestaurantCategory())
+                .build();
+    }
+
+    public static Restaurant getRestaurantForProduct() {
+        return Restaurant.builder()
+                .id(1)
+                .user(getOwnerUser())
                 .name("Limone")
                 .phone("099112233")
                 .address("Tamanyan")
@@ -196,6 +231,17 @@ public class MockData {
     public static CreateRestaurantDto getCreateRestaurantDto() {
         return CreateRestaurantDto.builder()
                 .name("Limone")
+                .phone("099112233")
+                .address("Tamanyan")
+                .deliveryPrice(2000.0)
+                .email("limone@gmail.com")
+                .restaurantCategoryId(getRestaurantCategory().getId())
+                .build();
+    }
+
+    public static CreateRestaurantDto getCreateRestaurant() {
+        return CreateRestaurantDto.builder()
+                .name("Friends")
                 .phone("099112233")
                 .address("Tamanyan")
                 .deliveryPrice(2000.0)
@@ -275,6 +321,15 @@ public class MockData {
     public static CreateEventDto getCreateEventDto() {
         return CreateEventDto.builder()
                 .name("Mexican party")
+                .restaurantId(getRestaurant().getId())
+                .price(5000.0)
+                .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
+                .build();
+    }
+
+    public static CreateEventDto getCreateEvent() {
+        return CreateEventDto.builder()
+                .name("Italian party")
                 .restaurantId(getRestaurant().getId())
                 .price(5000.0)
                 .description("Here will be a traditional energetic music on the guitar, trumpet, and violin.")
@@ -376,6 +431,18 @@ public class MockData {
                 .description("Mexican dish")
                 .productCategory(getProductCategory())
                 .restaurant(getRestaurant())
+                .build();
+    }
+
+    public static Product getProductForOwner() {
+        return Product.builder()
+                .id(1)
+                .name("Taco")
+                .user(getOwnerUser())
+                .price(4000.0)
+                .description("Mexican dish")
+                .productCategory(getProductCategory())
+                .restaurant(getRestaurantForProduct())
                 .build();
     }
 
@@ -492,7 +559,7 @@ public class MockData {
                 .isPaid(true)
                 .additionalPhone("+37499999999")
                 .paymentOption(PaymentOption.CASH)
-                .products(List.of(getProduct(), getProduct()))
+                .products(List.of(getProduct(), getProductForBasket()))
                 .totalPrice(20.0)
                 .user(getUser())
                 .build();
@@ -578,6 +645,15 @@ public class MockData {
                 .cardHolder("Hayk Yan")
                 .cardNumber("123456789102")
                 .cardExpiresAt(LocalDate.EPOCH)
+                .cvv("1234")
+                .build();
+    }
+
+    public static CreateCreditCardDto getCreateCreditCard() {
+        return CreateCreditCardDto.builder()
+                .cardHolder("Hayk Yan")
+                .cardNumber("123456789102")
+                .cardExpiresAt(LocalDate.now().plusDays(100))
                 .cvv("1234")
                 .build();
     }
