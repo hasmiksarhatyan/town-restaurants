@@ -29,7 +29,7 @@ public interface ProductService {
 
     byte[] getProductImage(String fileName) throws IOException;
 
-    void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException;
-
     void editProduct(EditProductDto dto, int id, MultipartFile[] files) throws IOException;
+
+    void addProduct(CreateProductDto dto, MultipartFile[] files, User user) throws IOException;
 }

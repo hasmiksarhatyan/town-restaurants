@@ -1,7 +1,6 @@
 package am.itspace.townrestaurantscommon.mapper;
 
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
-import am.itspace.townrestaurantscommon.dto.basket.CreateBasketDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.Basket;
@@ -18,20 +17,6 @@ import org.springframework.stereotype.Component;
 )
 @Component
 public class BasketMapperImpl implements BasketMapper {
-
-    @Override
-    public Basket mapToEntity(CreateBasketDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        Basket.BasketBuilder basket = Basket.builder();
-
-        basket.product( createBasketDtoToProduct( dto ) );
-        basket.quantity( dto.getQuantity() );
-
-        return basket.build();
-    }
 
     @Override
     public BasketOverview mapToDto(Basket basket) {
@@ -61,20 +46,6 @@ public class BasketMapperImpl implements BasketMapper {
         }
 
         return list;
-    }
-
-    protected Product createBasketDtoToProduct(CreateBasketDto createBasketDto) {
-        if ( createBasketDto == null ) {
-            return null;
-        }
-
-        Product.ProductBuilder product = Product.builder();
-
-        if ( createBasketDto.getProductId() != null ) {
-            product.id( createBasketDto.getProductId() );
-        }
-
-        return product.build();
     }
 
     protected ProductOverview productToProductOverview(Product product) {

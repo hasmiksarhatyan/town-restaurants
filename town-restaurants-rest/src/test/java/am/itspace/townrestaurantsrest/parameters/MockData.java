@@ -516,7 +516,6 @@ public class MockData {
         return EditOrderDto.builder()
                 .additionalAddress("Tamanayan")
                 .status("NEW")
-                .isPaid(true)
                 .additionalPhone("+37499999999")
                 .paymentOption("CASH")
                 .productOverviews(List.of(getProductOverview(), getProductOverview()))
@@ -646,7 +645,6 @@ public class MockData {
                 .id(1)
                 .userOverview(getUserOverview())
                 .orderOverview(getOrderOverview())
-                .paymentStatus("PROCESSING")
                 .build();
     }
 

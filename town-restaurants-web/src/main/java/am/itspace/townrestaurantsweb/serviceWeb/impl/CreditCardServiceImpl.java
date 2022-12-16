@@ -43,5 +43,4 @@ public class CreditCardServiceImpl implements CreditCardService {
         creditCardRepository.save(creditCard);
         log.info("The credit card was successfully stored in the database {}", creditCard.getCardHolder());
     }
-
 }

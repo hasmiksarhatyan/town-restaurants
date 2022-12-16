@@ -51,7 +51,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         return new PageImpl<>(restaurantMapper.mapToResponseDtoList(restaurantsByUserId));
     }
 
-    ////Այս մասը, եթե լինի կարագավորել, լավ կլինի,որ email եթե կա արդեն, ցույց տա, որ կա
     @Override
     public void addRestaurant(CreateRestaurantDto dto, MultipartFile[] files, User user) throws IOException {
         if (restaurantRepository.existsByEmailIgnoreCase(dto.getEmail())) {

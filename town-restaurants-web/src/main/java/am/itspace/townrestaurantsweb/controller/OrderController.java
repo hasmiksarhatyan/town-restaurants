@@ -35,7 +35,6 @@ public class OrderController {
     private final OrderService orderService;
     private final BasketService basketService;
 
-
     @GetMapping
     public String orders(@RequestParam(value = "page", defaultValue = "1") int page,
                          @RequestParam(value = "size", defaultValue = "10") int size,

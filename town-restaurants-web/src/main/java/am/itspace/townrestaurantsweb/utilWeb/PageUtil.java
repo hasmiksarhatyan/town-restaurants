@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @UtilityClass
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PageUtil {
 
     public static List<Integer> getTotalPages(Page<?> object) {

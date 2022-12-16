@@ -30,8 +30,8 @@ import java.util.Map;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
-    private final ProductMapper productMapper;
     private final BasketService basketService;
+    private final ProductMapper productMapper;
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;

@@ -81,7 +81,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/reservations/delete/*").hasAuthority(Role.MANAGER.name())
                 .anyRequest().permitAll();
     }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);

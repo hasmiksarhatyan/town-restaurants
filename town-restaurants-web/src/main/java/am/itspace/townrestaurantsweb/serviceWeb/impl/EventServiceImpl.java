@@ -8,8 +8,8 @@ import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.mapper.EventMapper;
 import am.itspace.townrestaurantscommon.repository.EventRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
-import am.itspace.townrestaurantsweb.serviceWeb.EventService;
 import am.itspace.townrestaurantscommon.utilCommon.FileUtil;
+import am.itspace.townrestaurantsweb.serviceWeb.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void save(CreateEventDto dto, MultipartFile[] files){
+    public void save(CreateEventDto dto, MultipartFile[] files) {
         try {
             dto.setPictures(fileUtil.uploadImages(files));
             eventRepository.save(eventMapper.mapToEntity(dto));

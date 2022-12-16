@@ -14,10 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateOrderDto {
+
     @NotBlank(message = "Address is mandatory")
     private String additionalAddress;
+
     private String additionalPhone;
+
     private double totalPrice;
+
     private String paymentOption;
+
     private List<ProductOverview> productOverviews;
 }

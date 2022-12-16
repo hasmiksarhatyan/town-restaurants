@@ -123,10 +123,4 @@ public class UserController {
         modelMap.addAttribute("userId", id);
         return "customerEdit";
     }
-
-    @GetMapping("/eeee")
-    public String editW(@PathVariable int id, ModelMap modelMap) {
-        modelMap.addAttribute("userId", id);
-        return "customerEdit";
-    }
 }

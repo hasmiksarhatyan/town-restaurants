@@ -5,10 +5,10 @@ import am.itspace.townrestaurantscommon.entity.VerificationToken;
 
 public interface VerificationTokenService {
 
+    void delete(VerificationToken token);
+
     VerificationToken createToken(User user);
 
     VerificationToken findByPlainToken(String plainToken);
-
-    void delete(VerificationToken token);
 }
 

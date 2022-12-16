@@ -1,8 +1,5 @@
 package am.itspace.townrestaurantsweb.serviceWeb;
 
-//import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
-//import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
-//import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.event.CreateEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EditEventDto;
 import am.itspace.townrestaurantscommon.dto.event.EventOverview;

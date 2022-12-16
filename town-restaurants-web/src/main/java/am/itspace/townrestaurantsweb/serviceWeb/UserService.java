@@ -11,7 +11,6 @@ import javax.mail.MessagingException;
 
 public interface UserService {
 
-
     void delete(int id);
 
     void editUser(EditUserDto dto, int userId);

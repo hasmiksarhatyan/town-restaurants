@@ -1,8 +1,5 @@
 package am.itspace.townrestaurantscommon.dto.product;
 
-import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
-import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
-import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

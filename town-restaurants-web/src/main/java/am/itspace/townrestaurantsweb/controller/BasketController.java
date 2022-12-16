@@ -53,10 +53,6 @@ public class BasketController {
             return "redirect:/users/home";
         }
     }
-//    @GetMapping("/add")
-//    public String addBasketPage() {
-//        return "addBasket";
-//    }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id, ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {

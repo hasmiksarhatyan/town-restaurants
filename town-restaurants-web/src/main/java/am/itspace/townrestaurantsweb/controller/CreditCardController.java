@@ -35,11 +35,6 @@ public class CreditCardController {
         return "orders";
     }
 
-//    @GetMapping("/add")
-//    public String addCreditCardPage() {
-//        return "addCreditCard";
-//    }
-
     @PostMapping("/add")
     public String addCreditCard(@ModelAttribute CreateCreditCardDto dto,
                                 @AuthenticationPrincipal CurrentUser currentUser) {
