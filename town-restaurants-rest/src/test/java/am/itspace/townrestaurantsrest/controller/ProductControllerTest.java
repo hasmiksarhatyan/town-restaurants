@@ -1,5 +1,7 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
+import am.itspace.townrestaurantscommon.dto.product.ProductRequestDto;
 import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,10 +42,7 @@ class ProductControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    UserDetailsService userDetailsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -48,17 +51,26 @@ class ProductControllerTest {
     RestaurantRepository restaurantRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     RestaurantCategoryRepository restaurantCategoryRepository;
+
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
 
     Product product;
 
     @BeforeEach
     void setUp() {
-        userRepository.save(getUser());
+        userRepository.save(getOwnerUser());
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getOwnerUser().getEmail());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         restaurantCategoryRepository.save(getRestaurantCategory());
         productCategoryRepository.save(getProductCategory());
-        restaurantRepository.save(getRestaurant());
-        product = productRepository.save(getProduct());
+        restaurantRepository.save(getRestaurantForProduct());
+        product = productRepository.save(getProductForOwner());
     }
 
     @AfterEach
@@ -68,7 +80,10 @@ class ProductControllerTest {
 
     @Test
     void create() throws Exception {
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        ProductRequestDto productRequestDto = getProductRequestDto();
+        CreateProductDto createProductDto = getCreateProductDto();
+        productRequestDto.setCreateProductDto(createProductDto);
+        ObjectNode objectNode = new ObjectMapper().valueToTree(productRequestDto);
         objectNode.put("name", "Fries");
         objectNode.put("price", "1000.0");
         mvc.perform(post("/products")
@@ -94,9 +109,35 @@ class ProductControllerTest {
     }
 
     @Test
+    void getByRestaurant() throws Exception {
+        mvc.perform(get("/products/byRestaurant/{id}", getRestaurant().getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void getByRole() throws Exception {
+        mvc.perform(get("/products/byRole")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void getByOwner() throws Exception {
+        mvc.perform(get("/products/byOwner")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
     void update() throws Exception {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("name", "Taco");
+        objectNode.put("price", "1500");
+        objectNode.put("description", "description");
         mvc.perform(put("/products/{id}", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
