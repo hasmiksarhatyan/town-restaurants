@@ -24,11 +24,11 @@
             </li>
             <li class="breadcrumb-item active">Orders</li>
         </ol>
-        <h5 th:if="${orders.content.size==0}" th:text="${message}"></h5>
         <!-- Example DataTables Card-->
-        <div class="card mb-3" th:if="${orders.content.size!=0}">
+        <div style="height: 300px; text-align: center" th:if="${orders.content.isEmpty()}"><h6>You don't have any orders yet</h6></div>
+        <div class="card mb-3" th:if="${!orders.content.isEmpty()}">
             <div class="card-body">
-                <div class="table-responsive" >
+                <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
@@ -42,7 +42,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="order:${orders}">
+                        <tr th:each="order:${orders.content}">
                             <td th:text="${order.id}"></td>
                             <td th:text="${#temporals.format(order.orderAt, 'dd-MM-yyyy HH:mm')}"></td>
                             <td th:text="${order.userOverview.firstName+' '+order.userOverview.lastName}"></td>
@@ -62,9 +62,8 @@
                         </tbody>
                     </table>
                     <table class="pagination_fg">
-                        <tr class="page-item">
-                            <th th:if="${orders.totalPages > 0}"
-                                th:each="pageNumber : ${pageNumbers}">
+                        <tr class="page-item" th:if="${orders.totalPages > 0}">
+                            <th th:each="pageNumber : ${pageNumbers}">
                                 <a th:href="@{/orders(size=${orders.size}, page=${pageNumber})}"
                                    th:text="${pageNumber}"
                                    th:class="${pageNumber==orders.number + 1} ? active"></a>

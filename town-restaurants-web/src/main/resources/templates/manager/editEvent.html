@@ -3,27 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Event</title>
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
 </head>
-<body>
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
 
-<h3>Edit Event</h3>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Edit Event</li>
+        </ol>
+        <h3 th:text="${'Event ID '+ event.id}"></h3>
+        <div class="box_general">
+            <form th:action="@{'/events/edit/'+${event.id}}" method="post"
+                  enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Restaurant Name</label>
+                        <select class="custom-select" name="restaurant" id="restaurant">
+                            <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}"
+                                    th:text="${restaurant.name}"></option>
+                            <option selected th:value="${event.restaurantOverview.id}"
+                                    th:text="${event.restaurantOverview.name}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Event Name</label>
+                        <input type="text" class="form-control" name="name" th:value="${event.name}">
+                    </div>
+                    <div class="form-group">
+                        <label>Event description</label>
+                        <textarea name="description" th:value="${event.description}" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="datetime-local" name="eventDateTime" th:value="${event.eventDateTime}"
+                                       class="form-control ">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" name="price" th:value="${event.price}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Row -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="file" name="eventImage" multiple class="dropzone">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <!-- /box_general-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
 
-<form th:action="@{'/manager/events/edit/' + ${event.id}}" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="id" th:value="${event.id}">
-    <input type="text" name="name" th:value="${event.name}"><br>
-    <input type="text" name="description" th:value="${event.description}"><br>
-    <input type="number" name="price" th:value="${event.price}"><br>
-    <input type="datetime-local" name="eventDateTime" th:value="${event.eventDateTime}" ><br>
-    <h3> restaurant </h3>
-    <select  name="restaurant">
-        <option th:each="restaurant:${restaurants}" th:value="${restaurant.id}" th:text="${restaurant.name}" ></option>
-        <option selected th:value="${event.restaurantOverview.id}" th:text="${event.restaurantOverview.name}" ></option>
-    </select><br>
-  <input type="file" name="eventImage" multiple><br th:if="${errorMessageFile != null}"><br>
-  <span style="color: red" th:if="${errorMessageFile != null}" th:text="${errorMessageFile}"></span><br th:if="${errorMessageFile != null}">
-
-    <input type="submit" value="Edit Event">
-</form>
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
 
 </body>
 </html>

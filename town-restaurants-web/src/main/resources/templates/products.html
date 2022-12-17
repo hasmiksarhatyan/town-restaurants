@@ -21,13 +21,12 @@
 
 <th:block th:insert="fragments/fragment::header"></th:block>
 <!-- /header -->
-
 <main>
     <div class="page_header element_to_stick">
         <div class="container">
             <div class="row">
                 <div class="col-xl-8 col-lg-7 col-md-7 d-none d-md-block">
-                    <div class="breadcrumbs blog">
+                    <div class="breadcrumbs blog" >
                         <ul>
                             <li><a href="/">Home</a></li>
                             <li><a th:href="@{'/products'}">Products</a></li>
@@ -41,8 +40,8 @@
         </div>
     </div>
     <!-- /page_header -->
-
-    <div class="container margin_30_40">
+    <div style="height: 300px; text-align: center" th:if="${products.content.isEmpty()}"><h6>No products found</h6></div>
+    <div class="container margin_30_40" th:if="${!products.content.isEmpty()}">
         <div class="row">
             <aside class="col-lg-3" id="sidebar_fixed">
                 <div class="clearfix">
@@ -71,33 +70,12 @@
                         </div>
                         <!-- /filter_type -->
                     </div>
-
-                    <span style="color: #0a6f18" th:if="${message!=null}" th:text="${message}"></span></li>
-                    <span style="color: #e52c08" th:if="${messageError!=null}" th:text="${messageError}"></span></li>
-                    <!-- /filter_type -->
-                    <!--          <div class="filter_type">-->
-                    <!--            <h4><a href="#filter_4" data-bs-toggle="collapse" class="closed">Price</a></h4>-->
-                    <!--            <div class="collapse" id="filter_4">-->
-                    <!--              <ul>-->
-                    <!--                <li>-->
-                    <!--                  <label class="container_check">$0 — $50<small>11</small>-->
-                    <!--                    <input type="checkbox">-->
-                    <!--                    <span class="checkmark"></span>-->
-                    <!--                  </label>-->
-                    <!--                </li>-->
-                    <!--              </ul>-->
-                    <!--            </div>-->
-                    <!--          </div>-->
-                    <!--          &lt;!&ndash; /filter_type &ndash;&gt;-->
-                    <!--          <div class="buttons">-->
-                    <!--            <a href="#0" class="btn_1 full-width">Filter</a>-->
-                    <!--          </div>-->
                 </div>
             </aside>
 
             <div class="col-lg-9">
                 <div class="row">
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" th:each="product:${products}">
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" th:each="product:${products.content}">
                         <div class="strip">
                             <figure>
                                 <span class=""></span>
@@ -113,46 +91,38 @@
                             </figure>
                             <ul>
                                 <li><span th:text="${product.price}"></span></li>
-                                <br>
-
-                                <li>
-                                    <a th:href="@{'/baskets/add/'+ ${product.id}}"><i class="icon_heart"></i>Add To Basket</a>
-                                    <br><span style="color: darkgreen">Please, register first to add item to the basket</span>
-                                </li>
                             </ul>
+                            <div>
+                                    <a th:href="@{'/baskets/add/'+ ${product.id}}"><i class="icon_heart"></i>Add To Basket</a>
+                            </div>
 
-                            <ul></ul>
                         </div>
                     </div>
                     <!-- /strip grid -->
                 </div>
                 <!-- /row -->
                 <table class="pagination_fg">
-                    <th href="#"></th>
-                    <th th:if="${products.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" class="page-item">
+                    <tr th:if="${products.totalPages > 0}">
+                    <th  th:each="pageNumber : ${pageNumbers}" class="page-item">
                         <a class="active" th:href="@{/products/(size=${products.size}, page=${pageNumber})}"
                            th:text="${pageNumber}"
                            th:class="${pageNumber==products.number + 1} ? active">
                         </a>
                     </th>
-                    <th href="#"></th>
+                    <tr/>
                 </table>
             </div>
             <!-- /col -->
         </div>
     </div>
     <!-- /container -->
-
 </main>
 <!-- /main -->
-
 <th:block th:insert="fragments/fragment::footer"></th:block>
 <!--/footer-->
-
 <div id="toTop"></div><!-- Back to top button -->
 
 <div class="layer"></div><!-- Opacity Mask Menu Mobile -->
-
 <!-- Sign In Modal -->
 <th:block th:insert="fragments/fragment::signInModal"></th:block>
 <!-- /Sign In Modal -->

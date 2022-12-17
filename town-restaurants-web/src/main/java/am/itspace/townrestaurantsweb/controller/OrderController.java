@@ -39,6 +39,8 @@ public class OrderController {
     public String orders(@RequestParam(value = "page", defaultValue = "1") int page,
                          @RequestParam(value = "size", defaultValue = "10") int size,
                          ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
+
+
         if (currentUser.getUser().getRole() == Role.MANAGER) {
             Page<OrderOverview> orders = orderService.getOrders(PageRequest.of(page - 1, size));
             modelMap.addAttribute("orders", orders);
@@ -48,7 +50,6 @@ public class OrderController {
             modelMap.addAttribute("orders", ordersByUser);
             modelMap.addAttribute("pageNumbers", getTotalPages(ordersByUser));
         }
-        modelMap.addAttribute("message", "You don't have any orders yet");
         return "orders";
     }
 

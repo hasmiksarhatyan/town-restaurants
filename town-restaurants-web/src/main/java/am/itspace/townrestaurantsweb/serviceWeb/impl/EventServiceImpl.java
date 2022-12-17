@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -36,14 +37,20 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventOverview> findAll(Pageable pageable) {
-        log.info("Event successfully found");
-        return eventRepository.findAll(pageable).map(eventMapper::mapToOverview);
+        Page<Event> events = eventRepository.findAll(pageable);
+        if (!events.isEmpty()) {
+            log.info("Event successfully found");
+        }
+        return events.map(eventMapper::mapToOverview);
     }
 
     @Override
-    public Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable) {
-        log.info("Events successfully found by restaurantId");
-        return eventRepository.findEventsByRestaurantId(id, pageable).map(eventMapper::mapToOverview);
+    public List<EventOverview> findEventsByRestaurantId(int id) {
+        List<Event> events = eventRepository.findEventsByRestaurant_Id(id);
+        if (!events.isEmpty()) {
+            log.info("Events successfully found by restaurantId");
+        }
+        return eventMapper.mapToOverviewList(events);
     }
 
     @Override
@@ -56,7 +63,9 @@ public class EventServiceImpl implements EventService {
                 events.put(restaurant.getId(), eventsByRestaurant);
             }
         }
-        log.info("Events successfully sorted by restaurant");
+        if (!events.isEmpty()) {
+            log.info("Events successfully sorted by restaurant");
+        }
         return events;
     }
 
@@ -104,10 +113,11 @@ public class EventServiceImpl implements EventService {
         }
         Integer restaurantId = dto.getRestaurantId();
         if (restaurantId != null) {
-            event.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+            Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
+            optionalRestaurant.ifPresent(event::setRestaurant);
         }
         List<String> pictures = dto.getPictures();
-        if (pictures != event.getPictures()) {
+        if (pictures != null) {
             event.setPictures(fileUtil.uploadImages(files));
         }
         log.info("The event was successfully stored in the database {}", event.getName());

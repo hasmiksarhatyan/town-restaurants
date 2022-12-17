@@ -20,21 +20,14 @@
 
 <div class="content-wrapper">
     <div class="container-fluid">
-        <!-- Breadcrumbs-->
-        <ol class="breadcrumb">
-
-        </ol>
-
-
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fa fa-table"></i>Product Type
             </div>
-            <div class="card-body">
+            <div style="height: 300px; text-align: center" th:if="${categories.content.isEmpty()}"><h6>No categories found</h6></div>
+            <div class="card-body" th:if="${!categories.content.isEmpty()}">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <br th:if="errorMessageId !=null">
-                        <span style="color: red" th:if="errorMessageId !=null" th:text="${errorMessageId}"></span>
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -55,18 +48,16 @@
                         </tr>
                         </tbody>
                     </table>
-
-                    <th th:if="${categories.totalPages > 0}" class="pagination"
-                        th:each="pageNumber : ${pageNumbers}">
-                        <a th:href="@{/manager/productCategory(size=${categories.size}, page=${pageNumber})}"
-                           th:text="${pageNumber}"
-                           th:class="${pageNumber==categories.number + 1} ? active"></a>
-                    </th>
+                    <tr th:if="${categories.totalPages > 0}">
+                        <th  class="pagination" th:each="pageNumber : ${pageNumbers}">
+                            <a th:href="@{/productCategories(size=${categories.size}, page=${pageNumber})}"
+                               th:text="${pageNumber}"
+                               th:class="${pageNumber==categories.number + 1} ? active"></a>
+                        </th>
+                    </tr>
                 </div>
             </div>
         </div>
-
-
         <!-- /tables-->
     </div>
     <!-- /container-fluid-->

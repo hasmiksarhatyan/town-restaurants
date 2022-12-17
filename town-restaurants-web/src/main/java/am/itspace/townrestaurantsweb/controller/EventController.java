@@ -37,6 +37,17 @@ public class EventController {
         return "events";
     }
 
+    @GetMapping("/manager")
+    public String managerEvents(@RequestParam(value = "page", defaultValue = "1") int page,
+                         @RequestParam(value = "size", defaultValue = "8") int size,
+                         ModelMap modelMap) {
+
+        Page<EventOverview> allEventsPage = eventService.findAll(PageRequest.of(page - 1, size));
+        modelMap.addAttribute("events", allEventsPage);
+        modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(allEventsPage));
+        return "manager/events";
+    }
+
     @GetMapping("/{id}")
     public String events(@PathVariable("id") int id, ModelMap modelMap) {
         modelMap.addAttribute("event", eventService.findById(id));
@@ -58,7 +69,7 @@ public class EventController {
     public String addEvent(@RequestParam("eventImage") MultipartFile[] files,
                            @ModelAttribute CreateEventDto dto) throws IOException {
         eventService.save(dto, files);
-        return "redirect:/events";
+        return "redirect:/events/manager";
     }
 
     @GetMapping("/edit/{id}")
@@ -69,21 +80,22 @@ public class EventController {
             return "manager/editEvent";
         } catch (IllegalStateException ex) {
             modelMap.addAttribute("errorMessageEdit", ex.getMessage());
-            return "redirect:/events";
+            return "redirect:/events/manager";
         }
     }
 
     @PostMapping("/edit/{id}")
-    public String editEvent(@PathVariable("id") int id, @ModelAttribute EditEventDto dto, @RequestParam("eventImage") MultipartFile[] files) throws IOException {
+    public String editEvent(@PathVariable("id") int id, @ModelAttribute EditEventDto dto,
+                            @RequestParam("eventImage") MultipartFile[] files,ModelMap modelMap) throws IOException {
         eventService.editEvent(dto, id, files);
-        return "redirect:/events";
+        return "redirect:/events/manager";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteEvent(@PathVariable("id") int id, ModelMap modelMap) {
         try {
             eventService.deleteEvent(id);
-            return "redirect:/events";
+            return "redirect:/events/manager";
         } catch (IllegalStateException e) {
             modelMap.addAttribute("errorMessageId", "Something went wrong, Try again!");
             return "manager/events";

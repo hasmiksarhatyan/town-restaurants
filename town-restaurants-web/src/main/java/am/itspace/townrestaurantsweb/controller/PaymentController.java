@@ -26,20 +26,15 @@ public class PaymentController {
     public String payments(@RequestParam(value = "page", defaultValue = "1") int page,
                            @RequestParam(value = "size", defaultValue = "10") int size,
                            ModelMap modelMap, @AuthenticationPrincipal CurrentUser currentUser) {
+
         if (currentUser.getUser().getRole() == Role.MANAGER) {
             Page<PaymentOverview> payments = paymentService.getPayments(PageRequest.of(page - 1, size));
             modelMap.addAttribute("payments", payments);
             modelMap.addAttribute("pageNumbers", getTotalPages(payments));
-            if (payments.getContent().isEmpty()) {
-                modelMap.addAttribute("message", "You don't have any payments");
-            }
         } else {
             Page<PaymentOverview> paymentsByUser = paymentService.getPaymentsByUser(currentUser.getUser().getId(), PageRequest.of(page - 1, size));
             modelMap.addAttribute("payments", paymentsByUser);
             modelMap.addAttribute("pageNumbers", getTotalPages(paymentsByUser));
-            if (paymentsByUser.getContent().isEmpty()) {
-                modelMap.addAttribute("message", "You don't have any payments");
-            }
         }
         return "payments";
     }

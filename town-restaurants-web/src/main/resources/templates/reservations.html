@@ -27,19 +27,11 @@
         <div class="box_general">
             <div class="header_box">
                 <h2 class="d-inline-block">Bookings list</h2>
-                <div class="filter">
-                    <div class="styled-select short">
-                        <select name="orderby">
-                            <option value="Any status">Any status</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                </div>
             </div>
-            <div class="list_general">
-                <ul th:each="reserve:${reservations}">
+            <div style="height: 300px; text-align: center" th:if="${reservations.content.isEmpty()}"><h6>You don't have
+                any bookings yet</h6></div>
+            <div class="list_general" th:if="${!reservations.content.isEmpty()}">
+                <ul th:each="reserve:${reservations.content}">
                     <li>
                         <figure><img
                                 th:if="${reserve.restaurantOverview.pictures != null && !reserve.restaurantOverview.pictures.isEmpty()}"
@@ -60,93 +52,31 @@
                             </li>
                             <li><strong>Phone number</strong><strong th:text="${reserve.phoneNumber}"></strong></li>
                         </ul>
-                        <small th:text="${reserve.reservedAt}"></small>
+                        <small th:text="${#temporals.format(reserve.reservedAt, 'dd-MM-yyyy HH:mm')}"></small>
                         <ul class="buttons">
-                            <li><a class="btn_1 gray approved" data-toggle="modal" data-target="#edit_booking">
-                                <i class="fa fa-fw fa-pencil"></i> Edit</a></li>
                             <li th:if="${currentUser.role.name == 'MANAGER'}"><a
-                                    th:href="@{'/reservations/delete/'+ ${reserve.id}}" class="btn_1 gray delete"><i
-                                    class="fa fa-fw fa-times-circle-o"></i> Cancel</a>
+                                    th:href="@{'/reservations/edit/'+ ${reserve.id}}" class="btn_1 gray approved">
+                                <i class="fa fa-fw fa-pencil"></i> Edit</a>
+                            </li>
+                            <li th:if="${currentUser.role.name == 'MANAGER'}"><a
+                                    th:href="@{'/reservations/delete/'+ ${reserve.id}}" class="btn_1 gray delete">
+                                <i class="fa fa-fw fa-times-circle-o"></i> Cancel</a>
                             </li>
                         </ul>
                     </li>
-                    <div class="modal fade" id="edit_booking" tabindex="-1" role="dialog" aria-labelledby="edit_bookingLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <form th:action="@{'/reservations/edit/'+${reserve.id}}" method="post">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="edit_bookingLabel">Edit Booking</h5>
-                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label>Restaurant Name</label>
-                                        <h4 th:text="${reserve.restaurantOverview.name}"></h4>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Client Name</label>
-                                        <h4 th:text="${reserve.userOverview.firstName}+' '+${reserve.userOverview.lastName}"></h4>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date</label>
-                                                <input type="date" class="form-control"
-                                                       name="reservedDate" th:value="${reserve.reservedDate}">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Time</label>
-                                                <input type="time" class="form-control" name="reservedTime" th:value="${reserve.reservedTime}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /Row -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Peolple</label>
-                                                <input type="text" class="form-control" name="peopleCount" th:value="${reserve.peopleCount}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /Row -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone</label>
-                                                <input type="text" class="form-control" name="phoneNumber" th:value="${reserve.phoneNumber}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <select th:if="${currentUser.role.name != 'CUSTOMER'}" class="custom-select" name="status" id="status">
-                                        <option value="PENDING">PENDING</option>
-                                        <option value="APPROVED">APPROVED</option>
-                                        <option value="CANCELLED">CANCELLED</option>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="submit" value="Save" class="btn btn-primary">
-                                </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </ul>
             </div>
             <table>
-                <th th:if="${reservations.totalPages > 0}" class="pagination"
-                    th:each="pageNumber : ${pageNumbers}">
-                    <a th:href="@{/reservations(size=${reservations.size}, page=${pageNumber})}"
-                       th:text="${pageNumber}"
-                       th:class="${pageNumber==reservations.number + 1} ? active"></a>
-                </th>
+                <tr th:if="${reservations.totalPages > 0}">
+                    <th class="pagination"
+                        th:each="pageNumber : ${pageNumbers}">
+                        <a th:href="@{/reservations(size=${reservations.size}, page=${pageNumber})}"
+                           th:text="${pageNumber}"
+                           th:class="${pageNumber==reservations.number + 1} ? active"></a>
+                    </th>
+                </tr>
             </table>
         </div>
-        <!-- /box_general-->
     </div>
 </div>
 <!-- /box_general-->

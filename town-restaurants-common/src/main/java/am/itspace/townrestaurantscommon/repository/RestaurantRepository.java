@@ -18,7 +18,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
 
     boolean existsByEmailIgnoreCase(String email);
 
-    List<Restaurant> findRestaurantsByUserId(int id);
+    Page<Restaurant> findRestaurantsByUserId(int id,Pageable pageable);
 
     Page<Restaurant> findRestaurantsByUser(User user, Pageable pageable);
 }

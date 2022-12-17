@@ -3,7 +3,6 @@ package am.itspace.townrestaurantsweb.serviceWeb;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
-import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +14,6 @@ import java.util.List;
 public interface RestaurantService {
 
     void deleteRestaurant(int id);
-
-    Restaurant findRestaurant(int id);
 
     List<RestaurantOverview> findAll();
 

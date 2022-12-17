@@ -68,7 +68,7 @@
                     </a>
                 </li>
 
-                <li  class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See All Restaurants">
                     <a class="nav-link" href="/restaurants">
                         <i class="fa fa-fw fa-list-ul"></i>
                         <span class="nav-link-text">See All Restaurants</span>
@@ -96,7 +96,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Events">
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="See all Events">
                     <a class="nav-link" href="/events/manager">
                         <i class="fa fa-fw fa-list-ul"></i>
                         <span class="nav-link-text">See All Events</span>
@@ -139,10 +139,17 @@
                     </a>
                 </li>
 
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
                     <a class="nav-link" href="/reservations">
                         <i class="fa fa-fw fa-calendar-check-o"></i>
                         <span class="nav-link-text">Bookings</span>
+                    </a>
+                </li>
+
+                <li th:if="${currentUser.role.name != 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Bookings">
+                    <a class="nav-link" href="/reservations">
+                        <i class="fa fa-fw fa-calendar-check-o"></i>
+                        <span class="nav-link-text">My bookings</span>
                     </a>
                 </li>
 
@@ -153,10 +160,18 @@
                     </a>
                 </li>
 
-                <li th:if="${currentUser.role.name == 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Edit Order">
-                    <a class="nav-link" href="/orders">
+                <li th:if="${currentUser.role.name != 'MANAGER'}" class="nav-item" data-toggle="tooltip" data-placement="right" title="Orders Page">
+                    <a class="nav-link"  href="/orders">
+                        <i class="fa fa-fw fa-shopping-basket"></i>
+                        <span class="nav-link-text">My Orders</span>
+                    </a>
+                </li>
+
+                <li  class="nav-item" data-toggle="tooltip" data-placement="right" title="Payments">
+                    <a class="nav-link" href="/payments">
                         <i class="fa fa-fw fa-pencil"></i>
-                        <span class="nav-link-text">Edit Order</span>
+                        <span class="nav-link-text" th:if="${currentUser.role.name == 'MANAGER'}">Payments</span>
+                        <span class="nav-link-text" th:if="${currentUser.role.name != 'MANAGER'}">My payments</span>
                     </a>
                 </li>
 

@@ -27,15 +27,6 @@
         <div class="box_general">
             <div class="header_box">
                 <h2 class="d-inline-block">Listings</h2>
-                <div class="filter">
-                    <div class="styled-select short">
-                        <select name="orderby">
-                            <option value="Any time">Any time</option>
-                            <option value="Latest">Latest</option>
-                            <option value="Oldest">Oldest</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="list_general" th:each="category:${categories}">
                 <h3 th:text="${category.name}"></h3>
@@ -74,22 +65,22 @@
 
             </div>
         </div>
+        <!-- /box_general-->
     </div>
-    <!-- /box_general-->
+    <!-- /container-fluid-->
     <div style="padding-left: 50px" class="pagination_fg">
         <table class="page-item">
-            <th th:if="${categories.totalPages > 0}" th:each="pageNumber : ${pageNumbers}" >
-                <a class="active" th:href="@{/products/my(size=${categories.size}, page=${pageNumber})}"
-                   th:text="${pageNumber}"
-                   th:class="${pageNumber==categories.number + 1} ? active"></a>
-            </th>
+            <tr th:if="${categories.totalPages > 0}">
+                <th  th:each="pageNumber : ${pageNumbers}">
+                    <a class="active" th:href="@{/products/my(size=${categories.size}, page=${pageNumber})}"
+                       th:text="${pageNumber}"
+                       th:class="${pageNumber==categories.number + 1} ? active"></a>
+                </th>
+            </tr>
         </table>
     </div>
     <!-- /pagination-->
 </div>
-<!-- /container-fluid-->
-</div>
-
 <!-- /.container-wrapper-->
 <th:block th:insert="fragments/fragmentUser::footer"></th:block>
 <!-- Scroll to Top Button-->

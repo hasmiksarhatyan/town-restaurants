@@ -5,6 +5,7 @@ import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.ReserveService;
+import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReserveController {
 
     private final ReserveService reserveService;
+    private final RestaurantService restaurantService;
 
     @GetMapping
     public String reservations(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -31,7 +33,7 @@ public class ReserveController {
             modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(reserveOverviews));
         }
         if (currentUser.getUser().getRole() == Role.RESTAURANT_OWNER) {
-            Page<ReserveOverview> reserveByRestaurant = reserveService.getReserveByRestaurant(currentUser.getUser(),PageRequest.of(page-1,size));
+            Page<ReserveOverview> reserveByRestaurant = reserveService.getReserveByRestaurant(currentUser.getUser(), PageRequest.of(page - 1, size));
             modelMap.addAttribute("reservations", reserveByRestaurant);
             modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(reserveByRestaurant));
         }
@@ -41,6 +43,17 @@ public class ReserveController {
             modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(reserveByUser));
         }
         return "reservations";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editReservePage(@PathVariable("id") int id, ModelMap modelMap) {
+        try {
+            modelMap.addAttribute("reserve", reserveService.getById(id));
+            modelMap.addAttribute("restaurants", restaurantService.findAll());
+            return "editReserve";
+        } catch (IllegalStateException ex) {
+            return "redirect:/reservations";
+        }
     }
 
     @PostMapping("/edit/{id}")

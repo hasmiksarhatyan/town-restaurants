@@ -3,9 +3,7 @@ package am.itspace.townrestaurantsweb.serviceWeb.impl;
 import am.itspace.townrestaurantscommon.dto.product.CreateProductDto;
 import am.itspace.townrestaurantscommon.dto.product.EditProductDto;
 import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.entity.Product;
-import am.itspace.townrestaurantscommon.entity.Role;
-import am.itspace.townrestaurantscommon.entity.User;
+import am.itspace.townrestaurantscommon.entity.*;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.ProductCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.ProductRepository;
@@ -40,9 +38,6 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> products;
         if (id != null) {
             products = productRepository.findProductsByProductCategory_Id(id, pageable);
-            if (products.isEmpty()) {
-                throw new IllegalStateException("Product not found!");
-            }
             return products.map(productMapper::mapToResponseDto);
         }
         products = switch (sort) {
@@ -50,7 +45,11 @@ public class ProductServiceImpl implements ProductService {
             case "price_desc" -> productRepository.findByOrderByPriceDesc(pageable);
             default -> productRepository.findAll(pageable);
         };
-        log.info("Products successfully sorted");
+        if (products.isEmpty()) {
+            log.info("Products not found!");
+        } else {
+            log.info("Products successfully found");
+        }
         return products.map(productMapper::mapToResponseDto);
     }
 
@@ -64,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOverview> findAllById(int id) {
         List<Product> products = productRepository.findAllById(id);
         if (products.isEmpty()) {
-            throw new IllegalStateException("Product not found!");
+            throw new IllegalStateException("Products not found!");
         }
         log.info("Products successfully detected");
         return productMapper.mapToOverviewList(products);
@@ -107,11 +106,13 @@ public class ProductServiceImpl implements ProductService {
         }
         Integer restaurantId = dto.getRestaurantId();
         if (restaurantId != null) {
-            product.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+            Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
+            optionalRestaurant.ifPresent(product::setRestaurant);
         }
         Integer productCategoryId = dto.getProductCategoryId();
         if (productCategoryId != null) {
-            product.setProductCategory(productCategoryRepository.getReferenceById(productCategoryId));
+            Optional<ProductCategory> optionalCategory = productCategoryRepository.findById(productCategoryId);
+            optionalCategory.ifPresent(product::setProductCategory);
         }
         List<String> pictures = dto.getPictures();
         if (pictures != null) {
@@ -162,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findProductsByRestaurant_Id(id);
         if (products.isEmpty()) {
             log.info("Product not found");
-            throw new IllegalStateException("Product not found!");
+//            throw new IllegalStateException("Product not found!");
         }
         log.info("Product successfully found");
         return productMapper.mapToOverviewList(products);

@@ -52,12 +52,15 @@
                         </tbody>
                     </table>
 
-                    <div th:if="${categories.totalPages>0}" class="pagination"
-                         th:each="pageNumber:${pageNumbers}">
-                        <a th:href="@{/restaurantsCategory(size=${categories.size}, page=${pageNumber})}"
-                           th:text="${pageNumber}"
-                           th:class="${pageNumber==categories.number+1}?active"></a>
-                    </div>
+                    <table>
+                        <tr class="page-item" th:if="${categories.totalPages > 0}">
+                            <th th:each="pageNumber : ${pageNumbers}">
+                                <a th:href="@{/categories(size=${categories.size}, page=${pageNumber})}"
+                                   th:text="${pageNumber}"
+                                   th:class="${pageNumber==categories.number + 1} ? active"></a>
+                            </th>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

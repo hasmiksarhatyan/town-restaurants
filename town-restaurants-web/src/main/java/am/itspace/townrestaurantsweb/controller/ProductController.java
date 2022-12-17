@@ -38,6 +38,7 @@ public class ProductController {
                            @RequestParam(value = "page", defaultValue = "1") int page,
                            @RequestParam(value = "size", defaultValue = "15") int size,
                            ModelMap modelMap) {
+
         Page<ProductOverview> products = productService.sortProduct(PageRequest.of(page - 1, size), sort, id);
         modelMap.addAttribute("categories", productCategoryService.findAll());
         modelMap.addAttribute("products", products);

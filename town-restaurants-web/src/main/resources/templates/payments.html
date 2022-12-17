@@ -24,18 +24,19 @@
             </li>
             <li class="breadcrumb-item active">Payments</li>
         </ol>
-        <h5 th:if="${payments.content.size==0}" th:text="${message}"></h5>
+        <div style="height: 300px; text-align: center" th:if="${payments.content.isEmpty()}"><h6>You don't have any
+            payments</h6></div>
         <!-- Example DataTables Card-->
-        <div class="card mb-3" th:if="${payments.content.size!=0}">
+        <div class="card mb-3" th:if="${!payments.content.isEmpty()}">
             <div class="card-body">
-                <div class="table-responsive" >
+                <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th>ID</th>
                             <th>Payment create date</th>
                             <th>User</th>
-<!--                            <th>Status</th>-->
+                            <th>Status</th>
                             <th>Order ID</th>
                             <th>Total amount</th>
                             <th th:if="${currentUser.role.name == 'MANAGER'}">Edit</th>
@@ -47,10 +48,10 @@
                             <td th:text="${payment.id}"></td>
                             <td th:text="${#temporals.format(payment.paymentCreateDate, 'dd-MM-yyyy HH:mm')}"></td>
                             <td th:text="${payment.userOverview.firstName+' '+payment.userOverview.lastName}"></td>
-<!--                            <td th:if="${payment.status=='UNPAID'}"><i class="pending">Unpaid</i></td>-->
-<!--                            <td th:if="${payment.status=='PROCESSING'}"><i class="approved">In progress</i></td>-->
-<!--                            <td th:if="${payment.status=='PAID'}"><i class="approved">Delivered</i></td>-->
-<!--                            <td th:if="${payment.status=='FAILED'}"><i class="cancel">Cancelled</i></td>-->
+                            <td th:if="${payment.status=='UNPAID'}"><i class="pending">Unpaid</i></td>
+                            <td th:if="${payment.status=='PROCESSING'}"><i class="approved">In progress</i></td>
+                            <td th:if="${payment.status=='PAID'}"><i class="approved">Delivered</i></td>
+                            <td th:if="${payment.status=='FAILED'}"><i class="cancel">Cancelled</i></td>
                             <td th:text="${payment.orderOverview.id}"></td>
                             <td th:text="${payment.totalAmount}"></td>
 
@@ -65,8 +66,8 @@
                     </table>
                     <table class="pagination_fg">
                         <tr class="page-item">
-                            <th th:if="${payments.totalPages > 0}"
-                                th:each="pageNumber : ${pageNumbers}">
+                        <tr th:if="${payments.totalPages > 0}">
+                            <th th:each="pageNumber : ${pageNumbers}">
                                 <a th:href="@{/payments(size=${payments.size}, page=${pageNumber})}"
                                    th:text="${pageNumber}"
                                    th:class="${pageNumber==payments.number + 1} ? active"></a>
