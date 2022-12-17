@@ -3,7 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/town_restaurants
     username: root
     password: root
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -28,9 +27,9 @@ logging:
   level:
     root: info
     am.itspace: info
-#project:
-#  images:
-#    folder: C://Users//User//IdeaProjects//town-restaurants-parent-new//images
 project:
   images:
-    folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-web/src/main/resources/static/image
+    folder: C://Users//User//IdeaProjects//town-restaurants-parent-new//images
+#project:
+#  images:
+#    folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-web/src/main/resources/static/image

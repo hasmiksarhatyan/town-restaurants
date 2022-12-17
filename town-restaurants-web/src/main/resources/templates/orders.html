@@ -24,7 +24,6 @@
             </li>
             <li class="breadcrumb-item active">Orders</li>
         </ol>
-        <!-- Example DataTables Card-->
         <div style="height: 300px; text-align: center" th:if="${orders.content.isEmpty()}"><h6>You don't have any orders yet</h6></div>
         <div class="card mb-3" th:if="${!orders.content.isEmpty()}">
             <div class="card-body">

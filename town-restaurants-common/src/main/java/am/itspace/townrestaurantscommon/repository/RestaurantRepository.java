@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
-
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>, PagingAndSortingRepository<Restaurant, Integer> {
 
@@ -18,7 +16,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
 
     boolean existsByEmailIgnoreCase(String email);
 
-    Page<Restaurant> findRestaurantsByUserId(int id,Pageable pageable);
+    Page<Restaurant> findRestaurantsByUserId(int id, Pageable pageable);
 
     Page<Restaurant> findRestaurantsByUser(User user, Pageable pageable);
 }

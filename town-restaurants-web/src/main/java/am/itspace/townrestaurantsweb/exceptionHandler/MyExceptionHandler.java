@@ -14,21 +14,21 @@ public class MyExceptionHandler {
     @GetMapping
     @ExceptionHandler(value = IllegalStateException.class)
     public String verifyUserIsEnabled(Model theModel, IllegalStateException ex) {
-        theModel.addAttribute("error", ex.getMessage());
+        theModel.addAttribute("err", ex.getMessage());
         return "error";
     }
 
     @GetMapping
     @ExceptionHandler(value = IOException.class)
     public String getFile(Model theModel, IOException ex) {
-        theModel.addAttribute("error", ex.getMessage());
+        theModel.addAttribute("err", ex.getMessage());
         return "error";
     }
 
     @GetMapping
     @ExceptionHandler(value = MessagingException.class)
     public String sendEmail(Model theModel, MessagingException ex) {
-        theModel.addAttribute("error", ex.getMessage());
+        theModel.addAttribute("err", ex.getMessage());
         return "error";
     }
 }

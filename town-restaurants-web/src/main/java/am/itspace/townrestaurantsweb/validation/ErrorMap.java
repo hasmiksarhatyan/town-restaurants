@@ -6,8 +6,10 @@ import org.springframework.validation.FieldError;
 
 import java.util.List;
 import java.util.Map;
+
 @Component
 public class ErrorMap {
+
     public static Map<String, Object> getErrorMessages(BindingResult bindingResult) {
         Map<String, Object> model = bindingResult.getModel();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();

@@ -33,13 +33,6 @@
                     </div>
                     <!-- /head -->
                     <div class="main">
-<!--                        <h6>Booking summary</h6>-->
-                        <!--                        <ul>-->
-                        <!--                            <li>Date<span>23/11/2019</span></li>-->
-                        <!--                            <li>Hour<span>08.30pm</span></li>-->
-                        <!--                            <li>People<span>3 Adults</span></li>-->
-                        <!--                        </ul>-->
-                        <!--                        <hr>-->
                         <h6>Personal details</h6>
                         <form th:action="@{'/restaurants/' + ${restaurant.id}+'/reserve'}" method="post">
                             <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
