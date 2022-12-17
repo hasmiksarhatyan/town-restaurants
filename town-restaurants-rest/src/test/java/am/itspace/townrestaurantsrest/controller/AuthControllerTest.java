@@ -3,7 +3,6 @@ package am.itspace.townrestaurantsrest.controller;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantscommon.repository.VerificationTokenRepository;
-import am.itspace.townrestaurantscommon.service.impl.MailServiceImpl;
 import am.itspace.townrestaurantsrest.serviceRest.impl.VerificationTokenServiceRestImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,16 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.mail.internet.MimeMessage;
-
-import static am.itspace.townrestaurantsrest.parameters.MockData.*;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getUserForToken;
+import static am.itspace.townrestaurantsrest.parameters.MockData.getVToken;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,12 +33,6 @@ class AuthControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    MailServiceImpl mailService;
-
-    @Autowired
-    JavaMailSender javaMailSender;
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -62,22 +53,6 @@ class AuthControllerTest {
     void tearDown() {
         userRepository.deleteAll();
         tokenRepository.deleteAll();
-    }
-    //3,,2+
-    @Test
-    void register() throws Exception {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        tokenService.createToken(getUser());
-        mailService.sendEmail("a", "a", "1");
-        javaMailSender.send(mimeMessage);
-        objectNode.put("password", "hayk0000$");
-        objectNode.put("email", "hayk@mail.com");
-        objectNode.put("firstName", "Hayk");
-        mvc.perform(post("/registration")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
-                .andExpect(status().isOk());
     }
 
     @Test

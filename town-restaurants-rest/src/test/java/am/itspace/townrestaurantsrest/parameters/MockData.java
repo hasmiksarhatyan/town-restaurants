@@ -33,8 +33,10 @@ import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategor
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,7 +48,6 @@ import java.util.UUID;
 
 public class MockData {
 
-    //user
     public static User getUser() {
         return User.builder()
                 .id(1)
@@ -146,6 +147,7 @@ public class MockData {
                 .build();
     }
 
+    ////
     public static UserAuthResponseDto getUserAuthResponseDto() {
         return UserAuthResponseDto.builder()
                 .token("1234")
@@ -156,7 +158,6 @@ public class MockData {
         return new PageImpl<>(List.of(getUser(), getUser()));
     }
 
-    //token
     public static VerificationTokenDto getVerificationTokenDto() {
         return VerificationTokenDto.builder()
                 .plainToken("123456789")
@@ -196,7 +197,6 @@ public class MockData {
                 .build();
     }
 
-    //restaurant
     public static Restaurant getRestaurant() {
         return Restaurant.builder()
                 .id(1)
@@ -284,7 +284,6 @@ public class MockData {
         return new PageImpl<>(List.of());
     }
 
-    //restaurantCategory
     public static RestaurantCategory getRestaurantCategory() {
         return RestaurantCategory.builder()
                 .id(1)
@@ -315,7 +314,6 @@ public class MockData {
         return new PageImpl<>(List.of(getRestaurantCategory(), getRestaurantCategory()));
     }
 
-    //event
     public static Event getEvent() {
         return Event.builder()
                 .id(1)
@@ -384,7 +382,6 @@ public class MockData {
         return list;
     }
 
-    //file
     public static FileDto getFileDto() {
         return FileDto.builder()
                 .files(null)
@@ -395,7 +392,6 @@ public class MockData {
         return new byte[]{1};
     }
 
-    //productCategory
     public static ProductCategory getProductCategory() {
         return ProductCategory.builder()
                 .id(1)
@@ -430,7 +426,6 @@ public class MockData {
         return new PageImpl<>(List.of());
     }
 
-    //product
     public static Product getProduct() {
         return Product.builder()
                 .id(1)
@@ -507,7 +502,6 @@ public class MockData {
         return new PageImpl<>(List.of(getProduct(), getProduct()));
     }
 
-    //reserve
     public static Reserve getReserve() {
         return Reserve.builder()
                 .id(1)
@@ -558,7 +552,6 @@ public class MockData {
         return new PageImpl<>(List.of(getReserve(), getReserve()));
     }
 
-    //order
     public static Order getOrder() {
         return Order.builder()
                 .id(1)
@@ -628,6 +621,11 @@ public class MockData {
                 .build();
     }
 
+    public static OrderCreditCardDto getOrderCreditCard() {
+        return OrderCreditCardDto.builder()
+                .build();
+    }
+
     public static Page<Order> getPageOrders() {
         return new PageImpl<>(List.of(getOrder(), getOrder()));
     }
@@ -636,7 +634,6 @@ public class MockData {
         return new PageImpl<>(List.of());
     }
 
-    //creditCard
     public static CreditCard getCreditCard() {
         return CreditCard.builder()
                 .id(1)
@@ -680,7 +677,6 @@ public class MockData {
         return new PageImpl<>(List.of(getCreditCard(), getCreditCard()));
     }
 
-    //basket
     public static Basket getBasket() {
         return Basket.builder()
                 .id(1)
@@ -712,7 +708,6 @@ public class MockData {
         return new PageImpl<>(List.of(getBasket(), getBasket()));
     }
 
-    //payment
     public static Payment getPayment() {
         return Payment.builder()
                 .id(0)

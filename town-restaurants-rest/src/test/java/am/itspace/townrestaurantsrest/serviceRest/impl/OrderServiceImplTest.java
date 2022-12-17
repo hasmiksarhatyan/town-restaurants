@@ -2,11 +2,14 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.entity.Order;
+import am.itspace.townrestaurantscommon.entity.OrderStatus;
 import am.itspace.townrestaurantscommon.mapper.OrderMapper;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
 import am.itspace.townrestaurantscommon.repository.OrderRepository;
+import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -50,48 +54,53 @@ public class OrderServiceImplTest {
     @Mock
     SecurityContextServiceImpl securityContextService;
 
-//    @Test
-//    void shouldSaveOrder() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        var order = getOrder();
-//        var user = getUser();
-//        var expected = getOrderOverview();
-//        var createOrderDto = getCreateOrderDto();
-//        var createOrderCreditCardDto = getOrderCreditCardDto();
-//        var basket = getBasket();
-//        var baskets = List.of(getBasket(), getBasket());
-//        var creditCard = getCreditCard();
-//        var orderOverview = getOrderOverview();
-//        var ordersProducts = List.of(getProduct(), getProduct());
-//        //when
-//        doReturn(currentUser).when(securityContextService).getUserDetails();
-//        when(basketService.getTotalPrice()).thenReturn(20.0);
-//        createOrderDto.setTotalPrice(20.0);
-//        doReturn(order).when(orderMapper).mapToEntity(createOrderDto);
-//
+    @Test
+    void shouldSaveOrder() {
+        //given
+        CurrentUser currentUser = new CurrentUser(getUser());
+        var order = getOrder();
+        var user = getUser();
+        var expected = getOrderOverview();
+        var createOrderDto = getCreateOrderDto();
+        var createOrderCreditCardDto = getOrderCreditCardDto();
+        var basket = getBasket();
+        var baskets = List.of(getBasket());
+        var creditCard = getCreditCard();
+        var orderOverview = getOrderOverview();
+        var ordersProducts = List.of(getProduct(), getProduct());
+        //when
+        doReturn(currentUser).when(securityContextService).getUserDetails();
+        when(basketService.getTotalPrice()).thenReturn(20.0);
+        createOrderDto.setTotalPrice(20.0);
+        doReturn(order).when(orderMapper).mapToEntity(createOrderDto);
+
 //        lenient().doReturn(baskets).when(basketRepository).findBasketByUser(user);
+   doReturn(List.of(basket)).when(basketRepository).findBasketByUser(currentUser.getUser());
 //        lenient().doReturn(false).when(baskets).isEmpty();
-//
-//
-//        order.setProducts(ordersProducts);
-////        basketService.delete(getProduct().getId());
-//        doReturn(order).when(orderRepository).save(any(Order.class));
-////        doReturn(baskets).when(basketRepository).findBasketByUser(any());
-////        MatcherAssert.assertThat(!baskets.isEmpty(), Matchers.is(true));
-//        order.setUser(currentUser.getUser());
-//        order.setStatus(OrderStatus.NEW);
-//        order.setPaid(false);
-//
-//        OrderOverview actual = orderService.save(createOrderCreditCardDto);
-//        doNothing().when(paymentService).addPayment(order, creditCard);
-//        doReturn(orderOverview).when(orderMapper).mapToDto(order);
-//        //then
-////        assertThrows(EntityAlreadyExistsException.class, () -> orderService.save(createOrderCreditCardDto));
-//        verify(orderRepository, times(1)).save(order);
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
+
+
+
+
+assertThat(baskets.isEmpty(), Matchers.is(false));
+
+        order.setProducts(ordersProducts);
+//        basketService.delete(getProduct().getId());
+        doReturn(order).when(orderRepository).save(any(Order.class));
+//        doReturn(baskets).when(basketRepository).findBasketByUser(any());
+//        MatcherAssert.assertThat(!baskets.isEmpty(), Matchers.is(true));
+        order.setUser(currentUser.getUser());
+        order.setStatus(OrderStatus.NEW);
+        order.setPaid(false);
+
+        OrderOverview actual = orderService.save(createOrderCreditCardDto);
+        doNothing().when(paymentService).addPayment(order, creditCard);
+        doReturn(orderOverview).when(orderMapper).mapToDto(order);
+        //then
+//        assertThrows(EntityAlreadyExistsException.class, () -> orderService.save(createOrderCreditCardDto));
+        verify(orderRepository, times(1)).save(order);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
 
     @Test
     void shouldGetAllOrders() {

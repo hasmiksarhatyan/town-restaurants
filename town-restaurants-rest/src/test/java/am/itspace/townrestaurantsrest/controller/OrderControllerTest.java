@@ -61,6 +61,9 @@ class OrderControllerTest {
     ProductCategoryRepository productCategoryRepository;
 
     @Autowired
+    BasketRepository basketRepository;
+
+    @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
 
     private Order order;
@@ -76,6 +79,7 @@ class OrderControllerTest {
         productCategoryRepository.save(getProductCategory());
         productRepository.save(getProduct());
         productRepository.save(getProductForBasket());
+        basketRepository.save(getBasket2());
         order = orderRepository.save(getOrder());
     }
 
@@ -87,11 +91,11 @@ class OrderControllerTest {
     //5,,,4+
     @Test
     void create() throws Exception {
-        OrderCreditCardDto orderCreditCardDto = getOrderCreditCardDto();
+        OrderCreditCardDto orderCreditCardDto = getOrderCreditCard();
         CreateOrderDto createOrderDto = getCreateOrderDto();
         orderCreditCardDto.setCreateOrderDto(createOrderDto);
-        CreateCreditCardDto creditCardDto = getCreateCreditCard();
-        orderCreditCardDto.setCreditCardDto(creditCardDto);
+//        CreateCreditCardDto creditCardDto = getCreateCreditCard();
+//        orderCreditCardDto.setCreditCardDto(creditCardDto);
         ObjectNode objectNode = new ObjectMapper().valueToTree(orderCreditCardDto);
         objectNode.put("additionalAddress", "Tumanyan");
         mvc.perform(post("/orders")

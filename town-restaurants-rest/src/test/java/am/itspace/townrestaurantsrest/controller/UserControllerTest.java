@@ -1,5 +1,6 @@
 package am.itspace.townrestaurantsrest.controller;
 
+import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,14 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static am.itspace.townrestaurantsrest.parameters.MockData.getUser;
-import static am.itspace.townrestaurantsrest.parameters.MockData.getUserForToken;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,23 +42,35 @@ class UserControllerTest {
     private MockMvc mvc;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     UserDetailsService userDetailsService;
-
+    
     private User user;
 
     @BeforeEach
     void setUp() {
-        user = userRepository.save(getUser());
+        user = User.builder()
+                .id(1)
+                .firstName("Name")
+                .lastName("LastName")
+                .email("name@gmail.com")
+                .password(passwordEncoder.encode("password$"))
+                .enabled(true)
+                .role(Role.CUSTOMER)
+                .build();
+        userRepository.save(user);
     }
 
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
     }
-    //5,,4+
+
     @Test
     void getAll() throws Exception {
         mvc.perform(get("/users")
@@ -74,16 +86,15 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", hasToString(user.getFirstName())));
     }
-//
+
     @Test
     void changePassword() throws Exception {
-        userRepository.save(getUserForToken());
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUserForToken().getEmail());
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(user.getEmail());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        objectNode.put("oldPassword", "password");
-        objectNode.put("newPassword1", "password1");
+        objectNode.put("oldPassword", "password$");
+        objectNode.put("newPassword1", "password$$");
         mvc.perform(put("/users/password/restore")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))
