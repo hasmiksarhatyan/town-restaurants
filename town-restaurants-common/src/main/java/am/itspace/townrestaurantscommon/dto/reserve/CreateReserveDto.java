@@ -15,10 +15,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CreateReserveDto {
 
-//    @NotBlank
     private String reservedDate;
 
-//    @NotBlank
     private String reservedTime;
 
     @NotNull

@@ -27,7 +27,6 @@ public class CreateCreditCardDto {
 
     @NotNull
     @Future(message = "Expired Credit Card")
-//    @Pattern(regexp = "^(0[1-9]|1[0-2])([/])([1-9][0-9])$",message = "Must be formatted MM/YY")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate cardExpiresAt;
 
