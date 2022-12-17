@@ -26,6 +26,9 @@ spring:
           auth: true
           starttls:
             enable: true
+jwt:
+  secret: k2y75xxx
+  expiration: 330000
 
 logging:
   logback:
