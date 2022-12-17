@@ -74,8 +74,8 @@ class AuthControllerTest {
 
     @Test
     void verifyToken() throws Exception {
-        tokenRepository.save(getVToken());
         userRepository.save(getUserForToken());
+        tokenRepository.save(getVToken());
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("plainToken", getVToken().getPlainToken());
         mvc.perform(post("/verification")
