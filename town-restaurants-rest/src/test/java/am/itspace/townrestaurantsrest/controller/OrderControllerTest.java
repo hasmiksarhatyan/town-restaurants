@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.creditCard.CreateCreditCardDto;
 import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
 import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.entity.Order;
@@ -66,6 +65,9 @@ class OrderControllerTest {
     @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     private Order order;
 
     @BeforeEach
@@ -79,7 +81,6 @@ class OrderControllerTest {
         productCategoryRepository.save(getProductCategory());
         productRepository.save(getProduct());
         productRepository.save(getProductForBasket());
-        basketRepository.save(getBasket2());
         order = orderRepository.save(getOrder());
     }
 
@@ -88,7 +89,6 @@ class OrderControllerTest {
         orderRepository.deleteAll();
     }
 
-    //5,,,4+
     @Test
     void create() throws Exception {
         OrderCreditCardDto orderCreditCardDto = getOrderCreditCard();

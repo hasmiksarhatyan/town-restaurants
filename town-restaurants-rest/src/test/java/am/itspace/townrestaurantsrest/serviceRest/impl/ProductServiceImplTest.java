@@ -14,8 +14,8 @@ import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityAlreadyExistsException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.MyFileNotFoundException;
-import org.junit.jupiter.api.Test;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -192,6 +192,23 @@ class ProductServiceImplTest {
     }
 
     @Test
+    void shouldGetAllByManager() {
+        //given
+        CurrentUser currentUser = new CurrentUser(getManagerUser());
+        var listOfPageableProducts = getPageProducts();
+        var expected = List.of(getProductOverview(), getProductOverview());
+        PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
+        //when
+        doReturn(currentUser).when(securityContextService).getUserDetails();
+        doReturn(listOfPageableProducts).when(productRepository).findAll(pageable);
+        doReturn(expected).when(productMapper).mapToOverviewList(anyList());
+        List<ProductOverview> actual = productService.getAllByRole(1, 1, "name", "DESC");
+        //then
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void shouldGetAllByCustomer() {
         //given
         CurrentUser currentUser = new CurrentUser(getUser());
@@ -276,6 +293,17 @@ class ProductServiceImplTest {
         doReturn(currentUser).when(securityContextService).getUserDetails();
         assertThat(currentUser.getUser().getRole(), Matchers.is(Role.RESTAURANT_OWNER));
         doReturn(empty).when(productRepository).findAllByUser(currentUser.getUser(), pageable);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> productService.getByOwner(1, 1, "name", "DESC"));
+    }
+
+    @Test
+    void getByOwnerShouldThrowExceptionAsRoleIsNotOwner() {
+        //given
+        CurrentUser currentUser = new CurrentUser(getManagerUser());
+        //when
+        doReturn(currentUser).when(securityContextService).getUserDetails();
+        assertThat(currentUser.getUser().getRole(), Matchers.is(Role.MANAGER));
         //then
         assertThrows(EntityNotFoundException.class, () -> productService.getByOwner(1, 1, "name", "DESC"));
     }

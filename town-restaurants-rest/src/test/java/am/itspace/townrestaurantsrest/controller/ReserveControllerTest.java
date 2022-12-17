@@ -1,12 +1,10 @@
 package am.itspace.townrestaurantsrest.controller;
 
 import am.itspace.townrestaurantscommon.entity.Reserve;
-import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.repository.ReserveRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantCategoryRepository;
 import am.itspace.townrestaurantscommon.repository.RestaurantRepository;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
-import am.itspace.townrestaurantsrest.serviceRest.impl.SecurityContextServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +26,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasToString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

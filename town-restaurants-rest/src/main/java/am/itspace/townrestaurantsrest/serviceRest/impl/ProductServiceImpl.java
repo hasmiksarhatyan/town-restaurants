@@ -107,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOverview> getByOwner(int pageNo, int pageSize, String sortBy, String sortDir) {
         try {
             User user = securityContextService.getUserDetails().getUser();
-            if (user.getRole() == Role.MANAGER || user.getRole()==Role.CUSTOMER) {
+            if (user.getRole() == Role.MANAGER || user.getRole() == Role.CUSTOMER) {
                 log.info("The user is not the owner of the restaurant");
                 throw new EntityNotFoundException(Error.PRODUCT_NOT_FOUND);
             }

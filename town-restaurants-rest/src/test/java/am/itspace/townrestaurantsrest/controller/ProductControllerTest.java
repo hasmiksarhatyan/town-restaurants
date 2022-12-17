@@ -85,7 +85,7 @@ class ProductControllerTest {
         productRequestDto.setCreateProductDto(createProductDto);
         ObjectNode objectNode = new ObjectMapper().valueToTree(productRequestDto);
         objectNode.put("name", "Fries");
-        objectNode.put("price", "1000.0");
+        objectNode.put("price", "1000");
         mvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString()))

@@ -38,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
-//@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RestaurantControllerTest {
 
@@ -76,7 +75,7 @@ class RestaurantControllerTest {
     public void tearDown() {
         restaurantRepository.deleteAll();
     }
-    ///7, 6+
+
     @Test
     void create() throws Exception {
         CreateRestaurantDto createRestaurantDto = getCreateRestaurant();

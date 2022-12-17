@@ -9,8 +9,8 @@ import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -153,10 +153,10 @@ public class BasketServiceImplTest {
     @Test
     void successTotalPrice() {
         //given
+        var expected = 0;
+        var basket = getBasket();
         var product = getProduct();
         var baskets = List.of(getBasket());
-        var basket = getBasket();
-        var expected = 0;
         CurrentUser currentUser = new CurrentUser(getUser());
         //when
         doReturn(currentUser).when(securityContextService).getUserDetails();
@@ -166,6 +166,17 @@ public class BasketServiceImplTest {
         //then
         assertNotNull(actual);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void totalPriceShouldThrowException() {
+        //given
+        CurrentUser currentUser = new CurrentUser(getUser());
+        //when
+        doReturn(currentUser).when(securityContextService).getUserDetails();
+        doReturn(List.of()).when(basketRepository).findBasketByUser(currentUser.getUser());
+        //then
+        assertThrows(EntityNotFoundException.class, () -> basketService.getTotalPrice());
     }
 
     @Test
