@@ -3,12 +3,10 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthResponseDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
-import am.itspace.townrestaurantscommon.entity.VerificationToken;
 import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantscommon.repository.VerificationTokenRepository;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
-import am.itspace.townrestaurantscommon.service.MailService;
 import am.itspace.townrestaurantsrest.exception.AuthenticationException;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
 import am.itspace.townrestaurantsrest.exception.RegisterException;
@@ -25,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,9 +42,6 @@ class UserServiceImplTest {
 
     @Mock
     private JwtTokenUtil tokenUtil;
-
-    @Mock
-    private MailService mailService;
 
     @Mock
     private UserRepository userRepository;
@@ -134,29 +128,6 @@ class UserServiceImplTest {
         doReturn(false).when(passwordEncoder).matches(anyString(), anyString());
         //then
         assertThrows(AuthenticationException.class, () -> userService.changePassword(changePassword));
-    }
-
-    @Test
-    void shouldSaveUser() throws MessagingException {
-        //given
-        var user = getUser();
-        var expected = getUserOverview();
-        var createUserDto = getCreateUserDto();
-        var verificationToken = getVerificationToken();
-        //when
-        doReturn(false).when(userRepository).existsByEmail(anyString());
-        doReturn(user).when(userMapper).mapToEntity(createUserDto);
-        doReturn(user).when(userRepository).save(any(User.class));
-        tokenService.createToken(user);
-//        doNothing().when(mailService).sendEmail(user.getEmail(), "any", verificationToken.getPlainToken());
-        doReturn(verificationToken).when(tokenRepository).save(any(VerificationToken.class));
-        doReturn(expected).when(userMapper).mapToResponseDto(user);
-        UserOverview actual = userService.save(createUserDto);
-        //then
-        assertNotNull(actual);
-        assertEquals(expected, actual);
-
-//        verify(userRepository, times(1)).save(user);
     }
 
     @Test

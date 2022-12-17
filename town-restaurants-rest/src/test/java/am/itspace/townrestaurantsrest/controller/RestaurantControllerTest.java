@@ -105,14 +105,6 @@ class RestaurantControllerTest {
     }
 
     @Test
-    void getImage() throws Exception {
-        mvc.perform(get("/restaurants/getImages")
-                        .contentType(MediaType.IMAGE_JPEG_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
-    }
-
-    @Test
     void getById() throws Exception {
         mvc.perform(get("/restaurants/{id}", restaurant.getId())
                         .contentType(MediaType.APPLICATION_JSON))

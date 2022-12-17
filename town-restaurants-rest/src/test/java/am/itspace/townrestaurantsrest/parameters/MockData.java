@@ -33,10 +33,8 @@ import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategor
 import am.itspace.townrestaurantscommon.dto.token.VerificationTokenDto;
 import am.itspace.townrestaurantscommon.dto.user.*;
 import am.itspace.townrestaurantscommon.entity.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -144,13 +142,6 @@ public class MockData {
         return EditUserDto.builder()
                 .firstName("Hayk")
                 .lastName("Yan")
-                .build();
-    }
-
-    ////
-    public static UserAuthResponseDto getUserAuthResponseDto() {
-        return UserAuthResponseDto.builder()
-                .token("1234")
                 .build();
     }
 
@@ -614,13 +605,6 @@ public class MockData {
                 .build();
     }
 
-    public static OrderCreditCardDto getOrderCreditCardDto() {
-        return OrderCreditCardDto.builder()
-                .createOrderDto(getCreateOrderDto())
-                .creditCardDto(getCreateCreditCardDto())
-                .build();
-    }
-
     public static OrderCreditCardDto getOrderCreditCard() {
         return OrderCreditCardDto.builder()
                 .build();
@@ -650,15 +634,6 @@ public class MockData {
                 .cardHolder("Hayk Yan")
                 .cardNumber("123456789102")
                 .cardExpiresAt(LocalDate.EPOCH)
-                .cvv("1234")
-                .build();
-    }
-
-    public static CreateCreditCardDto getCreateCreditCard() {
-        return CreateCreditCardDto.builder()
-                .cardHolder("Hayk Yan")
-                .cardNumber("123456789102")
-                .cardExpiresAt(LocalDate.now().plusDays(100))
                 .cvv("1234")
                 .build();
     }

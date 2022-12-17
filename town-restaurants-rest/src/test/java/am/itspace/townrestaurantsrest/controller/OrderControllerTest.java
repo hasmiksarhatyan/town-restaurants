@@ -1,7 +1,5 @@
 package am.itspace.townrestaurantsrest.controller;
 
-import am.itspace.townrestaurantscommon.dto.order.CreateOrderDto;
-import am.itspace.townrestaurantscommon.dto.order.OrderCreditCardDto;
 import am.itspace.townrestaurantscommon.entity.Order;
 import am.itspace.townrestaurantscommon.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +25,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasToString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +39,9 @@ class OrderControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    BasketRepository basketRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -58,15 +60,9 @@ class OrderControllerTest {
 
     @Autowired
     ProductCategoryRepository productCategoryRepository;
-
-    @Autowired
-    BasketRepository basketRepository;
-
+    
     @Autowired
     private RestaurantCategoryRepository restaurantCategoryRepository;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
 
     private Order order;
 
@@ -87,21 +83,6 @@ class OrderControllerTest {
     @AfterEach
     void tearDown() {
         orderRepository.deleteAll();
-    }
-
-    @Test
-    void create() throws Exception {
-        OrderCreditCardDto orderCreditCardDto = getOrderCreditCard();
-        CreateOrderDto createOrderDto = getCreateOrderDto();
-        orderCreditCardDto.setCreateOrderDto(createOrderDto);
-//        CreateCreditCardDto creditCardDto = getCreateCreditCard();
-//        orderCreditCardDto.setCreditCardDto(creditCardDto);
-        ObjectNode objectNode = new ObjectMapper().valueToTree(orderCreditCardDto);
-        objectNode.put("additionalAddress", "Tumanyan");
-        mvc.perform(post("/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectNode.toString()))
-                .andExpect(status().isOk());
     }
 
     @Test

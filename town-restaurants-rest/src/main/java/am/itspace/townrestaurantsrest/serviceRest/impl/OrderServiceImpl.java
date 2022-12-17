@@ -68,23 +68,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void addProductToOrder(Order order, User user) {
-        List<Product> ordersProducts = new ArrayList<>();
-        List<Basket> basketByUser = basketRepository.findBasketByUser(user);
-        if (!basketByUser.isEmpty()) {
-            for (Basket basket : basketByUser) {
-                Product product = basket.getProduct();
-                while (basket.getQuantity() != 0) {
-                    ordersProducts.add(product);
-                    basketService.delete(product.getId());
-                }
-                order.setProducts(ordersProducts);
-            }
-        } else {
-            throw new EntityNotFoundException(BASKET_NOT_FOUND);
-        }
-    }
-
     @Override
     public List<OrderOverview> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
@@ -133,6 +116,23 @@ public class OrderServiceImpl implements OrderService {
         } else {
             log.info("Order not found");
             throw new EntityNotFoundException(ORDER_NOT_FOUND);
+        }
+    }
+
+    private void addProductToOrder(Order order, User user) {
+        List<Product> ordersProducts = new ArrayList<>();
+        List<Basket> basketByUser = basketRepository.findBasketByUser(user);
+        if (!basketByUser.isEmpty()) {
+            for (Basket basket : basketByUser) {
+                Product product = basket.getProduct();
+                while (basket.getQuantity() != 0) {
+                    ordersProducts.add(product);
+                    basketService.delete(product.getId());
+                }
+                order.setProducts(ordersProducts);
+            }
+        } else {
+            throw new EntityNotFoundException(BASKET_NOT_FOUND);
         }
     }
 }

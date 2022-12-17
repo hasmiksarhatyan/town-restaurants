@@ -35,12 +35,12 @@ public class VerificationTokenServiceRestImpl implements VerificationTokenServic
     @Override
     public VerificationToken findByPlainToken(String plainToken) {
         Optional<VerificationToken> tokenOptional = tokenRepository.findByPlainToken(plainToken);
-        if(tokenOptional.isEmpty()){
+        if (tokenOptional.isEmpty()) {
             log.info("Token not found");
             throw new TokenNotFoundException(Error.TOKEN_NOT_FOUND);
         }
         VerificationToken token = tokenOptional.get();
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())){
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
             delete(token);
             log.info("Token has expired");
             throw new TokenNotFoundException(Error.TOKEN_EXPIRED);
