@@ -15,7 +15,6 @@ spring:
       enabled: false
       path: /h2
 
-
   mail:
     host: smtp.gmail.com
     port: 587
