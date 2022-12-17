@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
         log.info("New request to get registered. Email {}", dto.getEmail());
         if (userRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             log.info("There is already a user with email {}", dto.getEmail());
-            throw new IllegalStateException("That email already in use");
         }
         User user = userMapper.mapToEntity(dto);
         user.setRole(Role.CUSTOMER);

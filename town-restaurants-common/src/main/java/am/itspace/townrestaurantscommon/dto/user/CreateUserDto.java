@@ -17,14 +17,14 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CreateUserDto {
 
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "Firstname is mandatory")
     @Schema(description = "The length of name should be between 3 and 15 and name should contain only letters.",
             example = "Hayk",
             minLength = 3,
             maxLength = 15,
             pattern = "^[A-Za-z]{2,15}$")
     private String firstName;
-
+    @NotBlank(message = "Lastname is mandatory")
     @Schema(description = "The length of last name should be between 3 and 15 and name should contain only letters.",
             example = "Sargsyan",
             minLength = 3,
@@ -38,7 +38,6 @@ public class CreateUserDto {
     private String email;
 
     @Schema(example = "Example1234$")
-    @NotBlank(message = "Password is mandatory")
     @Size(min = 8, max = 20, message = "The length should be between 8 and 20 characters!")
     private String password;
 

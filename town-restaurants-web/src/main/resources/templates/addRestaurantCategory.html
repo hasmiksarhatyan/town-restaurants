@@ -40,6 +40,8 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="New Type"
                                        name="name">
+                                <span style="color: red" th:if="${categoryErrors != null}"
+                                      th:text="${categoryErrors.get('name') }"></span>
                             </div>
                         </div>
                     </div>

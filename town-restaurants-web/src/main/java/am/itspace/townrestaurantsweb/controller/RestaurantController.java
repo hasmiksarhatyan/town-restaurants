@@ -8,6 +8,7 @@ import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.*;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
+import am.itspace.townrestaurantsweb.validation.ErrorMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,11 +16,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -56,9 +60,14 @@ public class RestaurantController {
 
     @PostMapping("/add")
     public String addRestaurant(@RequestParam("restaurantImage") MultipartFile[] files,
-                                @ModelAttribute CreateRestaurantDto dto,
+                                @ModelAttribute @Valid CreateRestaurantDto dto, BindingResult bindingResult,
                                 @AuthenticationPrincipal CurrentUser currentUser,
                                 ModelMap modelMap) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("restaurantErrors", errors);
+            return "addRestaurant";}
         for (MultipartFile file : files) {
             if (!file.isEmpty() && file.getSize() > 0) {
                 if (file.getContentType() != null && !file.getContentType().contains("image")) {
@@ -184,9 +193,15 @@ public class RestaurantController {
 
     @PostMapping("/{id}/reserve")
     public String addReserve(@PathVariable("id") int id,
-                             @ModelAttribute CreateReserveDto dto,
+                             @ModelAttribute @Valid CreateReserveDto dto,BindingResult bindingResult,
                              @AuthenticationPrincipal CurrentUser currentUser,
                              ModelMap modelMap) {
+        if (bindingResult.hasErrors()) {
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("reserveErrors", errors);
+            modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
+            return "addReserve";
+        }
         modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
         reserveService.addReserve(dto, currentUser.getUser());
         return "confirmBooking";

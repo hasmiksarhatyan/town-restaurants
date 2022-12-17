@@ -4,12 +4,17 @@ import am.itspace.townrestaurantscommon.dto.restaurantCategory.CreateRestaurantC
 import am.itspace.townrestaurantscommon.dto.restaurantCategory.RestaurantCategoryOverview;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantCategoryService;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
+import am.itspace.townrestaurantsweb.validation.ErrorMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +39,12 @@ public class RestaurantCategoryController {
     }
 
     @PostMapping("/add")
-    public String addRestaurant(@ModelAttribute CreateRestaurantCategoryDto dto) {
+    public String addRestaurant(@ModelAttribute @Valid CreateRestaurantCategoryDto dto, BindingResult bindingResult, ModelMap modelMap) {
+        if (bindingResult.hasErrors()) {
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("categoryErrors", errors);
+            return "addRestaurantCategory";
+        }
         restaurantCategoryService.addRestaurantCategory(dto);
         return "redirect:/restaurantsCategory";
     }
