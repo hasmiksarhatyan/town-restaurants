@@ -28,6 +28,8 @@
                         <div class="form-group">
                             <label>Event name</label>
                             <input type="text" name="name" class="form-control">
+                            <span style="color: red" th:if="${eventErrors != null}"
+                                  th:text="${eventErrors.get('name') }"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -41,11 +43,15 @@
                             </div>
                         </div>
                     </div>
+                    <span style="color: red" th:if="${eventErrors != null}"
+                          th:text="${eventErrors.get('restaurantId') }"></span>
                 </div>
                 <!-- /row-->
                     <div class="form-group">
                         <label>Description</label>
                         <input type="text" name="description" placeholder="Write here" class="form-control">
+                        <span style="color: red" th:if="${eventErrors != null}"
+                              th:text="${eventErrors.get('description') }"></span>
                     </div>
                 <!-- /row-->
                 <div class="row">
@@ -53,6 +59,8 @@
                         <div class="form-group">
                             <label>DateTime</label>
                             <input type="datetime-local" name="eventDateTime" class="form-control">
+                            <span style="color: red" th:if="${eventErrors != null}"
+                                  th:text="${eventErrors.get('eventDateTime') }"></span>
                         </div>
                     </div>
                     <div class="col-md-4">

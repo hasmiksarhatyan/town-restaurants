@@ -36,21 +36,29 @@
                             <div class="form-group">
                                 <input class="form-control" type="text" name="firstName" placeholder="First Name">
                                 <i class="icon_pencil"></i>
+                                <span style="color: red" th:if="${userErrors != null}"
+                                      th:text="${userErrors.get('firstName') }"></span>
                             </div>
                             <div class="form-group">
                                 <input class="form-control" type="text" name="lastName" placeholder="Last Name">
                                 <i class="icon_pencil"></i>
+                                <span style="color: red" th:if="${userErrors != null}"
+                                      th:text="${userErrors.get('lastName') }"></span>
                             </div>
                             <span style="color: red" th:if="${errorMessageEmail != null}"
                                   th:text="${errorMessageEmail}"></span><br>
                             <div class="form-group">
                                 <input class="form-control" type="text" name="email" placeholder="Email Address">
                                 <i class="icon_mail"></i>
+                                <span style="color: red" th:if="${userErrors != null}"
+                                      th:text="${userErrors.get('email') }"></span>
                             </div>
 
                             <div class="form-group add_bottom_15">
                                 <input class="form-control" type="password" name="password" placeholder="Password">
                                 <i class="icon_lock"></i>
+                                <span style="color: red" th:if="${userErrors != null}"
+                                      th:text="${userErrors.get('password') }"></span>
                             </div>
                             <input type="submit" value="Sign up Now">
 
@@ -89,8 +97,6 @@
 <!-- COMMON SCRIPTS -->
 <th:block th:insert="fragments/fragment::commonScripts"></th:block>
 
-<!-- COLOR SWITCHER  -->
-<th:block th:insert="fragments/fragment::colorSwitcher"></th:block>
 
 </body>
 </html>

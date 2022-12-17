@@ -10,6 +10,7 @@ import am.itspace.townrestaurantsweb.serviceWeb.ProductCategoryService;
 import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
+import am.itspace.townrestaurantsweb.validation.ErrorMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,11 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -73,8 +77,17 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute CreateProductDto dto, @RequestParam("productImage") MultipartFile[] files,
-                             @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+    public String addProduct(@ModelAttribute @Valid CreateProductDto dto, BindingResult bindingResult,
+                             @RequestParam("productImage") MultipartFile[] files,
+                             @AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("productErrors", errors);
+            modelMap.addAttribute("restaurants", restaurantService.findAll());
+            modelMap.addAttribute("categories", productCategoryService.findAll());
+            return "manager/addProduct";
+        }
         productService.addProduct(dto, files, currentUser.getUser());
         return "redirect:/products/my";
     }
