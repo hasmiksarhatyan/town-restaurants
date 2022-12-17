@@ -42,7 +42,7 @@ public class VerificationTokenServiceRestImpl implements VerificationTokenServic
         VerificationToken token = tokenOptional.get();
         if (token.getExpiresAt().isBefore(LocalDateTime.now())){
             delete(token);
-            log.info("Token not found");
+            log.info("Token has expired");
             throw new TokenNotFoundException(Error.TOKEN_EXPIRED);
         }
         return token;

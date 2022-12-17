@@ -108,7 +108,7 @@ public class MockData {
 
     public static UserAuthDto getAuthDto() {
         return UserAuthDto.builder()
-                .email("hayk@mail.com")
+                .email("hayk@gmail.com")
                 .password("hayk00")
                 .build();
     }
@@ -175,6 +175,14 @@ public class MockData {
         return VerificationToken.builder()
                 .id(1)
                 .user(getUserForToken())
+                .expiresAt(LocalDateTime.now().plusDays(1))
+                .plainToken("123456789")
+                .build();
+    }
+
+    public static VerificationToken getTokenWithoutUser() {
+        return VerificationToken.builder()
+                .id(1)
                 .expiresAt(LocalDateTime.now().plusDays(1))
                 .plainToken("123456789")
                 .build();
@@ -272,7 +280,7 @@ public class MockData {
         return new PageImpl<>(List.of(getRestaurant(), getRestaurant()));
     }
 
-    public static Page<Restaurant> getNullPageRestaurants() {
+    public static Page<Restaurant> getEmptyRestaurants() {
         return new PageImpl<>(List.of());
     }
 

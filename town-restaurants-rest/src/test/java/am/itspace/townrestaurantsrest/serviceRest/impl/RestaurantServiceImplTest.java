@@ -108,10 +108,10 @@ class RestaurantServiceImplTest {
     @Test
     void getAllShouldThrowException() {
         //given
-        var getNullPageableRestaurants = getNullPageRestaurants();
+        var emptyRestaurants = getEmptyRestaurants();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
-        doReturn(getNullPageableRestaurants).when(restaurantRepository).findAll(pageable);
+        doReturn(emptyRestaurants).when(restaurantRepository).findAll(pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> restaurantService.getAll(1, 1, "name", "DESC"));
     }
@@ -137,16 +137,15 @@ class RestaurantServiceImplTest {
     void getRestaurantsByUserShouldThrowException() {
         //given
         CurrentUser currentUser = new CurrentUser(getUser());
-        var getNullPageableRestaurants = getNullPageRestaurants();
+        var emptyRestaurants = getEmptyRestaurants();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
         doReturn(currentUser).when(securityContextService).getUserDetails();
-        doReturn(getNullPageableRestaurants).when(restaurantRepository).findRestaurantsByUser(currentUser.getUser(), pageable);
+        doReturn(emptyRestaurants).when(restaurantRepository).findRestaurantsByUser(currentUser.getUser(), pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> restaurantService.getRestaurantsByUser(1, 1, "name", "DESC"));
     }
 
-    //getById
     @Test
     void shouldGetById() {
         //given
@@ -170,7 +169,6 @@ class RestaurantServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> restaurantService.getById(anyInt()));
     }
 
-    //
     @Test
     void shouldGetRestaurantImage() throws IOException {
         //given
@@ -238,78 +236,3 @@ class RestaurantServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> restaurantService.delete(anyInt()));
     }
 }
-
-
-//@Test
-//    void shouldGetRestaurantsList() {
-//        //given
-//        var fetchRequest = getFetchRequestDto();
-//        var listOfRestaurants = getPageRestaurants();
-//        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
-//        //when
-//        doReturn(listOfRestaurants).when(restaurantRepository).findByRestaurantEmail("1", pageReq);
-//        List<Restaurant> actual = restaurantService.getRestaurantsList(fetchRequest);
-//        //then
-//        assertNotNull(actual);
-//    }
-//
-//    @Test
-//    void shouldGetRestaurantsListThrowException() {
-//        //given
-//        var fetchRequest = getFetchRequestDto();
-//        var getNullPageRestaurants = getNullPageRestaurants();
-//        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
-//        //when
-//        doReturn(getNullPageRestaurants).when(restaurantRepository).findByRestaurantEmail("1", pageReq);
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> restaurantService.getRestaurantsList(fetchRequest));
-//    }
-
-
-//    @Test
-//    void shouldGetAllRestaurants() {
-//        //given
-//        var restaurants = List.of(getRestaurant(), getRestaurant(), getRestaurant());
-//        var expected = List.of(getRestaurantOverview(), getRestaurantOverview(), getRestaurantOverview());
-//        //when
-//        doReturn(restaurants).when(restaurantRepository).findAll();
-//        doReturn(expected).when(restaurantMapper).mapToResponseDtoList(restaurants);
-//        List<RestaurantOverview> actual = restaurantService.getAll();
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    void getAllShouldThrowEntityNotFoundException() {
-//        //when
-//        doReturn(List.of()).when(restaurantRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> restaurantService.getAll());
-//    }
-
-//    @Test
-//    void shouldEntityNotFoundExceptionAsRestaurantNotFound() {
-//        //when
-//        doThrow(EntityNotFoundException.class).when(restaurantRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> restaurantService.getAll());
-//    }
-
-
-//    @Test
-//    void getByUserShouldThrowEntityNotFoundException() {
-//        //given
-//        var user = getUser();
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        var fetchRequest = getFetchRequestDto();
-//        var listOfRestaurants = getPageRestaurants();
-//        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
-//        //when
-//        when(securityContextService.getUserDetails()).thenReturn(currentUser);
-//        doReturn(listOfRestaurants).when(restaurantRepository).findRestaurantByUser(user, pageReq);
-//        List<Restaurant> actual = restaurantService.getRestaurantsByUser(fetchRequest);
-//        //then
-//        assertNotNull(actual);
-//    }
-

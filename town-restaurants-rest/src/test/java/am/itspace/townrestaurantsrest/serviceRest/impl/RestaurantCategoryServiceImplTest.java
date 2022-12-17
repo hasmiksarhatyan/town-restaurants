@@ -73,7 +73,6 @@ class RestaurantCategoryServiceImplTest {
         assertThrows(EntityAlreadyExistsException.class, () -> restaurantCategoryService.save(createRestaurantCategory));
     }
 
-    //getAll
     @Test
     void shouldGetAllCategories() {
         //given
@@ -100,14 +99,11 @@ class RestaurantCategoryServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> restaurantCategoryService.getAllCategories(1, 1, "name", "DESC"));
     }
 
-
-    //getById
     @Test
     void shouldGetById() {
         //given
         var restaurantCategory = getRestaurantCategory();
         var expected = getRestaurantCategoryOverview();
-        var createRestaurantCategory = getCreateRestaurantCategoryDto();
         //when
         doReturn(Optional.of(restaurantCategory)).when(restaurantCategoryRepository).findById(anyInt());
         doReturn(expected).when(categoryMapper).mapToOverview(restaurantCategory);
@@ -125,14 +121,12 @@ class RestaurantCategoryServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> restaurantCategoryService.getById(anyInt()));
     }
 
-    //update
     @Test
-    void shouldUpdateProductCategory() {
+    void shouldUpdateCategory() {
         //given
         var restaurantCategory = getRestaurantCategory();
         var expected = getRestaurantCategoryOverview();
         var editRestaurantCategory = getEditRestaurantCategoryDto();
-        var createRestaurantCategory = getCreateRestaurantCategoryDto();
         //when
         doReturn(Optional.of(restaurantCategory)).when(restaurantCategoryRepository).findById(anyInt());
         doReturn(expected).when(categoryMapper).mapToOverview(restaurantCategory);
@@ -143,7 +137,6 @@ class RestaurantCategoryServiceImplTest {
         assertEquals(expected, actual);
     }
 
-    //delete
     @Test
     void deleteSuccess() {
         //when

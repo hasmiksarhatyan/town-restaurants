@@ -3,6 +3,7 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 import am.itspace.townrestaurantscommon.dto.user.UserAuthResponseDto;
 import am.itspace.townrestaurantscommon.dto.user.UserOverview;
 import am.itspace.townrestaurantscommon.entity.User;
+import am.itspace.townrestaurantscommon.entity.VerificationToken;
 import am.itspace.townrestaurantscommon.mapper.UserMapper;
 import am.itspace.townrestaurantscommon.repository.UserRepository;
 import am.itspace.townrestaurantscommon.repository.VerificationTokenRepository;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +105,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void successfulPasswordChanging() throws Exception {
+    void successfulPasswordChanging() {
         //given
         var user = getUser();
         var email = getUser().getEmail();
@@ -134,75 +136,26 @@ class UserServiceImplTest {
         assertThrows(AuthenticationException.class, () -> userService.changePassword(changePassword));
     }
 
-//    @Test
-//    void shouldSaveUser() throws MessagingException {
-//        //given
-//        var user = getUser();
-//        var expected = getUserOverview();
-//        var createUserDto = getCreateUserDto();
-//        var verificationToken = getVerificationToken();
-//        //when
-//        doReturn(false).when(userRepository).existsByEmail(anyString());
-//        doReturn(user).when(userMapper).mapToEntity(createUserDto);
-//        doReturn(user).when(userRepository).save(any(User.class));
-//        doReturn(expected).when(userMapper).mapToResponseDto(user);
-//        doReturn(verificationToken).when(tokenRepository).save(any(VerificationToken.class));
-//        VerificationToken token = tokenService.createToken(user);
-//        doNothing().when(mailService).sendEmail(user.getEmail(), "any", verificationToken.getPlainToken());
-//        UserOverview actual = userService.save(createUserDto);
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    void saveUserShouldThrowException() throws MessagingException {
-//        //given
-//        var user = getUser();
-//        var createUserDto = getCreateUserDto();
-//        var verificationToken = getVerificationToken();
-//        //when
-//        doReturn(true).when(userRepository).existsByEmail(anyString());
-//        doThrow(RegisterException.class).when(mailService).sendEmail(user.getEmail(), "any", verificationToken.getPlainToken());
-//        //then
-//        assertThrows(RegisterException.class, () -> userService.save(createUserDto));
-//    }
-//
-//    @Test
-//    void VerificationToken() {
-//        //given
-//        var user = getUser();
-//        var userOverview = getUserOverview();
-//        var token = getVerificationToken();
-//        var tokenDto = getVerificationTokenDto();
-//        //when
-//        doReturn(token).when(tokenService).findByPlainToken(anyString());
-//        tokenService.delete(token);
-////        assertThat(String.valueOf(user.isEnabled()), true);
-//
-////        when((user.isEnabled())).thenReturn(false);
-//
-//
-//        doReturn(user).when(userRepository).save(any(User.class));
-//        doReturn(userOverview).when(userMapper).mapToResponseDto(user);
-//        UserOverview actual = userService.verifyToken(tokenDto);
-//        //then
-//        assertNotNull(actual);
-//        verify(tokenRepository, times(1)).delete(token);
-//    }
-
     @Test
-    void VerificationTokenShouldThrowException() {
+    void shouldSaveUser() throws MessagingException {
         //given
         var user = getUser();
-        var token = getVerificationToken();
-        var tokenDto = getVerificationTokenDto();
+        var expected = getUserOverview();
+        var createUserDto = getCreateUserDto();
+        var verificationToken = getVerificationToken();
         //when
-        doReturn(token).when(tokenService).findByPlainToken(anyString());
-        tokenService.delete(token);
-        assertThat(String.valueOf(user.isEnabled()), true);
+        doReturn(false).when(userRepository).existsByEmail(anyString());
+        doReturn(user).when(userMapper).mapToEntity(createUserDto);
+        doReturn(user).when(userRepository).save(any(User.class));
+        tokenService.createToken(user);
+//        doNothing().when(mailService).sendEmail(user.getEmail(), "any", verificationToken.getPlainToken());
+        doReturn(verificationToken).when(tokenRepository).save(any(VerificationToken.class));
+        doReturn(expected).when(userMapper).mapToResponseDto(user);
+        UserOverview actual = userService.save(createUserDto);
         //then
-        assertThrows(VerificationException.class, () -> userService.verifyToken(tokenDto));
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+//        verify(userRepository, times(1)).save(user);
     }
 
     @Test
@@ -213,6 +166,49 @@ class UserServiceImplTest {
         doReturn(true).when(userRepository).existsByEmail(anyString());
         //then
         assertThrows(RegisterException.class, () -> userService.save(createUserDto));
+    }
+
+    @Test
+    void tokenVerification() {
+        //given
+        var user = getUserForToken();
+        var token = getVToken();
+        var tokenDto = getVerificationTokenDto();
+        //when
+        doReturn(token).when(tokenService).findByPlainToken(anyString());
+        tokenService.delete(token);
+        tokenRepository.delete(token);
+        doReturn(user).when(userRepository).save(any(User.class));
+        userService.verifyToken(tokenDto);
+        //then
+        verify(tokenRepository, times(1)).delete(token);
+    }
+
+    @Test
+    void tokenVerificationShouldThrowExceptionAsUserIsNull() {
+        //given
+        var token = getTokenWithoutUser();
+        var tokenDto = getVerificationTokenDto();
+        //when
+        doReturn(token).when(tokenService).findByPlainToken(anyString());
+        tokenService.delete(token);
+        tokenRepository.delete(token);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> userService.verifyToken(tokenDto));
+    }
+
+    @Test
+    void tokenVerificationShouldThrowException() {
+        //given
+        var user = getUser();
+        var token = getVerificationToken();
+        var tokenDto = getVerificationTokenDto();
+        //when
+        doReturn(token).when(tokenService).findByPlainToken(anyString());
+        tokenService.delete(token);
+        assertThat(String.valueOf(user.isEnabled()), true);
+        //then
+        assertThrows(VerificationException.class, () -> userService.verifyToken(tokenDto));
     }
 
     @Test
