@@ -25,7 +25,6 @@ public class CreateUserDto {
             pattern = "^[A-Za-z]{2,15}$")
     private String firstName;
 
-    @NotBlank(message = "Last name is mandatory")
     @Schema(description = "The length of last name should be between 3 and 15 and name should contain only letters.",
             example = "Sargsyan",
             minLength = 3,
