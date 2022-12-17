@@ -2,14 +2,11 @@ package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.order.OrderOverview;
 import am.itspace.townrestaurantscommon.entity.Order;
-import am.itspace.townrestaurantscommon.entity.OrderStatus;
 import am.itspace.townrestaurantscommon.mapper.OrderMapper;
 import am.itspace.townrestaurantscommon.mapper.ProductMapper;
 import am.itspace.townrestaurantscommon.repository.BasketRepository;
 import am.itspace.townrestaurantscommon.repository.OrderRepository;
-import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsrest.exception.EntityNotFoundException;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static am.itspace.townrestaurantsrest.parameters.MockData.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,10 +45,10 @@ public class OrderServiceImplTest {
     BasketRepository basketRepository;
 
     @Mock
-    SecurityContextServiceImpl securityContextService;
+    PaymentServiceImpl paymentService;
 
     @Mock
-    PaymentServiceImpl paymentService;
+    SecurityContextServiceImpl securityContextService;
 
 //    @Test
 //    void shouldSaveOrder() {
@@ -97,12 +93,10 @@ public class OrderServiceImplTest {
 //        assertEquals(expected, actual);
 //    }
 
-
     @Test
     void shouldGetAllOrders() {
         //given
         var listOfOrdersPage = getPageOrders();
-        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
         var expected = List.of(getOrderOverview(), getOrderOverview());
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
@@ -117,10 +111,10 @@ public class OrderServiceImplTest {
     @Test
     void getAllOrdersShouldThrowException() {
         //given
-        var getNullPageOrders = getNullPageOrders();
+        var emptyOrders = getEmptyOrders();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
-        doReturn(getNullPageOrders).when(orderRepository).findAll(pageable);
+        doReturn(emptyOrders).when(orderRepository).findAll(pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> orderService.getAllOrders(1, 1, "name", "DESC"));
     }

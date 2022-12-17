@@ -366,7 +366,7 @@ public class MockData {
         return new PageImpl<>(List.of(getEvent(), getEvent()));
     }
 
-    public static Page<Event> getNullPageEvents() {
+    public static Page<Event> getEmptyEvents() {
         return new PageImpl<>(List.of());
     }
 
@@ -418,7 +418,7 @@ public class MockData {
         return new PageImpl<>(List.of(getProductCategory(), getProductCategory()));
     }
 
-    public static Page<ProductCategory> getNullPageProductCategories() {
+    public static Page<ProductCategory> getEmptyProductCategories() {
         return new PageImpl<>(List.of());
     }
 
@@ -624,7 +624,7 @@ public class MockData {
         return new PageImpl<>(List.of(getOrder(), getOrder()));
     }
 
-    public static Page<Order> getNullPageOrders() {
+    public static Page<Order> getEmptyOrders() {
         return new PageImpl<>(List.of());
     }
 

@@ -1,6 +1,5 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
-import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
 import am.itspace.townrestaurantscommon.entity.ProductCategory;
 import am.itspace.townrestaurantscommon.mapper.ProductCategoryMapper;
@@ -72,26 +71,10 @@ class ProductCategoryServiceImplTest {
         assertThrows(EntityAlreadyExistsException.class, () -> productCategoryService.save(createProductCategory));
     }
 
-    //getAll
-//    @Test
-//    void shouldGetAllCategories() {
-//        //given
-//        var categories = List.of(getProductCategory(), getProductCategory(), getProductCategory());
-//        var expected = List.of(getProductCategoryOverview(), getProductCategoryOverview(), getProductCategoryOverview());
-//        //when
-//        doReturn(categories).when(productCategoryRepository).findAll();
-//        doReturn(expected).when(categoryMapper).mapToOverviewList(categories);
-//        List<ProductCategoryOverview> actual = productCategoryService.getAll();
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
-
     @Test
     void shouldGetAllCategories() {
         //given
         var listOfCategoriesPage = getPageProductCategories();
-        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
         var expected = List.of(getProductCategoryOverview(), getProductCategoryOverview());
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
@@ -106,24 +89,13 @@ class ProductCategoryServiceImplTest {
     @Test
     void getAllCategoriesShouldThrowException() {
         //given
-        var getNullPageCategories = getNullPageProductCategories();
+        var emptyCategories = getEmptyProductCategories();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
-        doReturn(getNullPageCategories).when(productCategoryRepository).findAll(pageable);
+        doReturn(emptyCategories).when(productCategoryRepository).findAll(pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> productCategoryService.getAllCategories(1, 1, "name", "DESC"));
     }
-
-//    @Test
-//    void shouldThrowExceptionAsProductCategoriesListIsEmpty() {
-//        //given
-//        List<ProductCategory> empty = List.of();
-//        //when
-//        doReturn(empty).when(productCategoryRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> productCategoryService.getAll());
-//    }
-
 
     @Test
     void shouldGetById() {

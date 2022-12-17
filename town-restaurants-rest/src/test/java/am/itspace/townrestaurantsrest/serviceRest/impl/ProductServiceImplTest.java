@@ -86,6 +86,20 @@ class ProductServiceImplTest {
     }
 
     @Test
+    void saveShouldThrowException() {
+        //given
+        var product = getProduct();
+        var createProduct = getCreateProductDto();
+        var productRequestDto = getProductRequestDto();
+        //when
+        doReturn(false).when(productRepository).existsByName(anyString());
+        doReturn(product).when(productMapper).mapToEntity(createProduct);
+        doThrow(MyFileNotFoundException.class).when(productRepository).save(any(Product.class));
+        //then
+        assertThrows(MyFileNotFoundException.class, () -> productService.save(productRequestDto));
+    }
+
+    @Test
     void saveShouldThrowExceptionAsNameAlreadyExists() {
         //given
         var productRequestDto = getProductRequestDto();
@@ -105,21 +119,6 @@ class ProductServiceImplTest {
         assertThrows(EntityAlreadyExistsException.class, () -> productService.save(productRequestDto));
     }
 
-    @Test
-    void shouldSaveThrowException() {
-        //given
-        var product = getProduct();
-        var createProduct = getCreateProductDto();
-        var productRequestDto = getProductRequestDto();
-        //when
-        doReturn(false).when(productRepository).existsByName(anyString());
-        doReturn(product).when(productMapper).mapToEntity(createProduct);
-        doThrow(MyFileNotFoundException.class).when(productRepository).save(any(Product.class));
-        //then
-        assertThrows(MyFileNotFoundException.class, () -> productService.save(productRequestDto));
-    }
-
-    ///////
     @Test
     void shouldGetAllProducts() {
         //given
@@ -163,7 +162,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getEventsByRestaurantIdShouldThrowException() {
+    void getEventsByRestaurantShouldThrowException() {
         //given
         var restaurantId = 1;
         Page<Product> empty = Page.empty();
@@ -175,7 +174,6 @@ class ProductServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> productService.getByRestaurant(1, 1, 1, "name", "DESC"));
     }
 
-    /////
     @Test
     void shouldGetAllByRole() {
         //given
@@ -194,7 +192,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void shouldGetAllByRoleByCustomer() {
+    void shouldGetAllByCustomer() {
         //given
         CurrentUser currentUser = new CurrentUser(getUser());
         var listOfPageableProducts = getPageProducts();
@@ -212,7 +210,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void shouldGetAllByRoleByOwner() {
+    void shouldGetAllByOwner() {
         //given
         CurrentUser currentUser = new CurrentUser(getOwnerUser());
         var listOfPageableProducts = getPageProducts();
@@ -244,15 +242,12 @@ class ProductServiceImplTest {
 
     @Test
     void getAllByRoleShouldThrowExceptionAsCurrentUserIsNull() {
-        //given
-        CurrentUser currentUser = new CurrentUser(getUser());
         //when
         doThrow(AuthenticationException.class).when(securityContextService).getUserDetails();
         //then
         assertThrows(AuthenticationException.class, () -> productService.getAllByRole(1, 1, "name", "DESC"));
     }
 
-    //////////////////////////
     @Test
     void shouldGetByOwner() {
         //given
@@ -287,16 +282,12 @@ class ProductServiceImplTest {
 
     @Test
     void getByOwnerShouldThrowExceptionAsCurrentUserIsNull() {
-        //given
-        CurrentUser currentUser = new CurrentUser(getUser());
         //when
         doThrow(AuthenticationException.class).when(securityContextService).getUserDetails();
         //then
         assertThrows(AuthenticationException.class, () -> productService.getByOwner(1, 1, "name", "DESC"));
     }
 
-
-    ///
     @Test
     void shouldGetById() {
         //given
@@ -320,7 +311,6 @@ class ProductServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> productService.getById(anyInt()));
     }
 
-    //image
     @Test
     void shouldGetProductImage() throws IOException {
         //given
@@ -353,7 +343,6 @@ class ProductServiceImplTest {
         assertThrows(MyFileNotFoundException.class, () -> productService.getProductImage(anyString()));
     }
 
-    ////
     @Test
     void shouldUpdateProduct() {
         //given
@@ -388,90 +377,3 @@ class ProductServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> productService.delete(anyInt()));
     }
 }
-//    @Test
-//    void shouldNotGetAllProducts() {
-//        //given
-//        var user = getUserOwner();
-//        var products = List.of(getProduct(), getProduct(), getProduct());
-//        var expected = List.of(getProductOverview(), getProductOverview(), getProductOverview());
-//        //when
-//        doReturn(products).when(productRepository).findAll();
-//        doReturn(true).when(user).getRole().equals(Role.RESTAURANT_OWNER);
-//        doReturn(expected).when(productMapper).mapToOverviewList(products);
-//        List<ProductOverview> actual = productService.getAll();
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    void getAllShouldThrowException() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        //when
-//        doThrow(EntityNotFoundException.class).when(securityContextService).getUserDetails();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> productService.getAll());
-//    }
-//
-//    @Test
-//    void shouldThrowExceptionAsProductsListIsEmpty() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        //when
-//        doReturn(currentUser).when(securityContextService).getUserDetails();
-//        doReturn(List.of()).when(productRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> productService.getAll());
-//    }
-//
-//    @Test
-//    void shouldEntityNotFoundExceptionAsProductNotFound() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        //when
-//        doReturn(currentUser).when(securityContextService).getUserDetails();
-//        doThrow(EntityNotFoundException.class).when(productRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> productService.getAll());
-//    }
-//
-//    @Test
-//    void shouldGetProductsList() {
-//        //given
-//        var listOfProducts = getPageProducts();
-//        var fetchRequest = getFetchRequestDto();
-//        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
-//        //when
-//        doReturn(listOfProducts).when(productRepository).findByProductName("1", pageReq);
-//        List<Product> actual = productService.getProductsList(fetchRequest);
-//        //then
-//        assertNotNull(actual);
-//    }
-//
-//    @Test
-//    void getProductsListShouldThrowException() {
-//        //given
-//        var fetchRequest = getFetchRequestDto();
-//        var getNullPageProducts = getNullPageProducts();
-//        PageRequest pageReq = PageRequest.of(1, 1, Sort.Direction.fromString("desc"), "1");
-//        //when
-//        doReturn(getNullPageProducts).when(productRepository).findByProductName("1", pageReq);
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> productService.getProductsList(fetchRequest));
-//    }
-
-
-//    @Test
-//    void shouldGetByRestaurant() {
-//        //given
-//        var products = List.of(getProduct(), getProduct(), getProduct());
-//        var expected = List.of(getProductOverview(), getProductOverview(), getProductOverview());
-//        //when
-//        doReturn(products).when(productRepository).findProductsByRestaurant_Id(anyInt());
-//        doReturn(expected).when(productMapper).mapToOverviewList(products);
-//        List<ProductOverview> actual = productService.findProductsByRestaurant(anyInt());
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }

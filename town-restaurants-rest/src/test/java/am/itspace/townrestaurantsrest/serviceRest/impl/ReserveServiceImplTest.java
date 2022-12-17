@@ -1,7 +1,6 @@
 package am.itspace.townrestaurantsrest.serviceRest.impl;
 
 import am.itspace.townrestaurantscommon.dto.reserve.ReserveOverview;
-import am.itspace.townrestaurantscommon.entity.Product;
 import am.itspace.townrestaurantscommon.entity.Reserve;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.mapper.ReserveMapper;
@@ -85,7 +84,6 @@ class ReserveServiceImplTest {
         //then
         assertThrows(EntityAlreadyExistsException.class, () -> reserveService.save(createReserve));
     }
-//////
 
     @Test
     void shouldGetAllReserves() {
@@ -113,7 +111,6 @@ class ReserveServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> reserveService.getAllReserves(1, 1, "name", "DESC"));
     }
 
-    ///
     @Test
     void shouldGetByRole() {
         //given
@@ -172,14 +169,10 @@ class ReserveServiceImplTest {
         assertEquals(expected, actual);
     }
 
-
     @Test
     void getByRoleShouldThrowException() {
         //given
         CurrentUser currentUser = new CurrentUser(getOwnerUser());
-        var reserves = List.of(getReserve(), getReserve(), getReserve());
-        var expected = List.of(getReserveOverview(), getReserveOverview(), getReserveOverview());
-        //
         //when
         doReturn(currentUser).when(securityContextService).getUserDetails();
         assertThat(currentUser.getUser().getRole(), Matchers.is(Role.RESTAURANT_OWNER));
@@ -193,8 +186,6 @@ class ReserveServiceImplTest {
         //given
         CurrentUser currentUser = new CurrentUser(getUser());
         var reserves = List.of(getReserve(), getReserve(), getReserve());
-        var expected = List.of(getReserveOverview(), getReserveOverview(), getReserveOverview());
-        //
         //when
         doReturn(currentUser).when(securityContextService).getUserDetails();
         assertThat(currentUser.getUser().getRole(), Matchers.is(Role.CUSTOMER));
@@ -218,29 +209,6 @@ class ReserveServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> reserveService.getByRole());
     }
 
-//    @Test
-//    void getAllShouldThrowEntityNotFoundException() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        //when
-//        doReturn(currentUser).when(securityContextService).getUserDetails();
-//        doReturn(List.of()).when(reserveRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> reserveService.getByRole());
-//    }
-//
-//    @Test
-//    void shouldEntityNotFoundExceptionAsReserveNotFound() {
-//        //given
-//        CurrentUser currentUser = new CurrentUser(getUser());
-//        //when
-//        doReturn(currentUser).when(securityContextService).getUserDetails();
-//        doThrow(EntityNotFoundException.class).when(reserveRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> reserveService.getByRole());
-//    }
-
-    //update
     @Test
     void shouldUpdateReserve() {
         //given
@@ -259,7 +227,6 @@ class ReserveServiceImplTest {
         verify(reserveRepository, times(1)).save(reserve);
     }
 
-    //delete
     @Test
     void deleteReserveSuccess() {
         //when

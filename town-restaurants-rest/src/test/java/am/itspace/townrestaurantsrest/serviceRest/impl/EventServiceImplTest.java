@@ -47,7 +47,7 @@ class EventServiceImplTest {
 
     @Mock
     RestaurantRepository restaurantRepository;
-//save
+
     @Test
     void shouldSaveEvent() {
         //given
@@ -86,7 +86,7 @@ class EventServiceImplTest {
         //then
         assertThrows(EntityAlreadyExistsException.class, () -> eventService.save(eventRequestDto));
     }
-//image
+
     @Test
     void shouldGetEventImage() throws IOException {
         //given
@@ -118,7 +118,7 @@ class EventServiceImplTest {
         //then
         assertThrows(MyFileNotFoundException.class, () -> eventService.getEventImage(anyString()));
     }
-//get
+
     @Test
     void shouldGetAllEvents() {
         //given
@@ -137,10 +137,10 @@ class EventServiceImplTest {
     @Test
     void getAllEventsShouldThrowException() {
         //given
-        var getNullPageableEvents = getNullPageEvents();
+        var emptyEvents = getEmptyEvents();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
-        doReturn(getNullPageableEvents).when(eventRepository).findAll(pageable);
+        doReturn(emptyEvents).when(eventRepository).findAll(pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> eventService.getAllEvents(1, 1, "name", "DESC"));
     }
@@ -165,10 +165,10 @@ class EventServiceImplTest {
     void getEventsByRestaurantIdShouldThrowException() {
         //given
         var restaurantId = 1;
-        var getNullPageableEvents = getNullPageEvents();
+        var emptyEvents = getEmptyEvents();
         PageRequest pageable = PageRequest.of(1, 1, Sort.Direction.fromString("DESC"), "name");
         //when
-        doReturn(getNullPageableEvents).when(eventRepository).findEventsByRestaurantId(restaurantId, pageable);
+        doReturn(emptyEvents).when(eventRepository).findEventsByRestaurantId(restaurantId, pageable);
         //then
         assertThrows(EntityNotFoundException.class, () -> eventService.getEventsByRestaurantId(1, 1, 1, "name", "DESC"));
     }
@@ -196,7 +196,7 @@ class EventServiceImplTest {
     }
 
     @Test
-    void shouldUpdateRestaurant() {
+    void shouldUpdate() {
         //given
         var event = getEvent();
         var editEvent = getEditEventDto();
@@ -210,27 +210,6 @@ class EventServiceImplTest {
         assertNotNull(actual);
         assertEquals(expected, actual);
         verify(eventRepository, times(1)).save(event);
-    }
-
-    @Test
-    void deleteEventSuccess() {
-        //given
-        int eventId = 1;
-        //when
-        when(eventRepository.existsById(eventId)).thenReturn(true);
-        eventService.delete(eventId);
-        //then
-        verify(eventRepository).deleteById(eventId);
-    }
-
-    @Test
-    void deleteEventShouldThrowExceptionAsEventNotFound() {
-        //given
-        int eventId = 1;
-        //when
-        when(eventRepository.existsById(eventId)).thenReturn(false);
-        //then
-        assertThrows(EntityNotFoundException.class, () -> eventService.delete(eventId));
     }
 
     @Test
@@ -264,49 +243,31 @@ class EventServiceImplTest {
     }
 
     @Test
-    void shouldThrowsExceptionAsListOfRestaurantIsNull() {
+    void shouldThrowsExceptionAsListOfRestaurantIsEmpty() {
         //when
         doReturn(List.of()).when(restaurantRepository).findAll();
         //then
         assertThrows(EntityNotFoundException.class, () -> eventService.sortEventsByRestaurant());
     }
+
+    @Test
+    void deleteEventSuccess() {
+        //given
+        int eventId = 1;
+        //when
+        when(eventRepository.existsById(eventId)).thenReturn(true);
+        eventService.delete(eventId);
+        //then
+        verify(eventRepository).deleteById(eventId);
+    }
+
+    @Test
+    void deleteEventShouldThrowExceptionAsEventNotFound() {
+        //given
+        int eventId = 1;
+        //when
+        when(eventRepository.existsById(eventId)).thenReturn(false);
+        //then
+        assertThrows(EntityNotFoundException.class, () -> eventService.delete(eventId));
+    }
 }
-
-//    @Test
-//    void shouldGetAllEvents() {
-//        //given
-//        var events = List.of(getEvent(), getEvent(), getEvent());
-//        var expected = List.of(getEventOverview(), getEventOverview(), getEventOverview());
-//        //when
-//        doReturn(events).when(eventRepository).findAll();
-//        doReturn(expected).when(eventMapper).mapToOverviewList(events);
-//        List<EventOverview> actual = eventService.getAllEvents(anyInt(),anyInt(),anyString(),anyString());
-//        //then
-//        assertNotNull(actual);
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    void getAllShouldThrowEntityNotFoundException() {
-//        //when
-//        doReturn(List.of()).when(eventRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> eventService.getAllEvents(anyInt(),anyInt(),anyString(),anyString()));
-//    }
-
-
-//    @Test
-//    void getByRestaurantIdShouldThrowEntityNotFoundException() {
-//        //when
-//        doReturn(List.of()).when(eventRepository).findEventsByRestaurant_Id(anyInt());
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> eventService.findEventsByRestaurantId(anyInt(),anyInt(),anyInt(),anyString(),anyString()));
-//    }
-//
-//    @Test
-//    void shouldEntityNotFoundExceptionAsEventNotFound() {
-//        //when
-//        doThrow(EntityNotFoundException.class).when(eventRepository).findAll();
-//        //then
-//        assertThrows(EntityNotFoundException.class, () -> eventService.findEventsByRestaurantId(anyInt(),anyInt(),anyInt(),anyString(),anyString()));
-//    }
