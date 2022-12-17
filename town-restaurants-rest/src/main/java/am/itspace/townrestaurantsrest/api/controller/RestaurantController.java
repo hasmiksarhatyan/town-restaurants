@@ -27,7 +27,6 @@ public class RestaurantController implements RestaurantApi {
         return ResponseEntity.ok(restaurantService.save(restaurantRequestDto));
     }
 
-    //localhost:8080/api/v1/restaurants/?pageSize=2&sortBy=name&sortdir=DESC
     @Override
     @GetMapping
     public ResponseEntity<List<RestaurantOverview>> getAll(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
