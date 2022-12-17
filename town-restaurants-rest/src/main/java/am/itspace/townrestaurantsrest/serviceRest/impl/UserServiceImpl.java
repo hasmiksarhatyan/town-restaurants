@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService {
     private final VerificationTokenServiceRest tokenService;
     private final SecurityContextServiceImpl securityContextService;
 
-
     @Override
     public UserOverview save(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {

@@ -49,7 +49,7 @@ class UserControllerTest {
 
     @Autowired
     UserDetailsService userDetailsService;
-    
+
     private User user;
 
     @BeforeEach

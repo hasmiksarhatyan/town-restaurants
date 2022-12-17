@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/town_restaurants
-    username: root
-    password: yerevan21
+    username:
+    password:
   mail:
     host: smtp.gmail.com
     port: 587
@@ -21,10 +21,6 @@ server:
 jwt:
   secret: k2y75xxx
   expiration: 330000
-  jpa:
-    hibernate:
-      ddl-auto: create
-
 logging:
   logback:
     rollingpolicy:
@@ -38,6 +34,5 @@ logging:
     am.itspace: info
 project:
   images:
-    folder: /Users/annakhachatryan/Library/Application Support/JetBrains/town-restaurants-parent/town-restaurants-rest/src/main/resources/static/image
-
+    folder:
 #http://localhost:8081/api/v1/swagger-ui/index:html:
