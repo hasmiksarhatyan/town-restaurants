@@ -30,7 +30,7 @@ public class CreateProductDto {
             maxLength = 30)
     private String description;
 
-    @NotNull(message = "Price is mandatory")
+    @NotBlank(message = "Price is mandatory")
     @Schema(description = "Price must consist of numbers only")
     private Double price;
 
