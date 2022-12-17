@@ -39,9 +39,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<OrderOverview> getOrders(Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(pageable);
-        if (orders.isEmpty()) {
-            throw new IllegalStateException("Order not found!");
-        }
         log.info("Order successfully found");
         return orders.map(orderMapper::mapToDto);
     }
@@ -75,17 +72,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public Map<Integer, Double> getQuantity(int orderId) {
-        double quantity = 0;
+        double quantity = 1;
         Map<Integer, Double> sameProducts = new HashMap<>();
         Order order = orderRepository.findById(orderId).orElseThrow();
         List<Product> products = order.getProducts();
-        if (products.isEmpty()) {
-            throw new IllegalStateException("Something went wrong, try again!");
-        }
-        for (Product product : products) {
-            sameProducts.put(product.getId(), quantity);
-            if (sameProducts.get(product.getId()) == product.getId()) {
-                sameProducts.put(product.getId(), quantity + 1);
+        if (!products.isEmpty()) {
+            for (Product product : products) {
+                if (sameProducts.isEmpty()||!sameProducts.containsKey(product.getId())) {
+                    sameProducts.put(product.getId(), quantity);
+                }else{
+                    quantity++;
+                    sameProducts.replace(product.getId(),quantity);
+                }
             }
         }
         return sameProducts;
@@ -101,11 +99,7 @@ public class OrderServiceImpl implements OrderService {
     public void editOrder(EditOrderDto dto, int id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new IllegalStateException("Something went wrong, try again!"));
         String isPaid = dto.getIsPaid();
-        if (isPaid.equals("true")) {
-            order.setPaid(true);
-        } else {
-            order.setPaid(false);
-        }
+        order.setPaid(isPaid.equals("true"));
         String address = dto.getAdditionalAddress();
         if (address != null) {
             order.setAdditionalAddress(address);
@@ -128,8 +122,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderOverview> getOrdersByUser(int id, Pageable pageable) {
+        Page<Order> orders = orderRepository.findByUserId(id, pageable);
+        if (orders.isEmpty()) {
+            throw new IllegalStateException("Order not found!");
+        }
         log.info("Orders successfully found");
-        return orderRepository.findByUserId(id, pageable).map(orderMapper::mapToDto);
+        return orders.map(orderMapper::mapToDto);
     }
 
     @Override

@@ -68,13 +68,13 @@
                         <th>Price</th>
                     </tr>
                     </thead>
-                    <tbody th:each="product:${order.productOverviews}">
+                    <tbody th:each="productId:${productQuantity.keySet()}">
                     <tr>
-                        <td th:text="${product.id}"></td>
-                        <td th:text="${product.name}"></td>
-                        <td th:text="${productQuantity.get(product.id)}">2</td>
-                        <td th:text="${product.description}"></td>
-                        <td th:text="${product.price}"></td>
+                        <td th:text="${productId}"></td>
+                        <td th:text="${order.productOverviews.get(productId).name}"></td>
+                        <td th:text="${productQuantity.get(productId)}">2</td>
+                        <td th:text="${order.productOverviews.get(productId).description}"></td>
+                        <td th:text="${order.productOverviews.get(productId).price}"></td>
                     </tr>
                     <!-- Client Detail Modal -->
                     <div class="modal fade" id="client_detail_modal" tabindex="-1" role="dialog"

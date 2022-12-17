@@ -30,16 +30,18 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Page<PaymentOverview> getPayments(Pageable pageable) {
         Page<Payment> payments = paymentRepository.findAll(pageable);
-        if (payments.isEmpty()) {
-            throw new IllegalStateException("Payment not found!");
+        if (!payments.isEmpty()) {
+            log.info("Payments successfully found");
         }
-        log.info("Payments successfully found");
         return payments.map(paymentMapper::mapToDto);
     }
 
     public Page<PaymentOverview> getPaymentsByUser(int id, Pageable pageable) {
-        log.info("Payments successfully found");
-        return paymentRepository.findByUserId(id, pageable).map(paymentMapper::mapToDto);
+        Page<Payment> payments = paymentRepository.findByUserId(id, pageable);
+        if (!payments.isEmpty()) {
+            log.info("Payments successfully found");
+        }
+        return payments.map(paymentMapper::mapToDto);
     }
 
     @Override

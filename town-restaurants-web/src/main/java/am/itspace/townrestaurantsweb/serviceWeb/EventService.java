@@ -23,7 +23,7 @@ public interface EventService {
 
     Map<Integer, List<EventOverview>> sortEventsByRestaurant();
 
-    Page<EventOverview> findEventsByRestaurantId(int id, Pageable pageable);
+    List<EventOverview> findEventsByRestaurantId(int id);
 
     void save(CreateEventDto eventDto, MultipartFile[] files) throws IOException;
 

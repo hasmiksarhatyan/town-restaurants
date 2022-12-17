@@ -1,13 +1,9 @@
 package am.itspace.townrestaurantsweb.controller;
 
-import am.itspace.townrestaurantscommon.dto.event.EventOverview;
-import am.itspace.townrestaurantscommon.dto.product.ProductOverview;
-import am.itspace.townrestaurantscommon.dto.productCategory.ProductCategoryOverview;
 import am.itspace.townrestaurantscommon.dto.reserve.CreateReserveDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.CreateRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.EditRestaurantDto;
 import am.itspace.townrestaurantscommon.dto.restaurant.RestaurantOverview;
-import am.itspace.townrestaurantscommon.entity.Restaurant;
 import am.itspace.townrestaurantscommon.entity.Role;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.*;
@@ -15,7 +11,6 @@ import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -43,7 +38,7 @@ public class RestaurantController {
 
     @GetMapping
     public String restaurants(@RequestParam(value = "page", defaultValue = "1") int page,
-                              @RequestParam(value = "size", defaultValue = "5") int size,
+                              @RequestParam(value = "size", defaultValue = "6") int size,
                               ModelMap modelMap) {
         Page<RestaurantOverview> restaurants = restaurantService.findAllRestaurants(PageRequest.of(page - 1, size));
         modelMap.addAttribute("restaurants", restaurants);
@@ -160,35 +155,24 @@ public class RestaurantController {
     public String singleRestaurantPage(@PathVariable int id,
                                        @AuthenticationPrincipal CurrentUser currentUser,
                                        ModelMap modelMap) {
-        try {
-            Restaurant restaurant = restaurantService.findRestaurant(id);
-            modelMap.addAttribute("restaurant", restaurant);
-            List<ProductOverview> products = productService.findProductsByRestaurant(id);
-            modelMap.addAttribute("products", products);
-            List<ProductCategoryOverview> categories = productCategoryService.findAll();
-            modelMap.addAttribute("categories", categories);
-            if (currentUser == null) {
-                return "restaurantForVisitor";
-            }
-            return "indicatedRestaurant";
-        } catch (IllegalStateException ex) {
-            modelMap.addAttribute("errorMessageSingle", ex.getMessage());
-            return "redirect:/restaurants/my";
+
+        modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
+        modelMap.addAttribute("products", productService.findProductsByRestaurant(id));
+        modelMap.addAttribute("categories", productCategoryService.findAll());
+        modelMap.addAttribute("eventsByRestaurant", eventService.findEventsByRestaurantId(id));
+        if (currentUser == null) {
+            return "restaurantForVisitor";
         }
+        return "indicatedRestaurant";
     }
 
     @GetMapping("/{id}/events")
-    public String restaurantEvents(@PathVariable("id") int id,
-                                   @RequestParam(value = "page", defaultValue = "1") int page,
-                                   @RequestParam(value = "size", defaultValue = "6") int size,
-                                   ModelMap modelMap, Pageable pageable) {
-        Page<EventOverview> eventsPageByRestaurant = eventService.findEventsByRestaurantId(id, PageRequest.of(page - 1, size));
-        modelMap.addAttribute("events", eventsPageByRestaurant);
+    public String restaurantEvents(@PathVariable("id") int id, ModelMap modelMap) {
+
         modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
-        modelMap.addAttribute("eventsByRestaurant", eventService.findEventsByRestaurantId(id, pageable));
+        modelMap.addAttribute("eventsByRestaurant", eventService.findEventsByRestaurantId(id));
         modelMap.addAttribute("products", productService.findProductsByRestaurant(id));
         modelMap.addAttribute("categories", productCategoryService.findAll());
-        modelMap.addAttribute("pageNumbers", PageUtil.getTotalPages(eventsPageByRestaurant));
         return "restaurantEvents";
     }
 
@@ -205,7 +189,7 @@ public class RestaurantController {
                              ModelMap modelMap) {
         modelMap.addAttribute("restaurant", restaurantService.getRestaurant(id));
         reserveService.addReserve(dto, currentUser.getUser());
-        return "redirect:/reservations";
+        return "confirmBooking";
     }
 }
 

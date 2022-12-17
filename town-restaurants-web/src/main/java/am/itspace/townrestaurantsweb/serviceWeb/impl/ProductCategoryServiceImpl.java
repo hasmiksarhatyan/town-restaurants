@@ -36,9 +36,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         List<ProductCategory> categories = productCategoryRepository.findAll();
         if (categories.isEmpty()) {
             log.info("Category not found");
-            throw new IllegalStateException("Category not found!");
+        } else {
+            log.info("Category successfully found");
         }
-        log.info("Category successfully found");
         return productCategoryMapper.mapToOverviewList(categories);
     }
 

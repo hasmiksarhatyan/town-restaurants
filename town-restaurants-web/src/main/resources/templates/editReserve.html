@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Reserve</title>
+    <th:block th:insert="fragments/fragmentUser::headerImport"></th:block>
+</head>
+<body class="fixed-nav sticky-footer" id="page-top">
+<!-- Navigation-->
+<th:block th:insert="fragments/fragmentUser::navigation"></th:block>
+<!-- /Navigation-->
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Edit Reserve</li>
+        </ol>
+        <h3 th:text="${'Reserve ID '+ reserve.id}"></h3>
+        <form th:action="@{'/reservations/edit/'+${reserve.id}}" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit_bookingLabel">Edit Booking</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Restaurant Name</label>
+                    <strong th:text="${reserve.restaurantOverview.name}"></strong>
+                </div>
+                <div class="form-group">
+                    <label>Client Name</label>
+                    <strong th:text="${reserve.userOverview.firstName}+' '+${reserve.userOverview.lastName}"></strong>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" class="form-control"
+                                   name="reservedDate" th:value="${reserve.reservedDate}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" class="form-control" name="reservedTime"
+                                   th:value="${reserve.reservedTime}">
+                        </div>
+                    </div>
+                </div>
+                <!-- /Row -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Peolple</label>
+                            <input type="text" class="form-control" name="peopleCount"
+                                   th:value="${reserve.peopleCount}">
+                        </div>
+                    </div>
+                </div>
+                <!-- /Row -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" class="form-control" name="phoneNumber"
+                                   th:value="${reserve.phoneNumber}">
+                        </div>
+                    </div>
+                </div>
+                <select th:if="${currentUser.role.name != 'CUSTOMER'}" class="custom-select" name="status" id="status">
+                    <option value="PENDING">PENDING</option>
+                    <option value="APPROVED">APPROVED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="Save" class="btn btn-primary">
+            </div>
+        </form>
+        <!-- /form-->
+    </div>
+    <!-- /container-fluid-->
+</div>
+<!-- /.container-wrapper-->
+<th:block th:insert="fragments/fragmentUser::footer"></th:block>
+<!-- Scroll to Top Button-->
+<th:block th:insert="fragments/fragmentUser::scroll"></th:block>
+<!-- Logout Modal-->
+<th:block th:insert="fragments/fragmentUser::logoutModal"></th:block>
+
+<th:block th:insert="fragments/fragmentUser::scripts"></th:block>
+
+</body>
+</html>

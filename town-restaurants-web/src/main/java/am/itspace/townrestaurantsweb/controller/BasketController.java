@@ -3,7 +3,6 @@ package am.itspace.townrestaurantsweb.controller;
 import am.itspace.townrestaurantscommon.dto.basket.BasketOverview;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.BasketService;
-import am.itspace.townrestaurantsweb.serviceWeb.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,14 +24,13 @@ import static am.itspace.townrestaurantsweb.utilWeb.PageUtil.getTotalPages;
 public class BasketController {
 
     private final BasketService basketService;
-    private final ProductService productService;
 
     @GetMapping("/add/{id}")
     public String addToBasket(@PathVariable("id") int id,
-                              @AuthenticationPrincipal CurrentUser currentUser) {
+                              @AuthenticationPrincipal CurrentUser currentUser, ModelMap modelMap) {
         try {
             basketService.addProductToBasket(id, currentUser.getUser());
-            return "redirect:/products";
+            return "redirect:/baskets";
         } catch (IllegalStateException e) {
             return "index";
         }
