@@ -24,7 +24,7 @@ public class CreateReserveDto {
 
     @Schema(example = "+37499112233",
             pattern = "^[+]{1}[0-9]{12}$")
-    @Size(min = 12, max = 12, message = "Phone number should start with '+' character and have 11 numbers after it.")
+    @Size(min = 12, max = 12, message = "Phone number should start with '+' character and have 12 numbers after it.")
     private String phoneNumber;
 
     private Integer restaurantId;

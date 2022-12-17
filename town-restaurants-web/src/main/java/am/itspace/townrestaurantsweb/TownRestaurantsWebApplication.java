@@ -26,25 +26,10 @@ import java.util.Optional;
 })
 public class TownRestaurantsWebApplication {
 
-//    private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(TownRestaurantsWebApplication.class, args);
     }
 
-//    @Override
-//    public void run(String... args) throws Exception {
-//        Optional<User> byEmail = userRepository.findByEmail("admin@mail.com");
-//        if (byEmail.isEmpty()) {
-//            userRepository.save(User.builder()
-//                    .firstName("admin")
-//                    .lastName("admin")
-//                    .email("admin@mail.com")
-//                    .password(passwordEncoder.encode("admin1234$"))
-//                    .role(Role.MANAGER)
-//                    .enabled(true)
-//                    .build());
-//        }
-//    }
+
 }

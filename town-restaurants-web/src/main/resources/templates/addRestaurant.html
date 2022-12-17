@@ -102,9 +102,6 @@
                     </div>
                     <div id="message-register"></div>
 
-
-                    <!--<a href="/restaurantsCategory/add">Add a New Type of Restaurant</a><br>-->
-
                     <form action="/restaurants/add" method="post" enctype="multipart/form-data">
                         <span th:if="${errorMessageEmptyRestaurant != null}"
                               th:text="${errorMessageEmptyRestaurant}"></span>
@@ -115,6 +112,8 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Restaurant Name"
                                            name="name">
+                                    <span style="color: red" th:if="${restaurantErrors != null}"
+                                          th:text="${restaurantErrors.get('name') }"></span>
                                 </div>
                             </div>
                         </div>
@@ -135,6 +134,8 @@
                                 <div class="form-group">
                                     <input type="email" class="form-control" placeholder="Email"
                                            name="email">
+                                    <span style="color: red" th:if="${restaurantErrors != null}"
+                                          th:text="${restaurantErrors.get('email') }"></span>
                                 </div>
                             </div>
                         </div>
@@ -144,6 +145,8 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Phone Number"
                                            name="phone">
+                                    <span style="color: red" th:if="${restaurantErrors != null}"
+                                          th:text="${restaurantErrors.get('phone') }"></span>
                                 </div>
                             </div>
                         </div>
@@ -153,6 +156,8 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control" placeholder="Delivery Price"
                                            name="deliveryPrice">
+                                    <span style="color: red" th:if="${restaurantErrors != null}"
+                                          th:text="${restaurantErrors.get('deliveryPrice') }"></span>
                                 </div>
                             </div>
                         </div>
@@ -166,6 +171,8 @@
                                         <option th:each="category:${categories}" th:value="${category.id}"
                                                 th:text="${category.name}"></option>
                                     </select>
+                                    <span style="color: red" th:if="${restaurantErrors != null}"
+                                          th:text="${restaurantErrors.get('restaurantCategoryId') }"></span>
                                 </div>
                             </div>
                         </div>

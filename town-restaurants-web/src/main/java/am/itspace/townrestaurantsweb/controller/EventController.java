@@ -6,16 +6,20 @@ import am.itspace.townrestaurantscommon.dto.event.EventOverview;
 import am.itspace.townrestaurantsweb.serviceWeb.EventService;
 import am.itspace.townrestaurantsweb.serviceWeb.RestaurantService;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
+import am.itspace.townrestaurantsweb.validation.ErrorMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -67,7 +71,13 @@ public class EventController {
 
     @PostMapping("/add")
     public String addEvent(@RequestParam("eventImage") MultipartFile[] files,
-                           @ModelAttribute CreateEventDto dto) throws IOException {
+                           @ModelAttribute @Valid CreateEventDto dto, BindingResult bindingResult,ModelMap modelMap) throws IOException {
+        if (bindingResult.hasErrors()) {
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("eventErrors", errors);
+            modelMap.addAttribute("restaurants", restaurantService.findAll());
+            return "/manager/addEvent";
+        }
         eventService.save(dto, files);
         return "redirect:/events/manager";
     }

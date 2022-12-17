@@ -9,6 +9,7 @@ import am.itspace.townrestaurantscommon.entity.User;
 import am.itspace.townrestaurantscommon.security.CurrentUser;
 import am.itspace.townrestaurantsweb.serviceWeb.UserService;
 import am.itspace.townrestaurantsweb.utilWeb.PageUtil;
+import am.itspace.townrestaurantsweb.validation.ErrorMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,17 +50,19 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute CreateUserDto dto, ModelMap modelMap, BindingResult bindingResult) {
+    public String addUser(@ModelAttribute @Valid CreateUserDto dto, BindingResult bindingResult, ModelMap modelMap) {
         if (bindingResult.hasErrors()) {
-            return "/addUser";
+            Map<String, Object> errors = ErrorMap.getErrorMessages(bindingResult);
+            modelMap.addAttribute("userErrors", errors);
+            return "addUser";
         }
         try {
             userService.saveUser(dto);
-            return "redirect:/loginPage";
-        } catch (IllegalStateException | MessagingException e) {
-            modelMap.addAttribute("errorMessageEmail", "Email already in use");
-            return "/addUser";
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
+        return "redirect:/loginPage";
+
     }
 
     @GetMapping("/verify")
