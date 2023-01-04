@@ -10,7 +10,7 @@ The project is intended for making orders from different restaurants, reserving 
 
 Rest Module
 
-http://localhost:8000/api/v1/
+http://localhost:8080/api/v1/
 
 Mvc Module
 
